@@ -1,0 +1,138 @@
+﻿@model KIDORA.Data.NhaCungCap
+@* Thay KIDORA.Data.NhaCungCap bằng namespace model thực tế của bạn nếu cần *@
+
+@{
+    ViewData["Title"] = "Chi Tiết Nhà Cung Cấp";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid my-4">
+    <div class="row">
+        <div class="col-12">
+            <nav class="breadcrumb-dash mb-4" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-area="Admin" asp-controller="NhaCungCaps" asp-action="Index">
+                            Quản lý Nhà Cung Cấp
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Chi tiết
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 text-dark">Chi Tiết Nhà Cung Cấp</h1>
+    </div>
+
+    @* Sử dụng Card để bao bọc nội dung, tạo cảm giác chuyên nghiệp hơn *@
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-truck-moving me-2"></i>
+                <span class="fw-bold">@Model?.TenNcc</span>
+            </h5>
+        </div>
+        <div class="card-body">
+
+            @* Sử dụng List Group để hiển thị từng trường dữ liệu một cách rõ ràng *@
+            <ul class="list-group list-group-flush">
+
+                @* Phần thông tin cơ bản *@
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.TenNcc):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.TenNcc)</dd>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.TenLienHe):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.TenLienHe)</dd>
+                    </div>
+                </li>
+
+                @* Phần liên hệ (Thẻ riêng biệt) *@
+                <li class="list-group-item list-group-item-light">
+                    <h6 class="mt-2 mb-2 text-primary"><i class="fas fa-address-book me-2"></i> Liên Hệ</h6>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">@Html.DisplayNameFor(model => model.DienThoai):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.DienThoai)</dd>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">@Html.DisplayNameFor(model => model.Email):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.Email)</dd>
+                    </div>
+                </li>
+
+                @* Phần Địa chỉ và Khu vực (Thẻ riêng biệt) *@
+                <li class="list-group-item list-group-item-light">
+                    <h6 class="mt-2 mb-2 text-primary"><i class="fas fa-map-marker-alt me-2"></i> Địa chỉ</h6>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">@Html.DisplayNameFor(model => model.DiaChi):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.DiaChi)</dd>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">@Html.DisplayNameFor(model => model.ThanhPho):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.ThanhPho)</dd>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">@Html.DisplayNameFor(model => model.QuocGia):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.QuocGia)</dd>
+                    </div>
+                </li>
+
+                @* Phần Thanh toán và Trạng thái *@
+                <li class="list-group-item list-group-item-light">
+                    <h6 class="mt-2 mb-2 text-primary"><i class="fas fa-money-check-alt me-2"></i> Thanh toán & Trạng thái</h6>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">@Html.DisplayNameFor(model => model.HinhThucThanhToan):</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.HinhThucThanhToan)</dd>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row align-items-center">
+                        <dt class="col-md-3">@Html.DisplayNameFor(model => model.ConHopTac):</dt>
+                        <dd class="col-md-9">
+                            @{
+                                var badgeClass = Model?.ConHopTac == true ? "bg-success" : "bg-danger";
+                                var badgeText = Model?.ConHopTac == true ? "ĐANG HỢP TÁC" : "ĐÃ DỪNG";
+                            }
+                            <span class="badge @badgeClass p-2">@badgeText</span>
+                        </dd>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        @* Thêm asp-area="Admin" để đảm bảo liên kết chính xác *@
+        <a asp-action="Edit" asp-area="Admin" asp-route-id="@Model?.MaNcc" class="btn btn-warning me-2">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+        <a asp-action="Index" asp-area="Admin" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+</div>

@@ -1,0 +1,102 @@
+﻿@model KIDORA.Data.NhaCungCap
+@* Đảm bảo KIDORA.Data.NhaCungCap là model thực tế của bạn *@
+
+@{
+    ViewData["Title"] = "Xác nhận Xóa";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid my-4">
+    <div class="row">
+        <div class="col-12">
+            <nav class="breadcrumb-dash mb-4" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-area="Admin" asp-controller="NhaCungCaps" asp-action="Index">
+                            Quản lý Nhà Cung Cấp
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Xóa
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 text-dark">Xóa Nhà Cung Cấp</h1>
+    </div>
+
+    
+
+    @* Card hiển thị thông tin đối tượng bị xóa *@
+    <div class="card shadow-lg border-danger">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-trash-alt me-2"></i> 
+                <span class="fw-bold">@Model?.TenNcc</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            @* Sử dụng List Group để hiển thị các thông tin quan trọng *@
+            <ul class="list-group list-group-flush">
+                
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.TenNcc):</dt>
+                        <dd class="col-md-9 fs-5 text-dark">@Html.DisplayFor(model => model.TenNcc)</dd>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">Người Liên Hệ:</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.TenLienHe) (@Html.DisplayFor(model => model.DienThoai))</dd>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <dt class="col-md-3">Địa Chỉ Chính:</dt>
+                        <dd class="col-md-9">@Html.DisplayFor(model => model.DiaChi), @Html.DisplayFor(model => model.ThanhPho)</dd>
+                    </div>
+                </li>
+                
+                @* Hiển thị Trạng thái Hợp tác *@
+                <li class="list-group-item list-group-item-light">
+                    <div class="row align-items-center">
+                        <dt class="col-md-3 fw-bold">@Html.DisplayNameFor(model => model.ConHopTac):</dt>
+                        <dd class="col-md-9">
+                            @{
+                                var badgeClass = Model?.ConHopTac == true ? "bg-success" : "bg-danger";
+                                var badgeText = Model?.ConHopTac == true ? "ĐANG HỢP TÁC" : "ĐÃ DỪNG";
+                            }
+                            <span class="badge @badgeClass p-2">@badgeText</span>
+                        </dd>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    
+    @* Form xác nhận Xóa và nút hành động *@
+    <div class="mt-4">
+        <form asp-action="DeleteConfirmed" asp-area="Admin"> @* Sử dụng DeleteConfirmed nếu Controller của bạn có action đó *@
+            <input type="hidden" asp-for="MaNcc" />
+            
+            @* Nút Delete màu đỏ lớn *@
+            <button type="submit" class="btn btn-danger btn-lg me-3">
+                <i class="fas fa-trash-alt me-2"></i> Xác nhận
+            </button>
+            
+            @* Nút Quay lại *@
+            <a asp-action="Index" asp-area="Admin" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left me-2"></i> Hủy và Quay lại
+            </a>
+        </form>
+    </div>
+</div>

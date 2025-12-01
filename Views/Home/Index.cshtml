@@ -1,0 +1,365 @@
+﻿@using KIDORA.ViewModels
+@{
+    ViewData["Title"] = "Home Page";
+}
+<!-- Hero Start -->
+<div class="container-fluid py-5 mb-5 hero-header">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-md-12 col-lg-7">
+                <h4 class="mb-3 text-secondary">An toàn & Thân thiện</h4>
+                <h1 class="mb-5 display-3 text-primary">Đồ chơi cho bé & Dụng cụ học tập</h1>
+                <div class="position-relative mx-auto">
+                    <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number" placeholder="Search">
+                    <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Submit Now</button>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-5">
+                <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
+                    <div class="carousel-inner" role="listbox">
+                        <div class="carousel-item active rounded">
+                            <img src="img/hero-img-1.png" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
+                            <a href="#" class="btn px-4 py-2 text-white rounded">Fruites</a>
+                        </div>
+                        <div class="carousel-item rounded">
+                            <img src="img/hero-img-2.jpg" class="img-fluid w-100 h-100 rounded" alt="Second slide">
+                            <a href="#" class="btn px-4 py-2 text-white rounded">Vesitables</a>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+<!-- Featurs Section Start -->
+<div class="container-fluid featurs py-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fas fa-car-side fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Giao hàng nhanh & đúng hẹn</h5>
+                        <p class="mb-0">Giao hàng toàn quốc</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fas fa-user-shield fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Sản phẩm chính hãng, an toànt</h5>
+                        <p class="mb-0">
+                            Cam kết 100% an toàn cho trẻ em
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fas fa-exchange-alt fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Đổi trả trong 7 ngày</h5>
+                        <p class="mb-0">Đổi trả dễ dàng trong 7 ngày</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="featurs-item text-center rounded bg-light p-4">
+                    <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                        <i class="fa fa-phone-alt fa-3x text-white"></i>
+                    </div>
+                    <div class="featurs-content text-center">
+                        <h5>Hỗ trợ tư vấn 24/7</h5>
+                        <p class="mb-0">Tư vấn chọn đồ chơi theo độ tuổi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Featurs Section End -->
+<!-- Fruits Shop Start-->
+<div class="container-fluid fruite py-5">
+    <div class="container py-5">
+        <div class="tab-class text-center">
+            <div class="row g-4">
+                <div class="col-lg-4 text-start">
+                    <h1>Danh sách sản phẩm của chúng tôi</h1>
+                </div>
+                @await Html.PartialAsync("_ListSanPham", (IEnumerable<ListSanPhamVM>)ViewBag.ListSP)
+            </div>
+        
+        </div>
+    </div>
+</div>
+<!-- Fruits Shop End-->
+<!-- Featurs Start -->
+<div class="container-fluid service py-5">
+    <div class="container py-5">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <a href="#">
+                    <div class="service-item bg-secondary rounded border border-secondary">
+                        <img src="img/featur-1.jpg" class="img-fluid rounded-top w-100" alt="">
+                        <div class="px-4 rounded-bottom">
+                            <div class="service-content bg-primary text-center p-4 rounded">
+                                <h5 class="text-white">Fresh Apples</h5>
+                                <h3 class="mb-0">20% OFF</h3>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <a href="#">
+                    <div class="service-item bg-dark rounded border border-dark">
+                        <img src="img/featur-2.jpg" class="img-fluid rounded-top w-100" alt="">
+                        <div class="px-4 rounded-bottom">
+                            <div class="service-content bg-light text-center p-4 rounded">
+                                <h5 class="text-primary">Tasty Fruits</h5>
+                                <h3 class="mb-0">Free delivery</h3>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <a href="#">
+                    <div class="service-item bg-primary rounded border border-primary">
+                        <img src="img/featur-3.jpg" class="img-fluid rounded-top w-100" alt="">
+                        <div class="px-4 rounded-bottom">
+                            <div class="service-content bg-secondary text-center p-4 rounded">
+                                <h5 class="text-white">Exotic Vegitable</h5>
+                                <h3 class="mb-0">Discount 30$</h3>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Featurs End -->
+<!-- Vesitable Shop Start-->
+<div class="container-fluid vesitable py-5">
+    <div class="container py-5">
+        <h1 class="mb-0">BEST SELLERS</h1>
+        <div class="owl-carousel vegetable-carousel justify-content-center">
+            <div class="border border-primary rounded position-relative vesitable-item">
+                <div class="vesitable-img">
+                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
+                </div>
+                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Văn phòng phẩm</div>
+                <div class="p-4 rounded-bottom">
+                    <h4>Combo Tô Màu Và Sketchbook – Aquatic</h4>
+                    <p>Combo Tô Màu & Sketchbook Aquatic Artist Deluxe với sổ vẽ, bút màu, bút gel đuôi tiên cá và sticker đại dương – giúp bé thỏa sức sáng tạo và khám phá thế giới biển đầy sắc màu.</p>
+                    <div class="d-flex justify-content-between flex-lg-wrap">
+                        <p class="text-dark fs-5 fw-bold mb-0">359.000 VND</p>
+                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-primary rounded position-relative vesitable-item">
+                <div class="vesitable-img">
+                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
+                </div>
+                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Ba lô đi học</div>
+                <div class="p-4 rounded-bottom">
+                    <h4>Balo Đi Học Fancy Kitty Pinky Hồng</h4>
+                    <p>Balo đi học Fancy Pinky Kitty siêu nhẹ 900g, thiết kế mèo hồng 3D đáng yêu, nhiều ngăn tiện dụng và đệm vai êm ái – cho bé luôn vui tươi và năng động.</p>
+                    <div class="d-flex justify-content-between flex-lg-wrap">
+                        <p class="text-dark fs-5 fw-bold mb-0">899.000 VND</p>
+                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-primary rounded position-relative vesitable-item">
+                <div class="vesitable-img">
+                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
+                </div>
+                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Đồ chơi sáng tạo</div>
+                <div class="p-4 rounded-bottom">
+                    <h4>Combo Sổ Tay Vui Học và Ống Bột Nặn 10 Màu</h4>
+                    <p>
+                        Bộ đồ chơi kết hợp sổ tay hướng dẫn và 10 ống bột nặn Play-Doh giúp bé vừa học vừa chơi, phát triển tư duy sáng tạo và kỹ năng cơ bản.
+
+                    </p>
+                    <div class="d-flex justify-content-between flex-lg-wrap">
+                        <p class="text-dark fs-5 fw-bold mb-0">350.000 VND</p>
+                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-primary rounded position-relative vesitable-item">
+                <div class="vesitable-img">
+                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
+                </div>
+                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Đồ chơi sáng tạo</div>
+                <div class="p-4 rounded-bottom">
+                    <h4>Combo Bộ Khuôn Làm Bánh Kếp và Bột Nặn 4 Màu Mini Play-Doh</h4>
+                    <p>Đưa bé vào thế giới ẩm thực đầy màu sắc và sáng tạo với Combo Bộ Khuôn Làm Bánh Kếp và Bột Nặn 4 Màu Mini Play-Doh. Bộ sản phẩm bao gồm khuôn in hình bánh kếp mặt cười ngộ nghĩnh và 4 hũ bột nặn Play-Doh mini tươi sáng, giúp bé tự tay làm những “chiếc bánh” độc đáo theo trí tưởng tượng.</p>
+                    <div class="d-flex justify-content-between flex-lg-wrap">
+                        <p class="text-dark fs-5 fw-bold mb-0">299.000 VND</p>
+                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Vesitable Shop End -->
+<!-- Banner Section Start-->
+<div class="container-fluid banner bg-secondary my-5">
+    <div class="container py-5">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <div class="py-4">
+                    <h1 class="display-3 text-white">Fresh Exotic Fruits</h1>
+                    <p class="fw-normal display-3 text-dark mb-4">in Our Store</p>
+                    <p class="mb-4 text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
+                    <a href="#" class="banner-btn btn border-2 border-white rounded-pill text-dark py-3 px-5">BUY</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <img src="img/baner-1.png" class="img-fluid w-100 rounded" alt="">
+                    <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute" style="width: 140px; height: 140px; top: 0; left: 0;">
+                        <h1 style="font-size: 100px;">1</h1>
+                        <div class="d-flex flex-column">
+                            <span class="h2 mb-0">50$</span>
+                            <span class="h4 text-muted mb-0">kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Banner Section End -->
+
+<!-- Fact Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="bg-light p-5 rounded">
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="counter bg-white rounded p-5">
+                        <i class="fa fa-users text-secondary"></i>
+                        <h4>An toàn và Chất lượng</h4>
+                      
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="counter bg-white rounded p-5">
+                        <i class="fa fa-users text-secondary"></i>
+                        <h4>Sáng tạo và Giáo dục</h4>
+                      
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="counter bg-white rounded p-5">
+                        <i class="fa fa-users text-secondary"></i>
+                        <h4>Đồng hành cùng phụ huynh</h4>
+                        
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="counter bg-white rounded p-5">
+                        <i class="fa fa-users text-secondary"></i>
+                        <h4>
+                            Minh bạch và Trách nhiệm
+                        </h4>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fact Start -->
+<!-- Tastimonial Start -->
+<div class="container-fluid testimonial py-5">
+    <div class="container py-5">
+        <div class="testimonial-header text-center">
+            <h4 class="text-primary">KIDORA, BÉ VUI – BA MẸ YÊN TÂM</h4>
+            <h1 class="display-5 mb-5 text-dark">KHÁCH HÀNG & CÂU CHUYỆN</h1>
+        </div>
+        <div class="owl-carousel testimonial-carousel">
+            <div class="testimonial-item img-border-radius bg-light rounded p-4">
+                <div class="position-relative">
+                    <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
+                    <div class="mb-4 pb-4 border-bottom border-secondary">
+                        <p class="mb-0">
+                            "Bé nhà mình rất thích bộ đồ chơi lắp ráp mua tại Kidora. Sản phẩm chắc chắn, màu sắc an toàn, lại giúp con rèn luyện tư duy logic. Giao hàng nhanh, đóng gói cẩn thận, mình rất hài lòng"
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <div class="bg-secondary rounded">
+                            <img src="~/1.jpg" /> 
+                        </div>
+                        <div class="ms-4 d-block">
+                            <h4 class="text-dark">Anh Tú</h4>
+                            <p class="m-0 pb-3">TP.HCM</p>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item img-border-radius bg-light rounded p-4">
+                <div class="position-relative">
+                    <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
+                    <div class="mb-4 pb-4 border-bottom border-secondary">
+                        <p class="mb-0">
+                            "Trước đây mình thường phải đi nhà sách để mua cho con, nhưng từ khi biết đến Kidora thì chỉ cần vài cú click là có ngay. Đặc biệt mình yên tâm vì các sản phẩm đều có chứng nhận an toàn rõ ràng."
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <div class="bg-secondary rounded">
+                            <img src="~/2.jpg" /> 
+                        </div>
+                        <div class="ms-4 d-block">
+                            <h4 class="text-dark">Anh Hào</h4>
+                            <p class="m-0 pb-3">Hà Nội</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item img-border-radius bg-light rounded p-4">
+                <div class="position-relative">
+                    <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
+                    <div class="mb-4 pb-4 border-bottom border-secondary">
+                        <p class="mb-0">
+                            "Con mình mê vẽ nên mình chọn combo bút màu và sketchbook tại Kidora. Bé nhận được là mở ra dùng liền, chất lượng giấy và màu vẽ rất tốt. Kidora còn có chính sách đổi trả dễ dàng, nên mình rất tin tưởng."
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <div class="bg-secondary rounded">
+                            <img src="~/3.jpg" />
+                        </div>
+                        <div class="ms-4 d-block">
+                            <h4 class="text-dark">Chị Hiền</h4>
+                            <p class="m-0 pb-3">Phú Thọ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Tastimonial End -->
