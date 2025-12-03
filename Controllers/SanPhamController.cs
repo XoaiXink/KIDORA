@@ -8,46 +8,72 @@ namespace KIDORA.Controllers
     public class SanPhamController : Controller
     {
         private readonly KidoraDbContext _context;
-        public SanPhamController(KidoraDbContext context)
+        public SanPhamController(KidoraDbContext context)       // đối tượng db trong code
         {
             _context = context;
         }
-        public IActionResult Index(string? danhmuc)
-        {
-            var sanPhams = _context.SanPhams
-                                    .Include(p => p.MaDanhMucNavigation)
-                                    .AsQueryable();
 
+        public IActionResult Index(string? danhmuc, int? price, int page = 1, int pageSize = 12)
+        {
+            var query = _context.SanPhams
+                                .Include(p => p.MaDanhMucNavigation)
+                                .AsQueryable();
+
+            // ------ LỌC DANH MỤC (CHA + CON) ------
             if (!string.IsNullOrEmpty(danhmuc))
             {
-                // Lấy toàn bộ danh mục
+                var cat = danhmuc.Trim();
+
                 var allCats = _context.DanhMucs.ToList();
 
-                // Lấy danh mục con của category được chọn
                 var childCats = allCats
-                    .Where(dm => dm.MaDanhMucCha?.Trim() == danhmuc.Trim())
+                    .Where(dm => dm.MaDanhMucCha != null &&
+                                 dm.MaDanhMucCha.Trim() == cat)
                     .Select(dm => dm.MaDanhMuc.Trim())
                     .ToList();
 
-                // Thêm chính danh mục cha
-                childCats.Add(danhmuc.Trim());
+                childCats.Add(cat);
 
-                // Lọc sản phẩm theo tất cả danh mục con + cha
-                sanPhams = sanPhams.Where(sp => childCats.Contains(sp.MaDanhMuc.Trim()));
+                query = query.Where(sp => childCats.Contains(sp.MaDanhMuc.Trim()));
             }
 
-            var result = sanPhams.Select(p => new ListSanPhamVM
+            // ------ LỌC GIÁ ------
+            if (price.HasValue)
             {
-                MaSp = p.MaSp,
-                TenSp = p.TenSp,
-                DonGiaBan = p.DonGiaBan,
-                AnhChinh = p.AnhChinh ?? "",
-                MoTaNgan = p.MoTaNgan ?? "",
-                MaDanhMuc = p.MaDanhMucNavigation.TenDanhMuc
-            })
-            .ToList();
+                query = query.Where(sp => sp.DonGiaBan <= price.Value);
+            }
 
-            return View(result);
+            int tongSanPham = query.Count();
+            int soTrang = (int)Math.Ceiling(tongSanPham / (double)pageSize);
+
+            if (page < 1) page = 1;
+            if (page > soTrang && soTrang > 0) page = soTrang;
+
+            var sanPhams = query
+                .OrderBy(p => p.MaSp)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new ListSanPhamVM
+                {
+                    MaSp = p.MaSp,
+                    TenSp = p.TenSp,
+                    DonGiaBan = p.DonGiaBan,
+                    AnhChinh = p.AnhChinh ?? "",
+                    MoTaNgan = p.MoTaNgan ?? "",
+                    MaDanhMuc = p.MaDanhMucNavigation.TenDanhMuc
+                })
+                .ToList();
+
+            var vm = new PhanTrangSanPhamVM
+            {
+                SanPhams = sanPhams,
+                SoTrang = soTrang,
+                TrangHienTai = page,
+                TongSanPham = tongSanPham,
+                PageSize = pageSize
+            };
+
+            return View(vm);
         }
 
 

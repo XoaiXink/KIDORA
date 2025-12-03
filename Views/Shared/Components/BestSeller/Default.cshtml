@@ -1,0 +1,22 @@
+﻿@model IEnumerable<KIDORA.ViewModels.BestSellerVM>
+
+<div class="row g-4">
+    @foreach (var item in Model)
+    {
+        var imgSrc = string.IsNullOrEmpty(item.AnhChinh) ? Url.Content("~/customerassets/img/default-product.jpg") : Url.Content(item.AnhChinh);
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card h-100">
+                <img src="@imgSrc" class="card-img-top" alt="@item.TenSp" style="object-fit:cover; height:180px;" />
+                <div class="card-body">
+                    <h6 class="card-title">@item.TenSp</h6>
+                    <p class="card-text text-danger fw-bold mb-1">@item.DonGiaBan.ToString("N0") VND</p>
+                  
+                    <div class="d-flex">
+                        <a asp-controller="SanPham" asp-action="ChiTietSanPham" asp-route-id="@item.MaSp" class="btn btn-outline-primary btn-sm">Xem</a>
+                        <a asp-controller="GioHang" asp-action="AddToCart" asp-route-id="@item.MaSp" class="btn btn-primary btn-sm ms-2">Thêm giỏ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

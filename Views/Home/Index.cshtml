@@ -160,67 +160,7 @@
 <div class="container-fluid vesitable py-5">
     <div class="container py-5">
         <h1 class="mb-0">BEST SELLERS</h1>
-        <div class="owl-carousel vegetable-carousel justify-content-center">
-            <div class="border border-primary rounded position-relative vesitable-item">
-                <div class="vesitable-img">
-                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
-                </div>
-                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Văn phòng phẩm</div>
-                <div class="p-4 rounded-bottom">
-                    <h4>Combo Tô Màu Và Sketchbook – Aquatic</h4>
-                    <p>Combo Tô Màu & Sketchbook Aquatic Artist Deluxe với sổ vẽ, bút màu, bút gel đuôi tiên cá và sticker đại dương – giúp bé thỏa sức sáng tạo và khám phá thế giới biển đầy sắc màu.</p>
-                    <div class="d-flex justify-content-between flex-lg-wrap">
-                        <p class="text-dark fs-5 fw-bold mb-0">359.000 VND</p>
-                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
-                    </div>
-                </div>
-            </div>
-            <div class="border border-primary rounded position-relative vesitable-item">
-                <div class="vesitable-img">
-                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
-                </div>
-                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Ba lô đi học</div>
-                <div class="p-4 rounded-bottom">
-                    <h4>Balo Đi Học Fancy Kitty Pinky Hồng</h4>
-                    <p>Balo đi học Fancy Pinky Kitty siêu nhẹ 900g, thiết kế mèo hồng 3D đáng yêu, nhiều ngăn tiện dụng và đệm vai êm ái – cho bé luôn vui tươi và năng động.</p>
-                    <div class="d-flex justify-content-between flex-lg-wrap">
-                        <p class="text-dark fs-5 fw-bold mb-0">899.000 VND</p>
-                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
-                    </div>
-                </div>
-            </div>
-            <div class="border border-primary rounded position-relative vesitable-item">
-                <div class="vesitable-img">
-                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
-                </div>
-                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Đồ chơi sáng tạo</div>
-                <div class="p-4 rounded-bottom">
-                    <h4>Combo Sổ Tay Vui Học và Ống Bột Nặn 10 Màu</h4>
-                    <p>
-                        Bộ đồ chơi kết hợp sổ tay hướng dẫn và 10 ống bột nặn Play-Doh giúp bé vừa học vừa chơi, phát triển tư duy sáng tạo và kỹ năng cơ bản.
-
-                    </p>
-                    <div class="d-flex justify-content-between flex-lg-wrap">
-                        <p class="text-dark fs-5 fw-bold mb-0">350.000 VND</p>
-                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
-                    </div>
-                </div>
-            </div>
-            <div class="border border-primary rounded position-relative vesitable-item">
-                <div class="vesitable-img">
-                    <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
-                </div>
-                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Đồ chơi sáng tạo</div>
-                <div class="p-4 rounded-bottom">
-                    <h4>Combo Bộ Khuôn Làm Bánh Kếp và Bột Nặn 4 Màu Mini Play-Doh</h4>
-                    <p>Đưa bé vào thế giới ẩm thực đầy màu sắc và sáng tạo với Combo Bộ Khuôn Làm Bánh Kếp và Bột Nặn 4 Màu Mini Play-Doh. Bộ sản phẩm bao gồm khuôn in hình bánh kếp mặt cười ngộ nghĩnh và 4 hũ bột nặn Play-Doh mini tươi sáng, giúp bé tự tay làm những “chiếc bánh” độc đáo theo trí tưởng tượng.</p>
-                    <div class="d-flex justify-content-between flex-lg-wrap">
-                        <p class="text-dark fs-5 fw-bold mb-0">299.000 VND</p>
-                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i>Thêm vào giỏ hàng</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @await Component.InvokeAsync("BestSeller", new { count = 4 })
     </div>
 </div>
 <!-- Vesitable Shop End -->
