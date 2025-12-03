@@ -3,6 +3,8 @@
 <div class="row g-4">
     @foreach (var item in Model)
     {
+      
+
         var imgSrc = string.IsNullOrEmpty(item.AnhChinh) ? Url.Content("~/customerassets/img/default-product.jpg") : Url.Content(item.AnhChinh);
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="card h-100">
