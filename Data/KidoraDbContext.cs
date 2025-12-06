@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace KIDORA.Data;
 
@@ -22,6 +24,8 @@ public partial class KidoraDbContext : DbContext
     public virtual DbSet<BienTheSanPham> BienTheSanPhams { get; set; }
 
     public virtual DbSet<BienTheTonKho> BienTheTonKhos { get; set; }
+
+    public virtual DbSet<CamNang> CamNangs { get; set; }
 
     public virtual DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
 
@@ -65,9 +69,9 @@ public partial class KidoraDbContext : DbContext
 
     public virtual DbSet<WishlistChiTiet> WishlistChiTiets { get; set; }
 
-    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //        => optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=KidoraDB;Integrated Security=True;Encrypt=False");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=KidoraDB;Integrated Security=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -198,6 +202,21 @@ public partial class KidoraDbContext : DbContext
                 .HasForeignKey<BienTheTonKho>(d => d.MaBienThe)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__BIEN_THE___MaBie__00200768");
+        });
+
+        modelBuilder.Entity<CamNang>(entity =>
+        {
+            entity.HasKey(e => e.MaBai).HasName("PK__CAM_NANG__3520ED778F283295");
+
+            entity.ToTable("CAM_NANG");
+
+            entity.Property(e => e.MaBai)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Anh).HasMaxLength(255);
+            entity.Property(e => e.TacGia).HasMaxLength(100);
+            entity.Property(e => e.TieuDe).HasMaxLength(255);
         });
 
         modelBuilder.Entity<ChiTietDonHang>(entity =>

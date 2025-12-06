@@ -1,0 +1,72 @@
+﻿@model KIDORA.Data.KhachHang
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>KhachHang</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaKh" />
+            <div class="form-group">
+                <label asp-for="HoTen" class="control-label"></label>
+                <input asp-for="HoTen" class="form-control" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DienThoai" class="control-label"></label>
+                <input asp-for="DienThoai" class="form-control" />
+                <span asp-validation-for="DienThoai" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MatKhauHash" class="control-label"></label>
+                <input asp-for="MatKhauHash" class="form-control" />
+                <span asp-validation-for="MatKhauHash" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GioiTinh" class="control-label"></label>
+                <input asp-for="GioiTinh" class="form-control" />
+                <span asp-validation-for="GioiTinh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgaySinh" class="control-label"></label>
+                <input asp-for="NgaySinh" class="form-control" />
+                <span asp-validation-for="NgaySinh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaHang" class="control-label"></label>
+                <select asp-for="MaHang" class="form-control" asp-items="ViewBag.MaHang"></select>
+                <span asp-validation-for="MaHang" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SoDuKcoin" class="control-label"></label>
+                <input asp-for="SoDuKcoin" class="form-control" />
+                <span asp-validation-for="SoDuKcoin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayThamGia" class="control-label"></label>
+                <input asp-for="NgayThamGia" class="form-control" />
+                <span asp-validation-for="NgayThamGia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

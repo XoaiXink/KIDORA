@@ -1,4 +1,7 @@
-﻿namespace KIDORA.Data;
+﻿using System;
+using System.Collections.Generic;
+
+namespace KIDORA.Data;
 
 public partial class DanhMuc
 {

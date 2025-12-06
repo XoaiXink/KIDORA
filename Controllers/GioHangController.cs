@@ -72,5 +72,37 @@ namespace KIDORA.Controllers
             }
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult UpdateQuantity(string id, int quantity)
+        {
+            var gioHang = GioHang();
+            var item = gioHang.FirstOrDefault(p => p.MaSp == id);
+
+            if (item == null) return Json(new { success = false });
+
+            item.SoLuong = quantity;
+
+            HttpContext.Session.Set(MySetting.GIOHANG_KEY, gioHang);
+
+            return Json(new
+            {
+                success = true,
+                subtotal = item.ThanhTien,
+                cartTotal = gioHang.Sum(p => p.ThanhTien)
+            });
+
+        }
+        public IActionResult ThanhToan()
+        {
+
+            if (GioHang().Count == 0)
+            {
+                TempData["ErrorMessage"] = "Giỏ hàng trống!";
+                return RedirectToAction("Index");
+            }
+            return View(GioHang());
+        }
+
+
     }
 }

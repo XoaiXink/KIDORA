@@ -1,0 +1,43 @@
+﻿@model IEnumerable<KIDORA.ViewModels.CamNangVM>
+
+@{
+    ViewData["Title"] = "Cẩm Nang";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Cẩm Nang Giáo Dục – Nuôi Dạy Bé</h1>
+
+    <div class="row g-4">
+
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="~/AnhCamNang/@item.Anh"
+                         class="card-img-top"
+                         style="height:220px; object-fit:cover;"
+                         alt="@item.TieuDe" />
+                    <div class="card-body">
+                        <h5 class="card-title">@item.TieuDe</h5>
+
+                        <p class="text-muted" style="font-size:14px;">
+                            @(item.TomTat?.Length > 120 ? item.TomTat.Substring(0, 120) + "..." : item.TomTat)
+                        </p>
+
+                        <a asp-controller="CamNang"
+                           asp-action="ChiTiet"
+                           asp-route-id="@item.MaBai"
+                           class="btn btn-outline-primary w-100">
+                            Xem thêm
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+

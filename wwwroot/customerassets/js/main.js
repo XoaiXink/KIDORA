@@ -134,6 +134,13 @@
     // Product Quantity
     $('.quantity button').on('click', function () {
         var button = $(this);
+
+        // Skip buttons that are handled by data-action handlers elsewhere
+        // (your page script uses buttons with data-action="increase"/"decrease")
+        if (button.attr('data-action') !== undefined) {
+            return;
+        }
+
         var oldValue = button.parent().parent().find('input').val();
         if (button.hasClass('btn-plus')) {
             var newVal = parseFloat(oldValue) + 1;

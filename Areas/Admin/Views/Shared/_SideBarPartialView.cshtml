@@ -78,12 +78,15 @@
                     <i class="icon icon-plug"></i><span class="nav-text">Quản lý khách hàng</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="~/adminassets/uc-select2.html">Select 2</a></li>
-                    <li><a href="~/adminassets/uc-nestable.html">Nestedable</a></li>
-                    <li><a href="~/adminassets/uc-noui-slider.html">Noui Slider</a></li>
-                    <li><a href="~/adminassets/uc-sweetalert.html">Sweet Alert</a></li>
-                    <li><a href="~/adminassets/uc-toastr.html">Toastr</a></li>
-                    <li><a href="~/adminassets/map-jqvmap.html">Jqv Map</a></li>
+                    <li><a asp-area="Admin" asp-controller="AdminDSKhachHangs" asp-action="Index">Danh sách khách hàng</a></li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="AdminHangThanhViens" asp-action="Index">Hạng thành viên</a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="AdminGdKcoins" asp-action="Index">Giao dịch K-Coin</a>
+                    </li>
+                    <li><a asp-area="Admin" asp-controller="AdminDanhGiaSanPhams" asp-action="Index">Đánh giá của khách hàng</a></li>
+
                 </ul>
             </li>
             <li>
