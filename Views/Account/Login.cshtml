@@ -12,35 +12,51 @@
                         Đăng nhập
                     </h3>
 
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success text-center">@TempData["Success"]</div>
+                    }
+
                     @if (ViewBag.Error != null)
                     {
                         <div class="alert alert-danger text-center">@ViewBag.Error</div>
                     }
 
                     <form method="post">
+
                         <div class="mb-3">
-                            <label class="form-label">Tên đăng nhập</label>
-                            <input type="text" name="username" class="form-control p-3" required />
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email"
+                                   class="form-control p-3" required />
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" name="password" class="form-control p-3" required />
+                            <input type="password" name="password"
+                                   class="form-control p-3" required />
                         </div>
 
                         <button type="submit" class="btn w-100 p-3"
-                                style="background:#8BC34A; border:none; font-weight:600; color:white;">
+                                style="background:#8BC34A; border:none; color:white; font-weight:600;">
                             Đăng nhập
                         </button>
 
+                        <div class="text-center mt-3">
+                            <a asp-controller="Account" asp-action="ForgotPassword"
+                               style="color:#8BC34A; font-weight:600;">
+                                Quên mật khẩu?
+                            </a>
+                        </div>
+
                         <p class="text-center mt-3">
                             Chưa có tài khoản?
-                            <a asp-controller="Account" asp-action="Register" style="color:#8BC34A;">
-                                Đăng ký
+                            <a asp-controller="Account" asp-action="Register"
+                               style="color:#8BC34A; font-weight:600;">
+                                Đăng ký ngay
                             </a>
                         </p>
-                    </form>
 
+                    </form>
                 </div>
             </div>
         </div>
