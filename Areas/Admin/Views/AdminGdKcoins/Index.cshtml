@@ -45,7 +45,7 @@
                     <tr>
                         <td>@item.ThoiGianGd.ToString("dd/MM/yyyy HH:mm")</td>
                         <td>@item.MaKh</td>
-                        <td>@item.MaKhNavigation?.MaKhNavigation.HoTen</td>
+                        <td>@item.MaKhNavigation?.HoTen</td>
                         <td class="@color text-capitalize">@item.KieuGd</td>
                         <td class="@color fw-bold">
                             @(item.KieuGd == "spend" ? "-" : "+")@item.SoKcoin
