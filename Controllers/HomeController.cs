@@ -55,6 +55,10 @@ namespace KIDORA.Controllers
         {
             return View();
         }
+        public IActionResult Gioithieu()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
