@@ -49,9 +49,7 @@ public partial class KidoraDbContext : DbContext
 
     public virtual DbSet<HangThanhVien> HangThanhViens { get; set; }
 
-    public virtual DbSet<NguoiDung> NguoiDungs { get; set; } = null!;
-    public virtual DbSet<KhachHang> KhachHangs { get; set; } = null!;
-    public virtual DbSet<Admin> Admins { get; set; } = null!;
+    public virtual DbSet<KhachHang> KhachHangs { get; set; }
 
     public virtual DbSet<KmDonHang> KmDonHangs { get; set; }
 
@@ -354,29 +352,28 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<DiaChiKhachHang>(entity =>
         {
-            entity.HasKey(e => e.MaDiaChi);
-            entity.ToTable("DIA_CHI_KHACH_HANG");
-            entity.Property(e => e.MaDiaChi)
-                .ValueGeneratedOnAdd();  // ❗ Không tự tăng → phải tự tạo mã
+            entity.HasKey(e => e.MaDiaChi).HasName("PK__DIA_CHI___EB61213E3F1063EA");
 
+            entity.ToTable("DIA_CHI_KHACH_HANG");
+
+            entity.Property(e => e.MaDiaChi).ValueGeneratedNever();
+            entity.Property(e => e.DiaChiDayDu).HasMaxLength(250);
+            entity.Property(e => e.DienThoaiNhan)
+                .HasMaxLength(15)
+                .IsUnicode(false);
             entity.Property(e => e.MaKh)
                 .HasMaxLength(8)
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("MaKH");
-
+            entity.Property(e => e.QuocGia).HasMaxLength(100);
             entity.Property(e => e.TenNguoiNhan).HasMaxLength(100);
-            entity.Property(e => e.DienThoaiNhan).HasMaxLength(15).IsUnicode(false);
+            entity.Property(e => e.ThanhPho).HasMaxLength(100);
 
-            entity.Property(e => e.DiaChiChiTiet).HasMaxLength(250);
-            entity.Property(e => e.PhuongXa).HasMaxLength(100);
-            entity.Property(e => e.QuanHuyen).HasMaxLength(100);
-            entity.Property(e => e.TinhThanh).HasMaxLength(100);
-
-            entity.HasOne(d => d.MaKhNavigation)
-                .WithMany(p => p.DiaChiKhachHangs)
+            entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.DiaChiKhachHangs)
                 .HasForeignKey(d => d.MaKh)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__DIA_CHI_KH__MaKH__5535A963");
         });
 
         modelBuilder.Entity<DonHang>(entity =>
@@ -558,54 +555,40 @@ public partial class KidoraDbContext : DbContext
                 .HasColumnName("TyLeHoanKCoin");
         });
 
-        modelBuilder.Entity<NguoiDung>(entity =>
+        modelBuilder.Entity<KhachHang>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_NGUOI_DUNG");
+            entity.HasKey(e => e.MaKh).HasName("PK__KHACH_HA__2725CF1E83543E85");
 
-            entity.ToTable("NGUOI_DUNG");
+            entity.ToTable("KHACH_HANG");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.MaKh)
                 .HasMaxLength(8)
                 .IsUnicode(false)
-                .IsFixedLength();
-
-            entity.Property(e => e.HoTen)
-                .HasMaxLength(100);
-
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-
+                .IsFixedLength()
+                .HasColumnName("MaKH");
             entity.Property(e => e.DienThoai)
                 .HasMaxLength(15)
                 .IsUnicode(false);
-
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.GioiTinh).HasMaxLength(3);
+            entity.Property(e => e.HoTen).HasMaxLength(100);
+            entity.Property(e => e.MaHang)
+                .HasMaxLength(4)
+                .IsUnicode(false)
+                .IsFixedLength();
             entity.Property(e => e.MatKhauHash)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.NgayThamGia).HasColumnType("datetime");
+            entity.Property(e => e.SoDuKcoin).HasColumnName("SoDuKCoin");
 
-            entity.Property(e => e.GioiTinh)
-                .HasMaxLength(3);
-
-            entity.Property(e => e.NgaySinh);
-
-            entity.Property(e => e.LoaiNguoiDung)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-
-            // 1–1 với KHACH_HANG
-            entity.HasOne(e => e.KhachHang)
-                .WithOne(k => k.MaKhNavigation)
-                .HasForeignKey<KhachHang>(k => k.MaKh)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // 1–1 với ADMIN
-            entity.HasOne(e => e.Admin)
-                .WithOne(a => a.MaAdminNavigation)
-                .HasForeignKey<Admin>(a => a.MaAdmin)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(d => d.MaHangNavigation).WithMany(p => p.KhachHangs)
+                .HasForeignKey(d => d.MaHang)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__KHACH_HAN__MaHan__52593CB8");
         });
-
 
         modelBuilder.Entity<KmDonHang>(entity =>
         {
@@ -637,67 +620,6 @@ public partial class KidoraDbContext : DbContext
                 .HasForeignKey(d => d.MaKm)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__KM_DON_HAN__MaKM__18EBB532");
-        });
-        modelBuilder.Entity<KhachHang>(entity =>
-        {
-            entity.HasKey(e => e.MaKh).HasName("PK_KHACH_HANG");
-
-            entity.ToTable("KHACH_HANG");
-
-            entity.Property(e => e.MaKh)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("MaKH");
-
-            entity.Property(e => e.MaHang)
-                .HasMaxLength(4)
-                .IsUnicode(false)
-                .IsFixedLength();
-
-            entity.Property(e => e.SoDuKcoin)
-                .HasColumnName("SoDuKCoin");
-
-            entity.Property(e => e.NgayThamGia)
-                .HasColumnType("datetime");
-
-            // 1–1 NGUOI_DUNG → KHACH_HANG
-            entity.HasOne(e => e.MaKhNavigation)
-                .WithOne(nd => nd.KhachHang)
-                .HasForeignKey<KhachHang>(e => e.MaKh)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_KHACH_HANG_NGUOI_DUNG");
-
-            // Many–1 KHACH_HANG → HANG_THANH_VIEN
-            entity.HasOne(e => e.MaHangNavigation)
-                .WithMany(h => h.KhachHangs)
-                .HasForeignKey(e => e.MaHang)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_KHACH_HANG_HANG_THANH_VIEN");
-        });
-        modelBuilder.Entity<Admin>(entity =>
-        {
-            entity.HasKey(e => e.MaAdmin).HasName("PK_ADMIN");
-
-            entity.ToTable("ADMIN");
-
-            entity.Property(e => e.MaAdmin)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength();
-
-            entity.Property(e => e.CuaHang)
-                .HasMaxLength(200);
-
-            entity.Property(e => e.Quyen)
-                .HasMaxLength(50);
-
-            // 1–1 NGUOI_DUNG → ADMIN
-            entity.HasOne(d => d.MaAdminNavigation)
-                .WithOne(nd => nd.Admin)
-                .HasForeignKey<Admin>(d => d.MaAdmin)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_ADMIN_NGUOI_DUNG");
         });
 
         modelBuilder.Entity<MaKhuyenMai>(entity =>

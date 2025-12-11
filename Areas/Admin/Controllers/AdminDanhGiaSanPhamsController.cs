@@ -18,8 +18,7 @@ namespace KIDORA.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string searchString, int? rating, string status)
         {
             var query = _context.DanhGiaSanPhams
-                                .Include(d => d.MaKhNavigation)
-                                    .ThenInclude(kh => kh.MaKhNavigation)// KHACH_HANG
+                                .Include(d => d.MaKhNavigation)   // KHACH_HANG
                                 .Include(d => d.MaSpNavigation)   // SAN_PHAM
                                 .AsQueryable();
 
@@ -29,7 +28,7 @@ namespace KIDORA.Areas.Admin.Controllers
                 var key = searchString.ToLower();
                 query = query.Where(d =>
                     d.MaKh.ToLower().Contains(key) ||
-                    d.MaKhNavigation.MaKhNavigation.HoTen.ToLower().Contains(key) ||
+                    d.MaKhNavigation.HoTen.ToLower().Contains(key) ||
                     d.MaSpNavigation.TenSp.ToLower().Contains(key));
             }
 
