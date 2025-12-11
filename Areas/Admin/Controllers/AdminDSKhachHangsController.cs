@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KIDORA.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using KIDORA.Data;
 
 namespace KIDORA.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class KhachHangsController : Controller
+    public class AdminDSKhachHangsController : Controller
     {
         private readonly KidoraDbContext _context;
 
-        public KhachHangsController(KidoraDbContext context)
+        public AdminDSKhachHangsController(KidoraDbContext context)
         {
             _context = context;
         }
 
-        // GET: Admin/KhachHangs
+        // GET: Admin/AdminKhachHangs
         public async Task<IActionResult> Index()
         {
-            var kidoraDbContext = _context.KhachHangs.Include(k => k.MaHangNavigation).Include(k => k.MaKhNavigation);
+            var kidoraDbContext = _context.KhachHangs.Include(k => k.MaHangNavigation);
             return View(await kidoraDbContext.ToListAsync());
         }
 
-        // GET: Admin/KhachHangs/Details/5
+        // GET: Admin/AdminKhachHangs/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -36,7 +32,6 @@ namespace KIDORA.Areas.Admin.Controllers
 
             var khachHang = await _context.KhachHangs
                 .Include(k => k.MaHangNavigation)
-                .Include(k => k.MaKhNavigation)
                 .FirstOrDefaultAsync(m => m.MaKh == id);
             if (khachHang == null)
             {
@@ -46,20 +41,19 @@ namespace KIDORA.Areas.Admin.Controllers
             return View(khachHang);
         }
 
-        // GET: Admin/KhachHangs/Create
+        // GET: Admin/AdminKhachHangs/Create
         public IActionResult Create()
         {
             ViewData["MaHang"] = new SelectList(_context.HangThanhViens, "MaHang", "MaHang");
-            ViewData["MaKh"] = new SelectList(_context.NguoiDungs, "Id", "Id");
             return View();
         }
 
-        // POST: Admin/KhachHangs/Create
+        // POST: Admin/AdminKhachHangs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaKh,MaHang,SoDuKcoin,NgayThamGia")] KhachHang khachHang)
+        public async Task<IActionResult> Create([Bind("MaKh,HoTen,Email,DienThoai,MatKhauHash,GioiTinh,NgaySinh,MaHang,SoDuKcoin,NgayThamGia")] KhachHang khachHang)
         {
             if (ModelState.IsValid)
             {
@@ -68,11 +62,10 @@ namespace KIDORA.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MaHang"] = new SelectList(_context.HangThanhViens, "MaHang", "MaHang", khachHang.MaHang);
-            ViewData["MaKh"] = new SelectList(_context.NguoiDungs, "Id", "Id", khachHang.MaKh);
             return View(khachHang);
         }
 
-        // GET: Admin/KhachHangs/Edit/5
+        // GET: Admin/AdminKhachHangs/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -86,16 +79,15 @@ namespace KIDORA.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["MaHang"] = new SelectList(_context.HangThanhViens, "MaHang", "MaHang", khachHang.MaHang);
-            ViewData["MaKh"] = new SelectList(_context.NguoiDungs, "Id", "Id", khachHang.MaKh);
             return View(khachHang);
         }
 
-        // POST: Admin/KhachHangs/Edit/5
+        // POST: Admin/AdminKhachHangs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaKh,MaHang,SoDuKcoin,NgayThamGia")] KhachHang khachHang)
+        public async Task<IActionResult> Edit(string id, [Bind("MaKh,HoTen,Email,DienThoai,MatKhauHash,GioiTinh,NgaySinh,MaHang,SoDuKcoin,NgayThamGia")] KhachHang khachHang)
         {
             if (id != khachHang.MaKh)
             {
@@ -123,11 +115,10 @@ namespace KIDORA.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["MaHang"] = new SelectList(_context.HangThanhViens, "MaHang", "MaHang", khachHang.MaHang);
-            ViewData["MaKh"] = new SelectList(_context.NguoiDungs, "Id", "Id", khachHang.MaKh);
             return View(khachHang);
         }
 
-        // GET: Admin/KhachHangs/Delete/5
+        // GET: Admin/AdminKhachHangs/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -137,7 +128,6 @@ namespace KIDORA.Areas.Admin.Controllers
 
             var khachHang = await _context.KhachHangs
                 .Include(k => k.MaHangNavigation)
-                .Include(k => k.MaKhNavigation)
                 .FirstOrDefaultAsync(m => m.MaKh == id);
             if (khachHang == null)
             {
@@ -147,7 +137,7 @@ namespace KIDORA.Areas.Admin.Controllers
             return View(khachHang);
         }
 
-        // POST: Admin/KhachHangs/Delete/5
+        // POST: Admin/AdminKhachHangs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -168,3 +158,4 @@ namespace KIDORA.Areas.Admin.Controllers
         }
     }
 }
+

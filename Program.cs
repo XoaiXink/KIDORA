@@ -6,7 +6,6 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<EmailService>();
 
 // --- READ appsettings.json ---
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
