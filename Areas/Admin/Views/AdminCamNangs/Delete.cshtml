@@ -1,0 +1,94 @@
+﻿@model KIDORA.Data.CamNang
+
+@{
+    ViewData["Title"] = "Xóa cẩm nang";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- BREADCRUMB -->
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item">
+                <i class="anticon anticon-home m-r-5"></i>Trang chủ
+            </a>
+            <a asp-action="Index" class="breadcrumb-item">Danh sách Cẩm nang</a>
+            <span class="breadcrumb-item active">Xóa: @Model.TieuDe</span>
+        </nav>
+    </div>
+</div>
+
+<!-- WARNING CARD -->
+<div class="card shadow-sm border-danger">
+    <div class="card-body">
+
+        <h3 class="text-danger font-weight-bold">
+            <i class="anticon anticon-warning"></i> Xác nhận xóa bài viết?
+        </h3>
+        <p class="text-muted">Hành động này không thể hoàn tác. Hãy kiểm tra thông tin trước khi tiếp tục.</p>
+
+        <hr />
+
+        <div class="row">
+
+            <!-- IMAGE -->
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.Anh))
+                {
+                    <img src="~/AnhCamNang/@Model.Anh"
+                         class="img-fluid rounded shadow-sm mb-3"
+                         style="width:100%;object-fit:cover;" />
+                }
+                else
+                {
+                    <div class="bg-light border rounded p-5 text-center text-muted">
+                        Không có ảnh
+                    </div>
+                }
+            </div>
+
+            <!-- INFO -->
+            <div class="col-md-8">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width:150px;">Tiêu đề</th>
+                            <td>@Model.TieuDe</td>
+                        </tr>
+                        <tr>
+                            <th>Tác giả</th>
+                            <td>@Model.TacGia</td>
+                        </tr>
+                        <tr>
+                            <th>Ngày đăng</th>
+                            <td>@Model.NgayDang.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                        <tr>
+                            <th>Tóm tắt</th>
+                            <td>@Model.TomTat</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <hr />
+
+        <!-- ACTION BUTTONS -->
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="MaBai" />
+
+            <div class="d-flex justify-content-end m-t-20">
+                <button type="submit" class="btn btn-danger btn-lg m-r-10">
+                    <i class="anticon anticon-delete"></i> XÓA NGAY
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary btn-lg">
+                    <i class="anticon anticon-arrow-left"></i> HỦY
+                </a>
+            </div>
+        </form>
+
+    </div>
+</div>

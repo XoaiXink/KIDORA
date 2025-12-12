@@ -1,0 +1,102 @@
+﻿@model IEnumerable<KIDORA.Data.CamNang>
+
+@{
+    ViewData["Title"] = "Danh sách Cẩm Nang";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item">
+                <i class="anticon anticon-home m-r-5"></i>Trang chủ
+            </a>
+            <span class="breadcrumb-item active">Danh sách Cẩm nang</span>
+        </nav>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row m-b-30">
+            <div class="col-lg-8">
+                <h4 class="card-title">Danh sách Cẩm Nang</h4>
+            </div>
+
+            <div class="col-lg-4 text-right">
+                <a class="btn btn-primary" asp-action="Create">
+                    <i class="anticon anticon-plus-circle m-r-5"></i>
+                    <span>Tạo mới</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <table class="table table-hover e-commerce-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tiêu đề</th>
+                        <th>Ảnh</th>
+                        <th>Ngày đăng</th>
+                        <th>Tác giả</th>
+                        <th>Tóm tắt</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        int stt = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@stt</td>
+
+                                <td>
+                                    <strong>@item.TieuDe</strong>
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Anh))
+                                    {
+                                        <img src="~/AnhCamNang/@item.Anh"
+                                             style="width:60px;height:60px;object-fit:cover;border-radius:8px;" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Không ảnh</span>
+                                    }
+                                </td>
+
+                                <td>@item.NgayDang.ToString("dd/MM/yyyy")</td>
+                                <td>@item.TacGia</td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.TomTat))
+                                    {
+                                        @(item.TomTat.Length > 60 ? item.TomTat.Substring(0, 60) + "..." : item.TomTat)
+                                    }
+                                </td>
+
+                                <td> <a asp-action="Details" asp-route-id="@item.MaBai" class="btn btn-info btn-sm" title="Chi tiết"> <i class="fa fa-eye"></i> </a> 
+                                    <a asp-action="Edit" asp-route-id="@item.MaBai" class="btn btn-warning btn-sm" title="Sửa"> <i class="fa fa-edit"></i> </a> 
+                                    <a asp-action="Delete" asp-route-id="@item.MaBai" class="btn btn-danger btn-sm" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')"> <i class="fa fa-trash"></i> </a> </td>
+                            </tr>
+                            stt++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">Không có dữ liệu</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

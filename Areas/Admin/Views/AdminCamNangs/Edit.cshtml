@@ -1,0 +1,113 @@
+﻿@model KIDORA.Data.CamNang
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Cẩm Nang";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid my-4">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-dash mb-4" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-home me-1"></i> Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-area="Admin" asp-controller="AdminCamNangs" asp-action="Index">
+                    Quản lý Cẩm Nang
+                </a>
+            </li>
+            <li class="breadcrumb-item active">Chỉnh sửa</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Chỉnh sửa bài: @Model.TieuDe
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" asp-for="MaBai" />
+
+                        <ul class="list-group list-group-flush">
+
+                            <!-- Ảnh -->
+                            <li class="list-group-item">
+                                <label class="fw-bold">Ảnh:</label>
+                                <div class="mt-2">
+                                    <img src="~/AnhCamNang/@Model.Anh"
+                                         class="img-fluid rounded border"
+                                         style="max-height:280px; object-fit:cover;" />
+
+                                    <input type="file" name="AnhUpload" class="form-control mt-3" />
+                                </div>
+                            </li>
+
+                            <!-- Tiêu đề -->
+                            <li class="list-group-item">
+                                <label class="fw-bold">Tiêu đề:</label>
+                                <input asp-for="TieuDe" class="form-control" />
+                                <span asp-validation-for="TieuDe" class="text-danger"></span>
+                            </li>
+
+                            <!-- Tác giả -->
+                            <li class="list-group-item">
+                                <label class="fw-bold">Tác giả:</label>
+                                <input asp-for="TacGia" class="form-control" />
+                                <span asp-validation-for="TacGia" class="text-danger"></span>
+                            </li>
+
+                            <!-- Ngày đăng -->
+                            <li class="list-group-item">
+                                <label class="fw-bold">Ngày đăng:</label>
+                                <input asp-for="NgayDang" type="date" class="form-control" />
+                                <span asp-validation-for="NgayDang" class="text-danger"></span>
+                            </li>
+
+                            <!-- Tóm tắt -->
+                            <li class="list-group-item">
+                                <label class="fw-bold">Tóm Tắt:</label>
+                                <textarea asp-for="TomTat" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="TomTat" class="text-danger"></span>
+                            </li>
+
+                            <!-- Nội dung -->
+                            <li class="list-group-item">
+                                <label class="fw-bold">Nội dung:</label>
+                                <textarea asp-for="NoiDung" class="form-control" rows="10"></textarea>
+                                <span asp-validation-for="NoiDung" class="text-danger"></span>
+                            </li>
+
+                        </ul>
+
+                        <!-- Buttons -->
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Lưu thay đổi
+                            </button>
+
+                            <a asp-action="Index" class="btn btn-secondary ms-2">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
