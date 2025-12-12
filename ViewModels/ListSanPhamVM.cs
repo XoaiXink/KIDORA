@@ -19,5 +19,7 @@
         public string AnhChinh { get; set; }
         public string MoTaChiTiet { get; set; }
         public string TenDanhMuc { get; internal set; }
+        public int SoLuongTon { get; set; }
+        public string MaDanhMuc { get; internal set; }
     }
 }

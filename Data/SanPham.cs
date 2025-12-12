@@ -35,6 +35,8 @@ public partial class SanPham
 
     public bool DangBan { get; set; }
 
+    public int SoLuongTon { get; set; }
+
     public virtual ICollection<AnhSanPham> AnhSanPhams { get; set; } = new List<AnhSanPham>();
 
     public virtual ICollection<BienTheSanPham> BienTheSanPhams { get; set; } = new List<BienTheSanPham>();

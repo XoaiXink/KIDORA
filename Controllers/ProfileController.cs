@@ -1,9 +1,7 @@
-﻿using BCrypt.Net;
-using KIDORA.Data;
+﻿using KIDORA.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 [Authorize]
 public class ProfileController : Controller
@@ -42,7 +40,8 @@ public class ProfileController : Controller
 
         user.HoTen = hoten;
         user.DienThoai = phone;
-        user.NgaySinh = ngaysinh;
+        if (ngaysinh != null)
+            user.NgaySinh = DateOnly.FromDateTime(ngaysinh.Value);
         user.GioiTinh = gioitinh;
 
         await _context.SaveChangesAsync();

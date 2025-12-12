@@ -1,5 +1,4 @@
-﻿using BCrypt.Net;
-using KIDORA.Data;
+﻿using KIDORA.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +36,7 @@ public class AccountController : Controller
         }
 
         // ❗ Chặn login nếu chưa xác thực email
-        if (!user.EmailConfirmed)
+        if (!user.EmailConfirmed && !user.Id.StartsWith("AD"))
         {
             ViewBag.Error = "Email chưa được xác thực. Vui lòng kiểm tra hộp thư!";
             return View();
@@ -59,13 +58,29 @@ public class AccountController : Controller
             new Claim(ClaimTypes.Role, user.LoaiNguoiDung)
         };
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
+        var identity = new ClaimsIdentity(
+             claims,
+             CookieAuthenticationDefaults.AuthenticationScheme
+         );
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(identity)
+        );
+
+        // ===== PHÂN LUỒNG =====
+        if (user.LoaiNguoiDung == "ADMIN")
+        {
+            return RedirectToAction(
+                "Index",
+                "Home",
+                new { area = "Admin" }
+            );
+        }
 
         return RedirectToAction("Index", "Home");
     }
+
     // ===================== FORGOT PASSWORD =====================
     [HttpGet]
     public IActionResult ForgotPassword()
@@ -183,7 +198,7 @@ public class AccountController : Controller
         if (!string.IsNullOrEmpty(lastId))
         {
             int number = int.Parse(lastId.Substring(2)) + 1;
-            newId = "ND" + number.ToString("D6");
+            newId = "KH" + number.ToString("D6");
         }
 
         // Tạo token xác thực email

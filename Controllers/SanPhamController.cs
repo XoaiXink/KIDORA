@@ -79,6 +79,7 @@ namespace KIDORA.Controllers
 
         public IActionResult ChiTietSanPham(string id)
         {
+            // 1. Lấy sản phẩm hiện tại
             var product = _context.SanPhams
                                   .Include(sp => sp.MaDanhMucNavigation)
                                   .Include(sp => sp.BienTheSanPhams)
@@ -89,19 +90,46 @@ namespace KIDORA.Controllers
             {
                 TempData["ErrorMessage"] = $"Không tìm thấy sản phẩm với mã {id}.";
                 return Redirect("/404");
-
             }
+
+            // 2. Map sang ViewModel chi tiết
             var result = new ChiTietSanPhamVM
             {
-
                 MaSp = product.MaSp,
                 TenSp = product.TenSp,
                 TenDanhMuc = product.MaDanhMucNavigation.TenDanhMuc,
                 MoTaNgan = product.MoTaNgan ?? string.Empty,
                 AnhChinh = product.AnhChinh ?? string.Empty,
                 DonGiaBan = product.DonGiaBan,
+                SoLuongTon = product.SoLuongTon,
                 MoTaChiTiet = product.MoTaChiTiet ?? string.Empty,
+
+                // ⭐ rất quan trọng để lấy related
+                MaDanhMuc = product.MaDanhMuc
             };
+
+            // 3. LẤY SẢN PHẨM LIÊN QUAN (CÙNG DANH MỤC)
+            var relatedProducts = _context.SanPhams
+                .Where(sp =>
+                    sp.MaDanhMuc == product.MaDanhMuc &&   // cùng danh mục
+                    sp.MaSp != product.MaSp &&             // không lấy chính nó
+                    sp.DangBan == true                     // đang bán
+                )
+                .OrderByDescending(sp => sp.MaSp)
+                .Take(8)
+                .Select(sp => new ListSanPhamVM
+                {
+                    MaSp = sp.MaSp,
+                    TenSp = sp.TenSp,
+                    DonGiaBan = sp.DonGiaBan,
+                    MoTaNgan = sp.MoTaNgan ?? "",
+                    AnhChinh = sp.AnhChinh ?? ""
+                })
+                .ToList();
+
+            // 4. Truyền sang View
+            ViewBag.RelatedProducts = relatedProducts;
+
             return View(result);
         }
     }
