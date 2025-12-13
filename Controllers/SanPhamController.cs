@@ -79,43 +79,58 @@ namespace KIDORA.Controllers
 
         public IActionResult ChiTietSanPham(string id)
         {
-            // 1. Lấy sản phẩm hiện tại
             var product = _context.SanPhams
-                                  .Include(sp => sp.MaDanhMucNavigation)
-                                  .Include(sp => sp.BienTheSanPhams)
-                                  .Include(sp => sp.AnhSanPhams)
-                                  .FirstOrDefault(sp => sp.MaSp == id);
+                .Include(sp => sp.MaDanhMucNavigation)
+                .Include(sp => sp.AnhSanPhams)
+                .Include(sp => sp.BienTheSanPhams)
+                    .ThenInclude(bt => bt.BienTheGium)
+                .Include(sp => sp.BienTheSanPhams)
+                    .ThenInclude(bt => bt.BienTheTonKho)
+                .Include(sp => sp.BienTheSanPhams)
+                    .ThenInclude(bt => bt.BienTheHinhs)
+                .FirstOrDefault(sp => sp.MaSp == id);
 
-            if (product == null)
-            {
-                TempData["ErrorMessage"] = $"Không tìm thấy sản phẩm với mã {id}.";
-                return Redirect("/404");
-            }
+            if (product == null) return Redirect("/404");
 
-            // 2. Map sang ViewModel chi tiết
-            var result = new ChiTietSanPhamVM
+            var vm = new ChiTietSanPhamVM
             {
                 MaSp = product.MaSp,
                 TenSp = product.TenSp,
                 TenDanhMuc = product.MaDanhMucNavigation.TenDanhMuc,
-                MoTaNgan = product.MoTaNgan ?? string.Empty,
-                AnhChinh = product.AnhChinh ?? string.Empty,
+                MaDanhMuc = product.MaDanhMuc,
+
+                MoTaNgan = product.MoTaNgan ?? "",
+                MoTaChiTiet = product.MoTaChiTiet ?? "",
                 DonGiaBan = product.DonGiaBan,
                 SoLuongTon = product.SoLuongTon,
-                MoTaChiTiet = product.MoTaChiTiet ?? string.Empty,
 
-                // ⭐ rất quan trọng để lấy related
-                MaDanhMuc = product.MaDanhMuc
+                // ===== ẢNH SẢN PHẨM =====
+                AnhChinh = product.AnhChinh,
+                AnhSanPhams = product.AnhSanPhams
+                    .OrderByDescending(x => x.AnhChinh)
+                    .Select(x => x.DuongDanAnh)
+                    .ToList(),
+
+                // ===== BIẾN THỂ =====
+                BienThes = product.BienTheSanPhams.Select(bt => new BienTheVM
+                {
+                    MaBienThe = bt.MaBienThe,
+                    TenBienThe = bt.TenBienThe,
+                    GiaBan = bt.BienTheGium!.GiaBan,
+                    GiaNiemYet = bt.BienTheGium!.GiaNiemYet,
+                    SoLuongTon = bt.BienTheTonKho.SoLuongTon,
+                    AnhBienThe = bt.BienTheHinhs
+                        .OrderByDescending(x => x.AnhChinh)
+                        .Select(x => x.DuongDanAnh)
+                        .ToList()
+                }).ToList()
             };
 
-            // 3. LẤY SẢN PHẨM LIÊN QUAN (CÙNG DANH MỤC)
-            var relatedProducts = _context.SanPhams
-                .Where(sp =>
-                    sp.MaDanhMuc == product.MaDanhMuc &&   // cùng danh mục
-                    sp.MaSp != product.MaSp &&             // không lấy chính nó
-                    sp.DangBan == true                     // đang bán
-                )
-                .OrderByDescending(sp => sp.MaSp)
+            // ===== RELATED PRODUCT  =====
+            ViewBag.RelatedProducts = _context.SanPhams
+                .Where(sp => sp.MaDanhMuc == product.MaDanhMuc
+                          && sp.MaSp != product.MaSp
+                          && sp.DangBan)
                 .Take(8)
                 .Select(sp => new ListSanPhamVM
                 {
@@ -127,10 +142,7 @@ namespace KIDORA.Controllers
                 })
                 .ToList();
 
-            // 4. Truyền sang View
-            ViewBag.RelatedProducts = relatedProducts;
-
-            return View(result);
+            return View(vm);
         }
     }
 }
