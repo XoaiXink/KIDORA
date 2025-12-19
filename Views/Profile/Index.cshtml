@@ -1,0 +1,95 @@
+﻿@model KIDORA.Data.NguoiDung
+
+<!-- FIX CHE HEADER -->
+<div style="height:140px;"></div>
+<div class="container" style="margin-top:140px; margin-bottom:60px;">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <h3 class="mb-4" style="color:var(--kidora-blue); font-weight:700;">Thông tin cá nhân</h3>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+
+            <form method="post" asp-action="Update">
+
+                <!-- HỌ TÊN -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Họ tên</label>
+                    <input type="text" name="hoten" class="form-control p-3"
+                           value="@Model.HoTen" required />
+                </div>
+
+                <!-- EMAIL -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" name="email" class="form-control p-3"
+                           value="@Model.Email" required />
+                </div>
+
+                <!-- ĐIỆN THOẠI -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Số điện thoại</label>
+                    <input type="text" name="phone" class="form-control p-3"
+                           value="@Model.DienThoai" />
+                </div>
+
+                <!-- NGÀY SINH -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Ngày sinh</label>
+                    <input type="date" name="ngaysinh" class="form-control p-3"
+                           value="@(Model.NgaySinh?.ToString("yyyy-MM-dd"))" />
+                </div>
+
+                <!-- GIỚI TÍNH -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Giới tính</label>
+                    <select name="gioitinh" class="form-control p-3">
+                        <option value="">-- Chọn --</option>
+                        <option value="Nam" selected="@(Model.GioiTinh == "Nam")">Nam</option>
+                        <option value="Nữ" selected="@(Model.GioiTinh == "Nữ")">Nữ</option>
+                        <option value="Khác" selected="@(Model.GioiTinh == "Khác")">Khác</option>
+                    </select>
+                </div>
+
+                <hr />
+
+                <!-- THÔNG TIN KHÔNG SỬA ĐƯỢC -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mã khách hàng</label>
+                    <input class="form-control p-3" value="@Model.KhachHang?.MaKh" disabled />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Hạng thành viên</label>
+                    <input class="form-control p-3" value="@Model.KhachHang?.MaHang" disabled />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Số dư KCoin</label>
+                    <input class="form-control p-3" value="@Model.KhachHang?.SoDuKcoin" disabled />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Ngày tham gia</label>
+                    <input class="form-control p-3"
+                           value="@Model.KhachHang?.NgayThamGia.ToString("dd/MM/yyyy")" disabled />
+                </div>
+
+                <button type="submit" class="btn w-100 p-3"
+                        style="background:var(--kidora-blue); color:white; font-weight:600;">
+                    Cập nhật thông tin
+                </button>
+
+            </form>
+
+            <div class="mt-3 text-end">
+                <a asp-controller="Profile" asp-action="ChangePassword"
+                   style="color:var(--kidora-blue); font-weight:600;">Đổi mật khẩu</a>
+            </div>
+
+        </div>
+    </div>
+</div>

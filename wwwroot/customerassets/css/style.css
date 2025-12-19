@@ -1,0 +1,581 @@
+﻿/* =========================================================
+   KIDORA DESIGN SYSTEM – BLUE & YELLOW THEME
+   ========================================================= */
+
+/* ================== COLOR SYSTEM ================== */
+:root {
+    /* Brand colors */
+    --kidora-blue: #5fb3ff; /* xanh nhạt */
+    --kidora-blue-dark: #2f89e5; /* xanh đậm hover */
+    --kidora-yellow: #ffd100; /* vàng nhấn */
+    --kidora-dark: #1f2937;
+    --kidora-gray: #6b7280;
+    --kidora-border: #e5e7eb;
+    /* ===== OVERRIDE BOOTSTRAP COLORS ===== */
+    --bs-primary: var(--kidora-blue);
+    --bs-primary-rgb: 95, 179, 255;
+    --bs-secondary: var(--kidora-yellow);
+    --bs-secondary-rgb: 255, 209, 0;
+}
+
+
+/* ================== GLOBAL ================== */
+body {
+    color: var(--kidora-dark);
+    font-family: 'Open Sans', 'Roboto', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--kidora-dark);
+    font-weight: 700;
+}
+
+a {
+    color: var(--kidora-blue);
+    text-decoration: none;
+}
+
+    a:hover {
+        color: var(--kidora-blue-dark);
+    }
+
+/* ================== SPINNER ================== */
+#spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .8s ease-out, visibility 0s linear .5s;
+    z-index: 99999;
+}
+
+    #spinner.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+/* ================== BACK TO TOP ================== */
+.back-to-top {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+}
+
+/* ================== BUTTONS ================== */
+.btn {
+    font-weight: 600;
+    transition: .3s;
+}
+
+.btn-primary {
+    background-color: var(--kidora-blue);
+    border-color: var(--kidora-blue);
+    color: #fff;
+}
+
+    .btn-primary:hover {
+        background-color: var(--kidora-blue-dark);
+        border-color: var(--kidora-blue-dark);
+    }
+
+.btn-secondary {
+    background-color: var(--kidora-yellow);
+    border-color: var(--kidora-yellow);
+    color: var(--kidora-dark);
+}
+
+    .btn-secondary:hover {
+        background-color: #e6bb00;
+        border-color: #e6bb00;
+    }
+
+/* ================== TOPBAR ================== */
+.fixed-top {
+    background: #fff;
+}
+
+.topbar {
+    padding: 20px;
+    border-radius: 230px 100px;
+    background: linear-gradient( 135deg, #eaf6ff 0%, var(--kidora-blue) 60%, var(--kidora-yellow) 100% );
+}
+
+    .topbar a,
+    .topbar i {
+        color: #ffffff !important;
+    }
+
+/* ================== NAVBAR ================== */
+.navbar {
+    height: 100px;
+    background-color: #fff !important;
+    border-bottom: 2px solid var(--kidora-blue);
+}
+
+    .navbar .navbar-nav .nav-link {
+        padding: 10px 15px;
+        font-size: 16px;
+        color: var(--kidora-dark) !important;
+        font-weight: 600;
+    }
+
+        .navbar .navbar-nav .nav-link:hover,
+        .navbar .navbar-nav .nav-link.active {
+            color: var(--kidora-blue) !important;
+        }
+
+    .navbar .fa-user,
+    .navbar .fa-search,
+    .navbar .fa-bars {
+        color: var(--kidora-blue);
+    }
+
+/* ================== DROPDOWN ================== */
+.dropdown-menu a:hover {
+    background-color: var(--kidora-yellow);
+    color: var(--kidora-dark);
+}
+
+/* ================== HERO HEADER ================== */
+.hero-header {
+    background-size: cover;
+}
+
+    .hero-header h1,
+    .hero-header h2,
+    .hero-header h3,
+    .hero-header p {
+        color: var(--kidora-dark);
+    }
+
+@media (min-width: 992px) {
+    .hero-header {
+        margin-top: 152px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero-header {
+        margin-top: 97px !important;
+    }
+}
+
+/* ================== PRODUCT / CONTENT ================== */
+.featurs h5,
+.service h5,
+.fruite h5,
+.vesitable h5 {
+    color: var(--kidora-dark);
+}
+
+.fruite a:hover {
+    color: var(--kidora-blue-dark);
+}
+
+/* ================== PAGINATION ================== */
+.pagination a {
+    color: var(--kidora-blue);
+    border: 1px solid var(--kidora-blue);
+}
+
+    .pagination a.active {
+        background-color: var(--kidora-blue);
+        color: #fff;
+    }
+
+/* ================== FOOTER ================== */
+.footer {
+    background-color: #f8fbff;
+}
+
+    .footer,
+    .footer a,
+    .footer p {
+        color: var(--kidora-dark);
+    }
+
+        .footer a:hover {
+            color: var(--kidora-blue);
+        }
+
+/*  HEADER ICON FIX  */
+
+/* SEARCH BUTTON: viền xanh – icon vàng */
+.btn-search {
+    border: 2px solid var(--kidora-blue) !important;
+    background-color: #fff !important;
+}
+
+    .btn-search i {
+        color: var(--kidora-yellow) !important;
+    }
+
+/* USER ICON: xanh dương nhạt */
+.navbar .dropdown-toggle,
+.navbar .fa-user {
+    color: var(--kidora-blue) !important;
+}
+
+/* HOVER NHẸ (GIỮ TONE TRẺ EM) */
+.btn-search:hover {
+    background-color: var(--kidora-blue) !important;
+}
+
+    .btn-search:hover i {
+        color: #fff !important;
+    }
+
+.navbar .dropdown-toggle:hover {
+    color: var(--kidora-yellow) !important;
+}
+
+/* ================== FOOTER KIDORA ================== */
+.footer {
+    background: linear-gradient( 180deg, #eaf6ff 0%, #d6ecff 100% );
+    padding-top: 60px;
+    color: var(--kidora-dark);
+}
+
+    /* TIÊU ĐỀ FOOTER */
+    .footer h4,
+    .footer h5 {
+        color: var(--kidora-blue);
+        font-weight: 700;
+    }
+
+    /* TEXT & LINK */
+    .footer p,
+    .footer a {
+        color: var(--kidora-dark);
+        font-size: 14px;
+    }
+
+        .footer a:hover {
+            color: var(--kidora-blue);
+        }
+
+    /* ================== FOOTER SUBSCRIBE ================== */
+    .footer .btn,
+    .footer button {
+        background-color: var(--kidora-blue);
+        color: var(--kidora-yellow);
+        border: none;
+        border-radius: 999px;
+        font-weight: 700;
+    }
+
+        .footer .btn:hover {
+            background-color: var(--kidora-blue-dark);
+            color: #fff;
+        }
+
+    /* INPUT EMAIL */
+    .footer input[type="email"] {
+        border-radius: 999px;
+        border: 2px solid var(--kidora-blue);
+    }
+    /* ================== SOCIAL ICONS ================== */
+    .footer .btn-social,
+    .footer .btn-square {
+        border: 2px solid var(--kidora-blue);
+        color: var(--kidora-blue);
+        border-radius: 50%;
+    }
+
+        .footer .btn-social:hover {
+            background-color: var(--kidora-yellow);
+            color: #fff;
+            border-color: var(--kidora-yellow);
+        }
+/* ================== BACK TO TOP ================== */
+.back-to-top {
+    background-color: var(--kidora-blue);
+    border: 3px solid var(--kidora-yellow);
+    color: #fff;
+}
+
+    .back-to-top:hover {
+        background-color: var(--kidora-yellow);
+        color: var(--kidora-blue);
+    }
+/* ================== FOOTER TITLE COLOR FIX ================== */
+
+/* Logo chữ KIDORA trong footer */
+.footer .footer-brand,
+.footer h1,
+.footer h2,
+.footer h3 {
+    color: var(--kidora-blue) !important;
+}
+
+/* Tiêu đề các cột: Điều khoản & Chính sách, Liên hệ */
+.footer h4,
+.footer h5 {
+    color: var(--kidora-blue) !important;
+    font-weight: 700;
+}
+/* =========================================================
+   PRODUCT PAGE – REMOVE GREEN, USE KIDORA BLUE
+   ========================================================= */
+
+/* ===== SEARCH BOX ICON (XANH LÁ → XANH DƯÔNG) ===== */
+input + button i,
+.search i,
+.search button i,
+.form-control + button i {
+    color: var(--kidora-blue) !important;
+}
+
+/* ===== ADD TO CART (BUTTON + ICON) ===== */
+.add-to-cart,
+.add-to-cart i,
+.product-item .btn i,
+.product-item .btn {
+    color: var(--kidora-blue) !important;
+    border-color: var(--kidora-blue) !important;
+}
+
+    /* Hover add to cart */
+    .product-item .btn:hover {
+        background-color: var(--kidora-blue) !important;
+        color: #fff !important;
+    }
+
+        .product-item .btn:hover i {
+            color: #fff !important;
+        }
+
+/* ===== PRICE SLIDER (XANH LÁ → XANH DƯƠNG) ===== */
+input[type=range]::-webkit-slider-thumb {
+    background: var(--kidora-blue) !important;
+}
+
+input[type=range]::-moz-range-thumb {
+    background: var(--kidora-blue) !important;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    background: #dbeeff;
+}
+
+/* ===== ICON XANH LÁ BỊ SÓT (FIX CHUNG) ===== */
+.text-success,
+.bg-success,
+.border-success {
+    color: var(--kidora-blue) !important;
+    background-color: transparent !important;
+    border-color: var(--kidora-blue) !important;
+}
+/* Force Add to cart to use Kidora blue */
+a.btn.text-primary,
+.btn.border.border-secondary.text-primary,
+.product-item .btn,
+.product-item .btn i {
+    color: var(--kidora-blue) !important;
+    border-color: var(--kidora-blue) !important;
+}
+
+    a.btn.text-primary i {
+        color: var(--kidora-blue) !important;
+    }
+/* ===== ADD TO CART: force border = kidora-blue, text/icon = kidora-yellow ===== */
+a.btn.border.border-secondary.rounded-pill.text-primary,
+button.btn.border.border-secondary.rounded-pill.text-primary,
+a.btn.btn-outline-primary.rounded-pill,
+.product-item .btn,
+button.btn[data-role="add-to-cart"],
+a.btn[data-role="add-to-cart"] {
+    background-color: transparent !important;
+    border-color: var(--kidora-blue) !important; /* light blue border */
+    color: var(--kidora-yellow) !important; /* text yellow */
+}
+
+    a.btn.border.border-secondary.rounded-pill.text-primary i,
+    button.btn.border.border-secondary.rounded-pill.text-primary i,
+    a.btn.btn-outline-primary.rounded-pill i,
+    .product-item .btn i,
+    button.btn[data-role="add-to-cart"] i,
+    a.btn[data-role="add-to-cart"] i {
+        color: var(--kidora-yellow) !important; /* icon yellow */
+    }
+
+    /* Hover: blue background + white text/icon for clear contrast */
+    a.btn.border.border-secondary.rounded-pill.text-primary:hover,
+    button.btn.border.border-secondary.rounded-pill.text-primary:hover,
+    a.btn.btn-outline-primary.rounded-pill:hover,
+    .product-item .btn:hover,
+    button.btn[data-role="add-to-cart"]:hover,
+    a.btn[data-role="add-to-cart"]:hover {
+        background-color: var(--kidora-blue) !important;
+        color: #fff !important;
+        border-color: var(--kidora-blue) !important;
+    }
+
+        a.btn.border.border-secondary.rounded-pill.text-primary:hover i,
+        button.btn.border.border-secondary.rounded-pill.text-primary:hover i,
+        a.btn.btn-outline-primary.rounded-pill:hover i,
+        .product-item .btn:hover i,
+        button.btn[data-role="add-to-cart"]:hover i,
+        a.btn[data-role="add-to-cart"]:hover i {
+            color: #fff !important;
+        }
+/* =========================================================
+   FORCE OVERRIDE BOOTSTRAP GREEN → KIDORA BLUE
+   ========================================================= */
+
+/* OVERRIDE BOOTSTRAP PRIMARY */
+:root {
+    --bs-primary: #5fb3ff !important;
+    --bs-primary-rgb: 95, 179, 255 !important;
+}
+
+/* FORCE ALL PRIMARY CLASSES */
+.bg-primary {
+    background-color: #5fb3ff !important;
+}
+
+.text-primary {
+    color: #5fb3ff !important;
+}
+
+.border-primary {
+    border-color: #5fb3ff !important;
+}
+
+.btn-primary,
+.btn-outline-primary {
+    background-color: #5fb3ff !important;
+    border-color: #5fb3ff !important;
+    color: #fff !important;
+}
+
+.btn-outline-primary {
+    background-color: transparent !important;
+    color: #5fb3ff !important;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #5fb3ff !important;
+        color: #fff !important;
+    }
+
+/* SPINNER */
+.spinner-grow.text-primary {
+    color: #5fb3ff !important;
+}
+
+/* ===== Scoped: Replace remaining green on Home & Product pages with Kidora light blue ===== */
+/* Targets utility classes, inline style hexes and common green selectors only on pages scoped with .page-home or .page-product */
+.page-home .text-success,
+.page-product .text-success,
+.page-home i.text-success,
+.page-product i.text-success,
+.page-home .text-green,
+.page-product .text-green,
+.page-home .green,
+.page-product .green,
+.page-home a.text-success,
+.page-product a.text-success,
+.page-home button.text-success,
+.page-product button.text-success {
+    color: var(--kidora-blue) !important;
+}
+
+.page-home .bg-success,
+.page-product .bg-success,
+.page-home .badge-success,
+.page-product .badge-success,
+.page-home .btn-success,
+.page-product .btn-success,
+.page-home .bg-green,
+.page-product .bg-green,
+.page-home .bg-emerald,
+.page-product .bg-emerald {
+    background-color: var(--kidora-blue) !important;
+    color: #fff !important;
+    border-color: var(--kidora-blue) !important;
+}
+
+/* Inline-style green hex overrides (common values) */
+.page-home [style*="#28a745"],
+.page-product [style*="#28a745"],
+.page-home [style*="#20c997"],
+.page-product [style*="#20c997"],
+.page-home [style*="#2ecc71"],
+.page-product [style*="#2ecc71"],
+.page-home [style*="#27ae60"],
+.page-product [style*="#27ae60"] {
+    /* If element uses inline green for text -> convert to brand blue */
+    color: var(--kidora-blue) !important;
+    /* If element uses inline green for background, prefer blue background + white text */
+    background-color: var(--kidora-blue) !important;
+    border-color: var(--kidora-blue) !important;
+}
+
+/* Specific case: elements that use light-green backgrounds (e.g. "#eaffea") -> give a subtle blue tint */
+.page-home [style*="#eaffea"],
+.page-product [style*="#eaffea"] {
+    background-color: #eaf6ff !important; /* light kidora blue background */
+    border-color: var(--kidora-blue) !important;
+    color: var(--kidora-dark) !important;
+}
+
+/* Ensure add-to-cart pills on those pages keep the desired look */
+.page-home .add-to-cart,
+.page-product .add-to-cart,
+.page-home a.btn.btn-outline-primary.rounded-pill,
+.page-product a.btn.btn-outline-primary.rounded-pill,
+.page-home a.btn.border.rounded-pill,
+.page-product a.btn.border.rounded-pill {
+    background-color: transparent !important;
+    border-color: var(--kidora-blue) !important;
+    color: var(--kidora-yellow) !important;
+}
+
+.page-home .add-to-cart i,
+.page-product .add-to-cart i,
+.page-home a.btn.btn-outline-primary.rounded-pill i,
+.page_product a.btn.btn-outline-primary.rounded-pill i {
+    color: var(--kidora-yellow) !important;
+}
+
+.page-home .add-to-cart:hover,
+.page-product .add-to-cart:hover,
+.page-home a.btn.btn-outline-primary.rounded-pill:hover,
+.page_product a.btn.btn-outline-primary.rounded-pill:hover,
+.page-home a.btn.border.rounded-pill:hover,
+.page_product a.btn.border.rounded-pill:hover {
+    background-color: var(--kidora-blue) !important;
+    color: #fff !important;
+    border-color: var(--kidora-blue) !important;
+}
+
+.page-home .add-to-cart:hover i,
+.page-product .add-to-cart:hover i,
+.page-home a.btn.btn-outline-primary.rounded-pill:hover i,
+.page_product a.btn.btn-outline-primary.rounded-pill:hover i {
+    color: #fff !important;
+}
+
+/* Safety: make sure utility success icons inside these pages also use blue */
+.page-home .fa-check-circle.text-success,
+.page-product .fa-check-circle.text-success {
+    color: var(--kidora-blue) !important;
+}
+
+/* End scoped overrides */
+/* ================== FIX HEADER CHE CONTENT ================== */
+body {
+    padding-top: 130x;
+}
+
+/* Mobile */
+@media (max-width: 992px) {
+    body {
+        padding-top: 100px;
+    }
+}

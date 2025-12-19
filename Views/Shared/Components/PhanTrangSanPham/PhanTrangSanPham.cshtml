@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    int soTrang = ViewBag.SoTrang;
+    int trangHienTai = ViewBag.TrangHienTai;
+    var currentQuery = Context.Request.Query.ToDictionary(k => k.Key, v => v.Value.ToString());
+
+    string BuildPageUrl(int pageNumber)
+    {
+        var dict = new Dictionary<string, string>(currentQuery, StringComparer.OrdinalIgnoreCase)
+        {
+            ["page"] = pageNumber.ToString()
+        };
+
+        return $"{Context.Request.Path}{QueryString.Create(dict)}";
+    }
+}
+
+@if (soTrang > 1)
+{
+    <div class="pagination d-flex justify-content-center mt-5">
+
+        <!-- Nút quay lại -->
+        <a class="rounded @(trangHienTai == 1 ? "disabled text-muted" : "")"
+           href="@BuildPageUrl(trangHienTai - 1)">
+            &laquo;
+        </a>
+
+        <!-- Danh sách trang -->
+        @for (int i = 1; i <= soTrang; i++)
+        {
+            <a class="rounded @(i == trangHienTai ? "active bg-primary text-white" : "")"
+               href="@BuildPageUrl(i)">
+                @i
+            </a>
+        }
+
+        <!-- Nút tiếp theo -->
+        <a class="rounded @(trangHienTai == soTrang ? "disabled text-muted" : "")"
+           href="@BuildPageUrl(trangHienTai + 1)">
+            &raquo;
+        </a>
+    </div>
+}

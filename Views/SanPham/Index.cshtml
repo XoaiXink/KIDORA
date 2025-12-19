@@ -1,0 +1,128 @@
+﻿@model KIDORA.ViewModels.PhanTrangSanPhamVM
+
+@{
+    ViewData["Title"] = "Index";
+    decimal minPrice = ViewBag.MinPrice ?? 0m;
+    decimal maxPrice = ViewBag.MaxPrice ?? 0m;
+    int selectedPrice = ViewBag.SelectedPrice ?? (int)maxPrice;
+    string keyword = ViewBag.Keyword as string ?? "";
+    string danhmuc = ViewBag.DanhMuc as string ?? "";
+    string sort = ViewBag.Sort as string ?? "default";
+    bool hasPriceRange = maxPrice > 0;
+}
+<!-- Fruits Shop Start-->
+div class="container-fluid vesitable py-5 page-home"
+    <div class="container py-5">
+        <h1 class="mb-4">KIDORA</h1>
+        <div class="row g-4">
+            <div class="col-lg-12">
+                <div class="row g-4">
+                    <div class="col-xl-3">
+                        <form method="get" class="input-group w-100 mx-auto d-flex">
+                            <input type="hidden" name="danhmuc" value="@danhmuc" />
+                            <input type="hidden" name="price" value="@selectedPrice" />
+                            <input type="search"
+                                   name="keyword"
+                                   class="form-control p-3"
+                                   placeholder="Tìm sản phẩm..."
+                                   value="@keyword"
+                                   aria-describedby="search-icon-1">
+                            <button class="input-group-text p-3 border-0 kidora-search-btn" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-6"></div>
+                    <div class="col-xl-3">
+                        <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                            <label for="sortSelect" class="mb-0 fw-semibold">Sắp xếp:</label>
+                            <form id="sortForm" class="d-flex align-items-center">
+                                <input type="hidden" name="keyword" value="@keyword" />
+                                <input type="hidden" name="danhmuc" value="@danhmuc" />
+                                <input type="hidden" name="price" value="@(hasPriceRange ? selectedPrice : 0)" />
+                                <select id="sortSelect"
+                                        name="sort"
+                                        class="border-0 form-select-sm bg-light me-3"
+                                        onchange="document.getElementById('sortForm').submit();">
+                                    @if (sort == "default")
+                                    {
+                                        <option value="default" selected>Mặc định</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="default">Mặc định</option>
+                                    }
+
+                                    @if (sort == "price_asc")
+                                    {
+                                        <option value="price_asc" selected>Giá: Thấp đến cao</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="price_asc">Giá: Thấp đến cao</option>
+                                    }
+
+                                    @if (sort == "price_desc")
+                                    {
+                                        <option value="price_desc" selected>Giá: Cao đến thấp</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="price_desc">Giá: Cao đến thấp</option>
+                                    }
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="row g-4">
+                            @await Component.InvokeAsync("MenuDanhMuc")
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <h4 class="mb-2">Price</h4>
+                                    <input type="range" class="form-range w-100"
+                                           id="rangeInput"
+                                           min="@minPrice"
+                                           max="@maxPrice"
+                                           value="@(hasPriceRange && selectedPrice > 0 ? selectedPrice : maxPrice)"
+                                           @(hasPriceRange ? "" : "disabled")
+                                           oninput="document.getElementById('amount').value=this.value"
+                                           onchange="filterPrice()" />
+
+                                    <output id="amount">@(hasPriceRange ? (selectedPrice > 0 ? selectedPrice : maxPrice) : 0)</output>
+                                    @if (!hasPriceRange)
+                                    {
+                                        <div class="text-muted small">Chưa có dữ liệu giá để lọc.</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="row g-4 justify-content-center">
+                            @await Html.PartialAsync("_ListSanPham", Model.SanPhams)
+
+                            
+                            @await Component.InvokeAsync("PhanTrangSanPham",
+                            new { soTrang = Model.SoTrang, trangHienTai = Model.TrangHienTai })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function filterPrice() {
+        let price = document.getElementById("rangeInput").value;
+
+        // Tạo URL redirect với query ?price=x
+        let url = new URL(window.location.href);
+        url.searchParams.set("price", price);
+
+        window.location.href = url.toString();
+    }
+</script>
+<!-- Fruits Shop End-->

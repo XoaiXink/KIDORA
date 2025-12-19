@@ -1,0 +1,222 @@
+﻿@model KIDORA.Data.DonHang
+
+@functions {
+    public int GetStep(string status)
+    {
+        return status switch
+        {
+            "Chờ xác nhận" => 1,
+            "Đang chuẩn bị hàng" => 2,
+            "Đang giao" => 3,
+            "Hoàn thành" => 4,
+            "Đã hủy" => 0,
+            _ => 1
+        };
+    }
+}
+
+<!-- FIX CHE HEADER -->
+<div style="height:160px;"></div>
+
+<div class="container mb-5">
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="fas fa-file-invoice me-2"></i> Chi tiết đơn hàng
+    </h2>
+
+    <!-- ================= TIMELINE TRẠNG THÁI ================= -->
+    @{
+        int step = GetStep(Model.TrangThaiDon);
+    }
+
+    <div class="order-tracking mb-5 p-4 rounded shadow-sm bg-white">
+        <h5 class="fw-bold mb-4">Trạng thái đơn hàng</h5>
+
+        <div class="timeline-container">
+
+            <div class="timeline-step @(step >= 1 ? "active" : "")">
+                <i class="fas fa-clock"></i>
+                <p>Chờ xác nhận</p>
+            </div>
+
+            <div class="timeline-line @(step >= 2 ? "active" : "")"></div>
+
+            <div class="timeline-step @(step >= 2 ? "active" : "")">
+                <i class="fas fa-box"></i>
+                <p>Chuẩn bị hàng</p>
+            </div>
+
+            <div class="timeline-line @(step >= 3 ? "active" : "")"></div>
+
+            <div class="timeline-step @(step >= 3 ? "active" : "")">
+                <i class="fas fa-shipping-fast"></i>
+                <p>Đang giao</p>
+            </div>
+
+            <div class="timeline-line @(step >= 4 ? "active" : "")"></div>
+
+            <div class="timeline-step @(step >= 4 ? "active" : "")">
+                <i class="fas fa-check-circle"></i>
+                <p>Hoàn thành</p>
+            </div>
+        </div>
+
+        @if (step == 0)
+        {
+            <div class="text-center mt-3">
+                <span class="badge bg-danger px-3 py-2">Đơn hàng đã bị hủy</span>
+            </div>
+        }
+    </div>
+
+    <!-- ================= THÔNG TIN ĐƠN + GIAO HÀNG ================= -->
+    <div class="row g-4">
+
+        <div class="col-lg-6">
+            <div class="p-4 border rounded bg-white shadow-sm">
+                <h5 class="fw-bold mb-3">Thông tin đơn hàng</h5>
+
+                <p><strong>Mã đơn:</strong> @Model.SoDonHang</p>
+                <p><strong>Ngày đặt:</strong> @Model.NgayDat.ToString("dd/MM/yyyy")</p>
+
+                <p>
+                    <strong>Trạng thái:</strong>
+                    <span class="badge bg-primary px-3 py-2">@Model.TrangThaiDon</span>
+                </p>
+
+                @if (Model.TrangThaiDon == "Chờ xác nhận")
+                {
+                    <button class="btn btn-danger mt-2 px-3"
+                            onclick="cancelOrder('@Model.MaDonHang')">
+                        <i class="fas fa-times-circle me-1"></i> Hủy đơn hàng
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="p-4 border rounded bg-white shadow-sm">
+                <h5 class="fw-bold mb-3">Thông tin giao hàng</h5>
+
+                <p><strong>Người nhận:</strong> @Model.TenNguoiNhan</p>
+                <p><strong>SĐT:</strong> @Model.SdtnguoiNhan</p>
+                <p><strong>Địa chỉ:</strong> @Model.DiaChiGiao</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DANH SÁCH SẢN PHẨM ================= -->
+    <h4 class="fw-bold mt-5 mb-3">Sản phẩm trong đơn</h4>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover bg-white shadow-sm align-middle text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th width="40%">Sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th>SL</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model.ChiTietDonHangs != null && Model.ChiTietDonHangs.Any())
+                {
+                    foreach (var ct in Model.ChiTietDonHangs)
+                    {
+                        <tr>
+                            <td class="fw-bold">@ct.TenSpHienThi</td>
+                            <td>@ct.DonGia.ToString("N0") đ</td>
+                            <td>@ct.SoLuong</td>
+                            <td class="fw-bold text-primary">@ct.ThanhTien.ToString("N0") đ</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-muted">Không có sản phẩm</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ================= TỔNG TIỀN ================= -->
+    <div class="text-end mt-4 border-top pt-3">
+        <p>Tổng tiền hàng: <strong>@Model.TongTienHang.ToString("N0") đ</strong></p>
+        <p>Giảm giá: <strong>@Model.TongGiamGia.ToString("N0") đ</strong></p>
+        <p>VAT: <strong>@Model.Vat.ToString("N0") đ</strong></p>
+
+        <h3 class="fw-bold text-primary">
+            <i class="fas fa-wallet me-2"></i>
+            Tổng thanh toán: @Model.TongSauVat.ToString("N0") đ
+        </h3>
+    </div>
+</div>
+
+<!-- ================= CSS TIMELINE ================= -->
+<style>
+    .timeline-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+    .timeline-step {
+        width: 20%;
+        padding: 10px;
+        opacity: 0.4;
+    }
+
+        .timeline-step.active {
+            opacity: 1;
+            color: #1e73be;
+            font-weight: bold;
+        }
+
+    .timeline-line {
+        flex-grow: 1;
+        height: 4px;
+        background: #ddd;
+        margin: 0 5px;
+        border-radius: 5px;
+    }
+
+        .timeline-line.active {
+            background: #1e73be;
+        }
+</style>
+
+<!-- ================= SWEETALERT ================= -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function cancelOrder(orderId) {
+        Swal.fire({
+            title: "Hủy đơn hàng?",
+            text: "Bạn có chắc chắn muốn hủy đơn này không?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Hủy ngay",
+            cancelButtonText: "Không"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement("form");
+                form.method = "post";
+                form.action = "/Orders/CancelOrder";
+
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "id";
+                input.value = orderId;
+
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+</script>
+
+

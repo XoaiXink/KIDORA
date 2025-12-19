@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Đăng nhập";
+}
+<!-- FIX CHE HEADER -->
+<div style="height:140px;"></div>
+<div class="container" style="margin-top:140px; margin-bottom:60px;">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow border-0">
+                <div class="card-body p-4">
+
+                    <h3 class="text-center mb-4" style="color:var(--kidora-blue); font-weight:700;">
+                        Đăng nhập
+                    </h3>
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success text-center">@TempData["Success"]</div>
+                    }
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger text-center">@ViewBag.Error</div>
+                    }
+
+                    <form method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email"
+                                   class="form-control p-3" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" name="password"
+                                   class="form-control p-3" required />
+                        </div>
+
+                        <button type="submit" class="btn w-100 p-3"
+                                style="background:var(--kidora-blue); border:none; color:white; font-weight:600;">
+                            Đăng nhập
+                        </button>
+                        <div class="mt-3">
+                            <a asp-action="ExternalLogin"
+                               asp-route-provider="Google"
+                               class="btn btn-outline-danger w-100 mb-2">
+                                <i class="fab fa-google me-2"></i> Đăng nhập bằng Google
+                            </a>
+
+                            <a asp-action="ExternalLogin"
+                               asp-route-provider="Facebook"
+                               class="btn btn-outline-primary w-100">
+                                <i class="fab fa-facebook-f me-2"></i> Đăng nhập bằng Facebook
+                            </a>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <a asp-controller="Account" asp-action="ForgotPassword"
+                               style="color:var(--kidora-blue); font-weight:600;">
+                                Quên mật khẩu?
+                            </a>
+                        </div>
+
+                        <p class="text-center mt-3">
+                            Chưa có tài khoản?
+                            <a asp-controller="Account" asp-action="Register"
+                               style="color:var(--kidora-blue); font-weight:600;">
+                                Đăng ký ngay
+                            </a>
+                        </p>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

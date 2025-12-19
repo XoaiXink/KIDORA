@@ -1,0 +1,84 @@
+﻿@model KIDORA.Data.SanPham
+
+@{
+    ViewData["Title"] = "Xóa sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h2 text-danger">Xóa sản phẩm</h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Cảnh báo!</h4>
+        <p>Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.</p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    @if (!string.IsNullOrEmpty(Model.AnhChinh))
+                    {
+                        <img src="~/Anh/@Model.AnhChinh" alt="@Model.TenSp" class="img-fluid rounded shadow" />
+                    }
+                    else
+                    {
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <span class="text-muted">Chưa có ảnh</span>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-8">
+                    <dl class="row">
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaSp)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaSp)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Sku)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Sku)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.TenSp)</dt>
+                        <dd class="col-sm-8"><strong>@Html.DisplayFor(model => model.TenSp)</strong></dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaDanhMucNavigation.TenDanhMuc)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaDanhMucNavigation.TenDanhMuc)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaNccNavigation.TenNcc)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaNccNavigation.TenNcc)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DonGiaBan)</dt>
+                        <dd class="col-sm-8"><strong class="text-success">@Model.DonGiaBan.ToString("N0") đ</strong></dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.GiaNiemYet)</dt>
+                        <dd class="col-sm-8"><del class="text-muted">@Model.GiaNiemYet.ToString("N0") đ</del></dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DangBan)</dt>
+                        <dd class="col-sm-8">
+                            @{
+                                var badgeClass = Model.DangBan ? "bg-success" : "bg-danger";
+                                var badgeText = Model.DangBan ? "Đang bán" : "Ngừng bán";
+                            }
+                            <span class="badge @badgeClass p-2">@badgeText</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <hr />
+
+            <form asp-action="Delete" method="post" class="mt-3">
+                <input type="hidden" asp-for="MaSp" />
+                <div class="form-group">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Xác nhận xóa
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

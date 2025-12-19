@@ -1,0 +1,219 @@
+﻿@model KIDORA.ViewModels.ThanhToanVM
+@{
+    ViewData["Title"] = "Thanh Toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var tongTien = Model.GioHang.Sum(p => p.ThanhTien);
+    var phiVanChuyen = 30000m; // Phí vận chuyển mặc định
+    var tongCong = tongTien + phiVanChuyen;
+}
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Thanh Toán</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a asp-controller="GioHang" asp-action="Index">Giỏ hàng</a></li>
+        <li class="breadcrumb-item active text-white">Thanh toán</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+<!-- Checkout Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+        <form asp-action="ThanhToan" asp-controller="GioHang" method="post">
+            <div class="row g-5">
+                <!-- Thông tin giao hàng -->
+                <div class="col-md-12 col-lg-6 col-xl-7">
+                    <h4 class="mb-4">Thông tin giao hàng</h4>
+
+                    <div class="form-item">
+                        <label class="form-label my-3">Họ tên người nhận <sup class="text-danger">*</sup></label>
+                        <input type="text" asp-for="HoTen" class="form-control" required
+                               placeholder="Nhập họ tên người nhận hàng">
+                        <span asp-validation-for="HoTen" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-item">
+                        <label class="form-label my-3">Số điện thoại <sup class="text-danger">*</sup></label>
+                        <input type="tel" asp-for="DienThoai" class="form-control" required
+                               placeholder="Nhập số điện thoại liên hệ" pattern="[0-9]{10,11}">
+                        <span asp-validation-for="DienThoai" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- TỈNH / THÀNH --> <sup class="text-danger">*</sup></label>
+                    <div class="mb-3">
+                        <label class="form-label">Tỉnh / Thành phố</label>
+                        <select id="tinh" asp-for="TinhThanh" class="form-select p-3" required>
+                            <option value="">-- Chọn tỉnh/thành phố --</option>
+                        </select>
+                    </div>
+
+                    <!-- QUẬN / HUYỆN -->
+                    <div class="mb-3">
+                        <label class="form-label">Quận / Huyện</label> <sup class="text-danger">*</sup></label>
+                        <select id="quan" asp-for="QuanHuyen" class="form-select p-3" required disabled>
+                            <option value="">-- Chọn quận/huyện --</option>
+                        </select>
+                    </div>
+
+                    <!-- PHƯỜNG / XÃ -->
+                    <div class="mb-3">
+                        <label class="form-label">Phường / Xã</label> <sup class="text-danger">*</sup></label>
+                        <select id="phuong" asp-for="PhuongXa" class="form-select p-3" required disabled>
+                            <option value="">-- Chọn phường/xã --</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="form-item">
+                        <label class="form-label my-3">Địa chỉ giao hàng <sup class="text-danger">*</sup></label>
+                        <input type="text" asp-for="DiaChi" class="form-control" required
+                               placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố">
+                        <span asp-validation-for="DiaChi" class="text-danger"></span>
+                    </div>
+
+
+
+                    <script>
+                        const tinhSelect = document.getElementById("tinh");
+                        const quanSelect = document.getElementById("quan");
+                        const phuongSelect = document.getElementById("phuong");
+
+                        // Load Tỉnh / Thành
+                        fetch("https://provinces.open-api.vn/api/p/")
+                            .then(res => res.json())
+                            .then(data => {
+                                data.forEach(tinh => {
+                                    tinhSelect.innerHTML += `
+                                        <option value="${tinh.name}" data-code="${tinh.code}">
+                                            ${tinh.name}
+                                        </option>`;
+                                });
+                            });
+
+                        // Khi chọn TỈNH → load QUẬN
+                        tinhSelect.addEventListener("change", function () {
+                            const code = this.selectedOptions[0].dataset.code;
+
+                            quanSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
+                            phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
+                            phuongSelect.disabled = true;
+
+                            if (!code) return;
+
+                            fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    quanSelect.disabled = false;
+                                    data.districts.forEach(q => {
+                                        quanSelect.innerHTML += `
+                                            <option value="${q.name}" data-code="${q.code}">
+                                                ${q.name}
+                                            </option>`;
+                                    });
+                                });
+                        });
+
+                        // Khi chọn QUẬN → load PHƯỜNG
+                        quanSelect.addEventListener("change", function () {
+                            const code = this.selectedOptions[0].dataset.code;
+
+                            phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
+
+                            if (!code) return;
+
+                            fetch(`https://provinces.open-api.vn/api/d/${code}?depth=2`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    phuongSelect.disabled = false;
+                                    data.wards.forEach(p => {
+                                        phuongSelect.innerHTML += `
+                                            <option value="${p.name}">
+                                                ${p.name}
+                                            </option>`;
+                                    });
+                                });
+                        });
+                    </script>
+
+
+                    <div class="form-item">
+                        <label class="form-label my-3">Ghi chú đơn hàng</label>
+                        <textarea asp-for="GhiChu" class="form-control" rows="4"
+                                  placeholder="Ghi chú về đơn hàng (ví dụ: thời gian giao hàng mong muốn)"></textarea>
+                    </div>
+                </div>
+
+                <!-- Tóm tắt đơn hàng -->
+                <div class="col-md-12 col-lg-6 col-xl-5">
+                    <h4 class="mb-4">Đơn hàng của bạn</h4>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sản phẩm</th>
+                                    <th scope="col">Tên</th>
+                                    <th scope="col">SL</th>
+                                    <th scope="col">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.GioHang)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="~/Anh/@item.AnhChinh" class="img-fluid rounded"
+                                                 style="width: 60px; height: 60px; object-fit: cover;" alt="@item.TenSp">
+                                        </td>
+                                        <td class="align-middle">@item.TenSp</td>
+                                        <td class="align-middle">@item.SoLuong</td>
+                                        <td class="align-middle">@item.ThanhTien.ToString("N0")đ</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tổng tiền -->
+                    <div class="bg-light rounded p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Tạm tính:</span>
+                            <span>@tongTien.ToString("N0")đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Phí vận chuyển:</span>
+                            <span>@phiVanChuyen.ToString("N0")đ</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Tổng cộng:</strong>
+                            <strong class="text-primary fs-5">@tongCong.ToString("N0")đ</strong>
+                        </div>
+                    </div>
+
+
+                    <!-- Nút đặt hàng -->
+                    <div>
+                        <input type="submit" name="payment" class="btn btn-primary w-100 py-3"
+                               value="Đặt hàng (COD)">
+                    </div>
+                    <div>
+                        <input type="submit" name="payment" class="btn btn-primary w-100 py-3 mt-2"
+                               value="Thanh toán VNPay">
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a asp-controller="GioHang" asp-action="Index" class="text-muted">
+                            <i class="fa fa-arrow-left me-2"></i> Quay lại giỏ hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Checkout Page End -->

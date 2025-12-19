@@ -1,0 +1,350 @@
+﻿@model KIDORA.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+
+}
+
+
+<div class="container-fluid">
+    <!-- Thống kê tổng quan -->
+    <div class="row">
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-1">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Doanh thu hôm nay</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">@Model.DoanhThuHomNay.ToString("N0")đ</h2>
+                        <p class="text-white mb-0">Tháng này: @Model.DoanhThuThang.ToString("N0")đ</p>
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-money"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-2">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Tổng đơn hàng</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">@Model.TongDonHang</h2>
+                        <p class="text-white mb-0">Chờ xử lý: @Model.DonChoXuLy | Đang giao: @Model.DonDangGiao</p>
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-shopping-cart"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-3">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Tổng khách hàng</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">@Model.TongKhachHang</h2>
+                        <p class="text-white mb-0">Thành viên đăng ký</p>
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-4">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Tổng sản phẩm</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">@Model.TongSanPham</h2>
+                        <p class="text-white mb-0">Sản phẩm đang bán</p>
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-cubes"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ doanh thu và Trạng thái đơn hàng -->
+    <div class="row">
+        <div class="col-xl-8 col-lg-8 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Doanh thu 6 tháng gần nhất</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Trạng thái đơn hàng</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="orderStatusChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Đơn hàng mới và Sản phẩm bán chạy -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Đơn hàng mới nhất</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var don in Model.DonHangMoi)
+                                {
+                                    <tr>
+                                        <td><strong>@don.MaDonHang</strong></td>
+                                        <td>@don.TenKhachHang</td>
+                                        <td>@don.TongTien.ToString("N0")đ</td>
+                                        <td>@don.NgayDat.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @{
+                                                var badgeClass = don.TrangThai switch
+                                                {
+                                                    "Hoàn thành" => "badge-success",
+                                                    "Đang giao" => "badge-info",
+                                                    "Chờ xác nhận" => "badge-warning",
+                                                    "Đã hủy" => "badge-danger",
+                                                    _ => "badge-secondary"
+                                                };
+                                            }
+                                            <span class="badge @badgeClass">@don.TrangThai</span>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (!Model.DonHangMoi.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Chưa có đơn hàng nào</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Top 5 sản phẩm bán chạy</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Số lượng bán</th>
+                                    <th>Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sp in Model.SanPhamBanChay)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(sp.AnhChinh))
+                                                {
+                                                    <img src="/Anh/@sp.AnhChinh" alt="@sp.TenSP" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px; border-radius: 4px;">
+                                                }
+                                                <span>@sp.TenSP</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-primary">@sp.SoLuongBan</span></td>
+                                        <td>@sp.DoanhThu.ToString("N0")đ</td>
+                                    </tr>
+                                }
+                                @if (!Model.SanPhamBanChay.Any())
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">Chưa có dữ liệu bán hàng</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Biểu đồ doanh thu
+        var revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        var revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.DoanhThuTheoThang.Select(x => $"'{x.Thang}'")))],
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: [@Html.Raw(string.Join(",", Model.DoanhThuTheoThang.Select(x => x.DoanhThu)))],
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Số đơn hàng',
+                    data: [@Html.Raw(string.Join(",", Model.DoanhThuTheoThang.Select(x => x.SoDon)))],
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    yAxisID: 'y1',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + 'đ';
+                            }
+                        }
+                    },
+                    y1: {
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (context.dataset.label === 'Doanh thu (VNĐ)') {
+                                    return context.dataset.label + ': ' + context.raw.toLocaleString('vi-VN') + 'đ';
+                                }
+                                return context.dataset.label + ': ' + context.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Biểu đồ trạng thái đơn hàng
+        var statusCtx = document.getElementById('orderStatusChart').getContext('2d');
+        var statusLabels = [@Html.Raw(string.Join(",", Model.ThongKeTrangThai.Keys.Select(x => $"'{x}'")))];
+        var statusData = [@Html.Raw(string.Join(",", Model.ThongKeTrangThai.Values))];
+
+        // Mảng màu sắc đa dạng cho biểu đồ
+        var distinctColors = [
+            '#28a745',  // Xanh lá
+            '#17a2b8',  // Xanh dương
+            '#ffc107',  // Vàng
+            '#007bff',  // Xanh biển
+            '#dc3545',  // Đỏ
+            '#fd7e14',  // Cam
+            '#6f42c1',  // Tím
+            '#e83e8c',  // Hồng
+            '#20c997',  // Xanh ngọc
+            '#6c757d'   // Xám
+        ];
+
+        // Gán màu theo thứ tự index
+        var statusColors = statusLabels.map((label, index) => distinctColors[index % distinctColors.length]);
+
+        var statusChart = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    data: statusData,
+                    backgroundColor: statusColors,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+<style>
+    .gradient-1 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .gradient-2 {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .gradient-3 {
+        background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+    }
+
+    .gradient-4 {
+        background: linear-gradient(135deg, #5f2c82 0%, #49a09d 100%);
+    }
+
+    .opacity-5 {
+        opacity: 0.5;
+    }
+
+    .display-5 {
+        font-size: 3rem;
+    }
+
+    .card-body h2 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    /* Bảng đơn hàng và sản phẩm - Màu chữ đậm */
+    .table {
+        color: #212529 !important;
+    }
+
+        .table td, .table th {
+            color: #212529 !important;
+            font-weight: 500;
+        }
+
+            .table td strong {
+                color: #000 !important;
+                font-weight: 700;
+            }
+
+    .card-title {
+        color: #333 !important;
+        font-weight: 600;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+    }
+</style>
+

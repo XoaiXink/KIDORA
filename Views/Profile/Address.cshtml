@@ -1,0 +1,186 @@
+﻿@using KIDORA.Data
+@model DiaChiKhachHang
+
+@{
+    ViewData["Title"] = "Địa chỉ giao hàng";
+}
+
+<style>
+    /* Nền dropdown trắng */
+    select.form-control {
+        background-color: white !important;
+        appearance: auto !important;
+        -webkit-appearance: auto !important;
+        -moz-appearance: auto !important;
+    }
+</style>
+<!-- FIX CHE HEADER -->
+<div style="height:140px;"></div>
+<div class="container" style="margin-top:140px; margin-bottom:60px;">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <h3 class="mb-4" style="font-weight:700; color:var(--kidora-blue);">
+                Địa chỉ giao hàng
+            </h3>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+
+            <form method="post" asp-action="UpdateAddress">
+
+                <!-- Người nhận -->
+                <div class="mb-3">
+                    <label>Người nhận</label>
+                    <input type="text" class="form-control p-3"
+                           name="tenNguoiNhan" value="@Model?.TenNguoiNhan" required />
+                </div>
+
+                <!-- Số điện thoại -->
+                <div class="mb-3">
+                    <label>Số điện thoại</label>
+                    <input type="text" class="form-control p-3"
+                           name="dienThoaiNhan" value="@Model?.DienThoaiNhan" required />
+                </div>
+
+                <!-- Tỉnh -->
+                <div class="mb-3">
+                    <label>Tỉnh / Thành phố</label>
+                    <select id="tinhSelect" name="tinh" class="form-control p-3" required>
+                        <option value="">-- Chọn tỉnh/thành phố --</option>
+                    </select>
+                </div>
+
+                <!-- Huyện -->
+                <div class="mb-3">
+                    <label>Quận / Huyện</label>
+                    <select id="huyenSelect" name="quan" class="form-control p-3" required>
+                        <option value="">-- Chọn quận/huyện --</option>
+                    </select>
+                </div>
+
+                <!-- Phường -->
+                <div class="mb-3">
+                    <label>Phường / Xã</label>
+                    <select id="phuongSelect" name="phuong" class="form-control p-3" required>
+                        <option value="">-- Chọn phường/xã --</option>
+                    </select>
+                </div>
+
+                <!-- Địa chỉ chi tiết -->
+                <div class="mb-3">
+                    <label>Địa chỉ chi tiết</label>
+                    <input type="text" class="form-control p-3"
+                           name="diachi" value="@Model?.DiaChiChiTiet"
+                           placeholder="Số nhà, tên đường..." required />
+                </div>
+
+                <button type="submit" class="btn w-100 p-3"
+                        style="background:var(--kidora-blue); color:white; font-weight:600;">
+                    Cập nhật địa chỉ
+                </button>
+
+            </form>
+        </div>
+    </div>
+</div>
+<!-- API Tỉnh Thành + Huyện + Xã -->
+<script>
+    const tinhSelect = document.getElementById("tinhSelect");
+    const huyenSelect = document.getElementById("huyenSelect");
+    const phuongSelect = document.getElementById("phuongSelect");
+
+    // ============= LOAD DANH SÁCH TỈNH ==================
+    fetch("https://provinces.open-api.vn/api/p/")
+        .then(res => res.json())
+        .then(data => {
+
+            data.forEach(t => {
+                let opt = new Option(t.name, t.name);
+                opt.setAttribute("data-code", t.code);
+                tinhSelect.appendChild(opt);
+            });
+
+            // --- Gán lại giá trị tỉnh đã lưu ---
+            tinhSelect.value = "@Model?.TinhThanh";
+
+            if (tinhSelect.value) {
+                let selected = [...tinhSelect.options]
+                    .find(o => o.value === "@Model?.TinhThanh");
+
+                if (selected) {
+                    loadHuyen(selected.getAttribute("data-code"));
+                }
+            }
+        });
+
+    // ============= KHI CHỌN TỈNH → LOAD QUẬN ==================
+    tinhSelect.addEventListener("change", function () {
+
+        let code = this.options[this.selectedIndex].getAttribute("data-code");
+
+        loadHuyen(code);
+    });
+
+    function loadHuyen(tinhCode) {
+
+        huyenSelect.innerHTML = `<option value="">-- Chọn quận/huyện --</option>`;
+        phuongSelect.innerHTML = `<option value="">-- Chọn phường/xã --</option>`;
+
+        if (!tinhCode) return;
+
+        fetch(`https://provinces.open-api.vn/api/p/${tinhCode}?depth=2`)
+            .then(res => res.json())
+            .then(data => {
+
+                data.districts.forEach(q => {
+                    let opt = new Option(q.name, q.name);
+                    opt.setAttribute("data-code", q.code);
+                    huyenSelect.appendChild(opt);
+                });
+
+                // --- Gán giá trị huyện đã lưu ---
+                huyenSelect.value = "@Model?.QuanHuyen";
+
+                if (huyenSelect.value) {
+                    let selected = [...huyenSelect.options]
+                        .find(o => o.value === "@Model?.QuanHuyen");
+
+                    if (selected) {
+                        loadPhuong(selected.getAttribute("data-code"));
+                    }
+                }
+            });
+    }
+
+    // ============= KHI CHỌN QUẬN → LOAD PHƯỜNG/XÃ ==================
+    huyenSelect.addEventListener("change", function () {
+
+        let code = this.options[this.selectedIndex].getAttribute("data-code");
+
+        loadPhuong(code);
+    });
+
+    function loadPhuong(quanCode) {
+
+        phuongSelect.innerHTML = `<option value="">-- Chọn phường/xã --</option>`;
+
+        if (!quanCode) return;
+
+        fetch(`https://provinces.open-api.vn/api/d/${quanCode}?depth=2`)
+            .then(res => res.json())
+            .then(data => {
+
+                data.wards.forEach(w => {
+                    let opt = new Option(w.name, w.name);
+                    phuongSelect.appendChild(opt);
+                });
+
+                // --- Gán giá trị phường đã lưu ---
+                phuongSelect.value = "@Model?.PhuongXa";
+            });
+    }
+</script>
+

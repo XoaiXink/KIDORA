@@ -1,0 +1,183 @@
+﻿@model IEnumerable<KIDORA.Data.DonHang>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Chờ xác nhận" => "badge-waiting",
+            "Đang giao" => "badge-shipping",
+            "Hoàn thành" => "badge-done",
+            "Đã hủy" => "badge-cancelled",
+            _ => "badge-waiting",
+        };
+    }
+
+    public string GetStatusIcon(string status)
+    {
+        return status switch
+        {
+            "Chờ xác nhận" => "fas fa-clock",
+            "Đang giao" => "fas fa-shipping-fast",
+            "Hoàn thành" => "fas fa-check-circle",
+            "Đã hủy" => "fas fa-times-circle",
+            _ => "fas fa-clock",
+        };
+    }
+}
+
+<!-- ======= FIX: THÊM KHOẢNG TRỐNG TRÁNH BỊ CHE ======= -->
+<div style="height:160px;"></div>
+
+<div class="container mb-5">
+
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="fas fa-shopping-bag me-2"></i> Đơn hàng của tôi
+    </h2>
+
+    <!-- ====================== KIỂM TRA RỖNG ====================== -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center p-5 bg-white shadow rounded-4 empty-box">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076503.png"
+                 style="width:120px; opacity:0.8;" />
+
+            <h4 class="mt-3 fw-bold text-secondary">Bạn chưa có đơn hàng nào</h4>
+            <p class="text-muted">Hãy mua sắm ngay để trải nghiệm dịch vụ tuyệt vời của Kidora!</p>
+
+            <a asp-controller="SanPham" asp-action="Index" class="btn btn-primary px-4 py-2 mt-3">
+                <i class="fas fa-shopping-cart me-2"></i> Mua sắm ngay
+            </a>
+        </div>
+    }
+    else
+    {
+        <!-- ====================== DANH SÁCH ĐƠN HÀNG ====================== -->
+        @foreach (var dh in Model)
+        {
+            <div class="order-card shadow-sm p-4 mb-4 rounded-4">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <div>
+                        <h5 class="fw-bold text-dark">Mã đơn: @dh.SoDonHang</h5>
+
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            @dh.NgayDat.ToString("dd/MM/yyyy")
+                        </p>
+
+                        <span class="order-status @GetStatusClass(dh.TrangThaiDon)">
+                            <i class="@GetStatusIcon(dh.TrangThaiDon) me-1"></i>
+                            @dh.TrangThaiDon
+                        </span>
+                    </div>
+
+                    <div class="text-end">
+                        <h4 class="fw-bold text-primary">@dh.TongThanhToan.ToString("N0") đ</h4>
+
+                        <a asp-controller="Orders" asp-action="Detail" asp-route-id="@dh.MaDonHang"
+                           class="btn btn-outline-primary btn-sm mt-2 px-3">
+                            Xem chi tiết
+                        </a>
+
+                        @if (dh.TrangThaiDon == "Chờ xác nhận")
+                        {
+                            <button class="btn btn-danger btn-sm mt-2 px-3"
+                                    onclick="cancelOrder('@dh.MaDonHang')">
+                                Hủy đơn
+                            </button>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function cancelOrder(orderId) {
+            Swal.fire({
+                title: "Hủy đơn hàng?",
+                text: "Bạn có chắc chắn muốn hủy đơn này không?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Hủy ngay",
+                cancelButtonText: "Không"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement("form");
+                    form.method = "post";
+                    form.action = "/Orders/CancelOrder";
+
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "id";
+                    input.value = orderId;
+
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    </script>
+
+    <style>
+
+        /* ===== CARD ĐƠN HÀNG ===== */
+        .order-card {
+            background: #ffffff;
+            border-left: 6px solid #1e73be;
+            border-radius: 12px;
+            transition: 0.25s ease-in-out;
+        }
+
+            .order-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            }
+
+        /* ===== TRẠNG THÁI ===== */
+        .order-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .badge-waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-shipping {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .badge-done {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* ===== EMPTY MESSAGE ===== */
+        .empty-box {
+            border: 1px dashed #ccc;
+        }
+    </style>
+}
+
+

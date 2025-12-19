@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "Chính sách thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1 col-md-12">
+
+            <!-- TITLE -->
+            <h1 class="text-center mb-4" style="color:#1e73be; font-weight:700;">
+                CHÍNH SÁCH THANH TOÁN
+            </h1>
+            <hr />
+
+            <!-- BANNER -->
+            <div class="text-center mb-4">
+                <img src="https://kidora.website/wp-content/uploads/2025/09/thanh-toan.png"
+                     alt="Phương thức thanh toán Kidora"
+                     class="img-fluid"
+                     style="max-height:180px;">
+            </div>
+
+            <!-- I. THANH TOÁN COD -->
+            <section class="mb-5">
+                <div class="p-3 border rounded"
+                     style="background-color:#fff7e6; border-left:6px solid #ff9800;">
+                    <h2 class="mb-3" style="font-weight:700; font-size:22px;">
+                        <i class="fas fa-money-check-alt me-2"></i> I. Thanh toán khi nhận hàng (COD)
+                    </h2>
+                    <ul class="fa-ul">
+                        <li>
+                            <span class="fa-li"><i class="fas fa-hand-holding-usd text-warning"></i></span>
+                            Khách hàng thanh toán trực tiếp cho <strong>nhân viên giao hàng</strong>.
+                        </li>
+                        <li>
+                            <span class="fa-li"><i class="fas fa-map-marked-alt text-warning"></i></span>
+                            Áp dụng <strong>toàn quốc</strong>, phù hợp với khách hàng không sử dụng thanh toán online.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <hr />
+
+            <!-- II. THANH TOÁN ATM -->
+            <section class="mb-5">
+                <div class="p-3 border rounded"
+                     style="background-color:#e8f4ff; border-left:6px solid #1e73be;">
+                    <h2 class="mb-3" style="font-weight:700; font-size:22px;">
+                        <i class="fas fa-credit-card me-2"></i>
+                        II. Thanh toán online qua thẻ ATM nội địa
+                    </h2>
+
+                    <ul class="fa-ul">
+                        <li>
+                            <span class="fa-li"><i class="fas fa-university text-primary"></i></span>
+                            Hỗ trợ thẻ ATM của <strong>39 ngân hàng</strong> có Internet Banking.
+                        </li>
+
+                        <li>
+                            <span class="fa-li"><i class="fas fa-cogs text-primary"></i></span>
+                            Quy trình thanh toán nhanh gọn:
+                            <ol style="list-style-type: lower-alpha;">
+                                <li>Nhập thông tin thẻ.</li>
+                                <li>Xác thực giao dịch bằng mã OTP.</li>
+                                <li>Thanh toán thành công ngay lập tức.</li>
+                            </ol>
+                        </li>
+
+                        <li>
+                            <span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>
+                            Giao dịch hợp lệ khi hệ thống xác nhận thẻ đủ số dư.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- TABLE: REFUND TIME -->
+            <section class="mb-5">
+                <h3 class="mb-3" style="font-weight:700; font-size:20px;">
+                    <i class="fas fa-undo-alt me-2"></i>
+                    Thời gian hoàn tiền dự kiến
+                </h3>
+
+                <table class="table table-bordered table-striped text-center" style="font-size:16px;">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th style="width:30%;">Phương thức</th>
+                            <th style="width:40%;">Thời gian hoàn tiền</th>
+                            <th style="width:30%;">Điều kiện áp dụng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Thẻ ATM nội địa</td>
+                            <td><strong>Trong 7 ngày làm việc</strong></td>
+                            <td>Thanh toán bằng ATM nội địa</td>
+                        </tr>
+                        <tr>
+                            <td>Thẻ tín dụng / ghi nợ</td>
+                            <td><strong>10 – 14 ngày làm việc</strong></td>
+                            <td>Thanh toán bằng thẻ Visa/Master/JCB</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="text-muted small mt-2">
+                    * Thời gian được tính từ khi Kidora xác nhận hoàn tiền. Nếu quá hạn chưa nhận được tiền, vui lòng liên hệ CSKH.
+                </p>
+            </section>
+
+            <hr />
+
+            <!-- FAQ -->
+            <section class="mb-5">
+                <h2 class="mb-3" style="font-weight:700; font-size:22px;">
+                    <i class="fas fa-question-circle me-2"></i>
+                    III. Câu hỏi thường gặp
+                </h2>
+
+                <div class="p-3 border rounded" style="background-color:#fefefe;">
+
+                    <p><strong>1. Vì sao tôi không chọn được giao nhanh (Grab/Giao hỏa tốc)?</strong></p>
+                    <p class="ms-3">Do tồn kho khu vực hoặc sản phẩm vượt kích thước vận chuyển.</p>
+
+                    <p><strong>2. Voucher/Ecode có dùng online được không?</strong></p>
+                    <p class="ms-3">Một số voucher chỉ áp dụng tại cửa hàng. Hãy liên hệ CSKH để được kiểm tra.</p>
+
+                    <p><strong>3. Nếu nhận sản phẩm sai màu thì sao?</strong></p>
+                    <p class="ms-3">
+                        Nếu sản phẩm ghi rõ “giao ngẫu nhiên”, Kidora <strong>không hỗ trợ đổi màu</strong>.
+                        Nếu giao sai sản phẩm → Kidora <strong>đổi miễn phí</strong>.
+                    </p>
+
+                </div>
+            </section>
+
+            <hr />
+
+            <!-- CONTACT -->
+            <section class="mb-4">
+                <h2 class="mb-3" style="font-weight:700; font-size:22px;">
+                    <i class="fas fa-headset me-2"></i>
+                    IV. Thông tin liên hệ hỗ trợ thanh toán
+                </h2>
+
+                <div class="p-3 border rounded" style="background-color:#e8f4ff;">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-phone me-2"></i> <strong>Hotline:</strong> <a href="tel:0909123456">0909 123 456</a></li>
+                        <li><i class="far fa-envelope me-2"></i> <strong>Email:</strong> <a href="mailto:shopkidora@gmail.com">shopkidora@gmail.com</a></li>
+                        <li><i class="fas fa-clock me-2"></i> <strong>Giờ làm việc:</strong> 8:00 – 21:00 (Thứ 2 – CN)</li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+

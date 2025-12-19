@@ -1,0 +1,153 @@
+﻿@model IEnumerable<KIDORA.Data.DanhGiaSanPham>
+
+@{
+    ViewData["Title"] = "Đánh giá của khách hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Đánh giá của khách hàng</h2>
+
+<!-- THANH LỌC -->
+<div class="mb-3">
+    <form asp-action="Index" method="get"
+          class="d-flex flex-wrap align-items-center gap-2">
+
+        <input type="text" name="searchString"
+               class="form-control"
+               style="flex:1 1 260px; max-width:340px;"
+               placeholder="Tìm theo mã KH, tên KH hoặc tên sản phẩm" />
+
+        <select name="rating" class="form-select" style="width:140px;">
+            <option value="">Tất cả số sao</option>
+            <option value="5">5 sao</option>
+            <option value="4">4 sao</option>
+            <option value="3">3 sao</option>
+            <option value="2">2 sao</option>
+            <option value="1">1 sao</option>
+        </select>
+
+        <select name="status" class="form-select" style="width:170px;">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="Đang chờ duyệt">Đang chờ duyệt</option>
+            <option value="Approved">Đã duyệt</option>
+            <option value="Rejected">Đã từ chối</option>
+        </select>
+
+        <button type="submit"
+                class="btn text-white"
+                style="background-color:#467FF7;border-color:#467FF7;">
+            Lọc
+        </button>
+    </form>
+</div>
+
+<!-- BẢNG ĐÁNH GIÁ -->
+<table class="table table-striped table-hover align-middle admin-table">
+    <thead style="background-color:#FFF6CC; color:#004A99; font-weight:600;">
+        <tr>
+            <th>MÃ ĐG</th>
+            <th>SẢN PHẨM</th>
+            <th>KHÁCH HÀNG</th>
+            <th>ĐIỂM</th>
+            <th>NỘI DUNG</th>
+            <th>NGÀY ĐÁNH GIÁ</th>
+            <th>TRẠNG THÁI</th>
+            <th class="text-end">THAO TÁC</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            string shortContent = item.NoiDung ?? "";
+            if (shortContent.Length > 80) shortContent = shortContent.Substring(0, 80) + "...";
+
+            // Chuẩn hoá trạng thái
+            var rawStatus = item.TrangThai ?? "";
+            var statusNorm = rawStatus.Trim().ToLower();
+
+            string statusLabel;
+            string statusClass;
+
+            switch (statusNorm)
+            {
+                case "approved":
+                case "đã duyệt":
+                    statusLabel = "Đã duyệt";
+                    statusClass = "badge bg-success";
+                    break;
+
+                case "rejected":
+                case "đã từ chối":
+                    statusLabel = "Đã từ chối";
+                    statusClass = "badge bg-danger";
+                    break;
+
+                default:
+                    statusLabel = "Đang chờ duyệt";
+                    statusClass = "badge bg-warning text-dark";
+                    break;
+            }
+
+            bool isPending =
+            !(statusNorm == "approved"
+            || statusNorm == "đã duyệt"
+            || statusNorm == "rejected"
+            || statusNorm == "đã từ chối");
+
+            // Lấy thông tin người dùng từ bảng NGUOI_DUNG
+            var nguoiDung = item.MaKhNavigation?.MaKhNavigation;
+
+            <tr>
+                <td>@item.MaDanhGia</td>
+
+                <td>
+                    <div class="fw-semibold">@item.MaSpNavigation?.TenSp</div>
+                    <small class="text-muted">Mã SP: @item.MaSp</small>
+                </td>
+
+                <td>
+                    <div class="fw-semibold">@nguoiDung?.HoTen</div>
+                    <small class="text-muted">Mã KH: @item.MaKh</small>
+                </td>
+
+                <td>@item.DiemDanhGia / 5</td>
+                <td>@shortContent</td>
+                <td>@item.NgayDanhGia.ToString("dd/MM/yyyy HH:mm")</td>
+
+                <td>
+                    @if (statusLabel == "Đã duyệt")
+                    {
+                        <span class="badge" style="background-color:#467FF7;color:white;">@statusLabel</span>
+                    }
+                    else if (statusLabel == "Đã từ chối")
+                    {
+                        <span class="badge bg-danger">@statusLabel</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">@statusLabel</span>
+                    }
+                </td>
+
+                <td class="text-end">
+                    @if (isPending)
+                    {
+                        <form asp-action="Approve" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@item.MaDanhGia" />
+                            <button type="submit" class="btn btn-sm text-white"
+                                    style="background-color:#467FF7;border-color:#467FF7;">
+                                Duyệt
+                            </button>
+                        </form>
+                        <form asp-action="Reject" method="post" class="d-inline ms-1">
+                            <input type="hidden" name="id" value="@item.MaDanhGia" />
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Từ chối
+                            </button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

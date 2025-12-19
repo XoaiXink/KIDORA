@@ -1,0 +1,121 @@
+﻿@model IEnumerable<KIDORA.Data.GdKcoin>
+
+@{
+    ViewData["Title"] = "Giao dịch K-Coin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+
+    string keyword = ViewBag.Keyword as string ?? "";
+    string kieuGd = ViewBag.KieuGd as string ?? "all";
+    DateTime? fromDate = ViewBag.FromDate as DateTime?;
+    DateTime? toDate = ViewBag.ToDate as DateTime?;
+}
+
+<h2 class="mb-4">Giao dịch K-Coin</h2>
+
+<!-- THANH LỌC -->
+<form asp-action="Index" method="get"
+      class="row g-2 mb-3 align-items-end">
+
+    <div class="col-md-4">
+        <label class="form-label">Từ khóa</label>
+        <input type="text"
+               name="keyword"
+               class="form-control"
+               value="@keyword"
+               placeholder="Tìm theo mã KH, tên KH hoặc mã đơn hàng" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Loại giao dịch</label>
+        <select name="kieuGd" class="form-select">
+            <option value="all" selected="@(kieuGd == "all" ? "selected" : null)">Tất cả</option>
+            <option value="earn" selected="@(kieuGd == "earn" ? "selected" : null)">Hoàn (Earn)</option>
+            <option value="spend" selected="@(kieuGd == "spend" ? "selected" : null)">Tiêu (Spend)</option>
+            <option value="adjust" selected="@(kieuGd == "adjust" ? "selected" : null)">Điều chỉnh / thưởng</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Từ ngày</label>
+        <input type="date"
+               name="fromDate"
+               class="form-control"
+               value="@(fromDate.HasValue? fromDate.Value.ToString("yyyy-MM-dd") : "")" />
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Đến ngày</label>
+        <input type="date"
+               name="toDate"
+               class="form-control"
+               value="@(toDate.HasValue? toDate.Value.ToString("yyyy-MM-dd") : "")" />
+    </div>
+
+    <div class="col-md-1 d-flex">
+        <button type="submit"
+                class="btn text-white ms-md-2"
+                style="background-color:#467FF7;border-color:#467FF7; flex:1;">
+            Lọc
+        </button>
+    </div>
+</form>
+
+<!-- BẢNG GIAO DỊCH -->
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead style="background-color:#FFF6CC; color:#004A99; font-weight:600;">
+                <tr>
+                    <th>THỜI GIAN</th>
+                    <th>MÃ KH</th>
+                    <th>KHÁCH HÀNG</th>
+                    <th>LOẠI GD</th>
+                    <th>SỐ K-COIN</th>
+                    <th>SỐ DƯ SAU GD</th>
+                    <th>MÃ ĐƠN HÀNG</th>
+                    <th>MÔ TẢ</th>
+                </tr>
+            </thead>
+
+            <tbody style="color:#000 !important;">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        // Màu theo loại GD (dựa vào text tiếng Việt trong DB)
+                        var color =
+                        (item.KieuGd ?? "").Contains("Hoàn") ? "text-success" :
+                        (item.KieuGd ?? "").Contains("Dùng") ? "text-danger" :
+                        "text-warning";
+
+                        bool isSpend = (item.KieuGd ?? "").Contains("Dùng");
+
+                        <tr>
+                            <td>@item.ThoiGianGd.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@item.MaKh</td>
+                            <td>@item.MaKhNavigation?.MaKhNavigation?.HoTen</td>
+
+                            <td class="@color">@item.KieuGd</td>
+
+                            <td class="@color fw-bold">
+                                @(isSpend ? "-" : "+")@item.SoKcoin
+                            </td>
+
+                            <td>@item.SoDuSauGd</td>
+                            <td>@(item.MaDonHang ?? "-")</td>
+                            <td>@item.MoTa</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            Chưa có giao dịch K-Coin nào phù hợp bộ lọc.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

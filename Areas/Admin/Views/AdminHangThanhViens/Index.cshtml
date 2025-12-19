@@ -1,0 +1,49 @@
+﻿@model IEnumerable<KIDORA.Data.HangThanhVien>
+
+@{
+    ViewData["Title"] = "Hạng thành viên";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Hạng thành viên</h2>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead style="background-color:#FFF6CC; color:#004A99; font-weight:600;">
+                <tr>
+                    <th>Mã hạng</th>
+                    <th>Tên hạng</th>
+                    <th>Ngưỡng chi tiêu 6 tháng</th>
+                    <th>Tỷ lệ hoàn K-Coin</th>
+                    <th>Mô tả</th>
+                    <th>Số KH đang ở hạng này</th>
+                </tr>
+            </thead>
+            <tbody style="color:#000000; font-weight:300;">
+                @foreach (var item in Model)
+                {
+                    var soKhach = item.KhachHangs?.Count ?? 0;
+                    string moTa = item.MoTa ?? "";
+                    if (moTa.Length > 80) { moTa = moTa.Substring(0, 80) + "..."; }
+
+                    <tr>
+                        <td>@item.MaHang</td>
+                        <td>@item.TenHang</td>
+                        <td>@item.MucChiTieu6Thang.ToString("N0") ₫</td>
+                        <td>@item.TyLeHoanKcoin.ToString("0.##") %</td>
+                        <td>@moTa</td>
+                        <td>@soKhach</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-secondary text-center mt-3 mb-0">
+                Chưa cấu hình hạng thành viên nào.
+            </div>
+        }
+    </div>
+</div>

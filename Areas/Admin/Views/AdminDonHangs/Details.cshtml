@@ -1,0 +1,157 @@
+﻿@using KIDORA.Data
+@model DonHang
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    var chiTiet = ViewBag.ChiTiet as List<ChiTietDonHang>;
+    var availableStatus = ViewBag.AvailableStatus as string[] ?? Array.Empty<string>();
+}
+
+<div class="container-fluid my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h2 text-dark mb-1">Chi tiết đơn hàng</h1>
+            <div class="text-muted">Mã đơn: <strong>@Model.MaDonHang</strong></div>
+        </div>
+        <a class="btn btn-secondary"
+           asp-area="Admin"
+           asp-controller="AdminDonHangs"
+           asp-action="Index">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold text-dark mb-0">Thông tin đơn hàng</h5>
+                        <form asp-action="UpdateStatus"
+                              asp-controller="AdminDonHangs"
+                              asp-area="Admin"
+                              method="post"
+                              class="d-flex gap-2 align-items-center">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.MaDonHang" />
+                            <select class="form-select form-select-sm" name="trangThaiMoi" style="min-width: 180px;">
+                                @foreach (var st in availableStatus)
+                                {
+                                    <option value="@st" selected="@(Model.TrangThaiDon == st)">@st</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-sync-alt"></i> Cập nhật
+                            </button>
+                        </form>
+                    </div>
+                    <dl class="row mb-0 text-dark">
+                        <dt class="col-sm-5">Số đơn hàng</dt>
+                        <dd class="col-sm-7">@Model.SoDonHang</dd>
+
+                        <dt class="col-sm-5">Ngày đặt</dt>
+                        <dd class="col-sm-7">@Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-5">Trạng thái đơn</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-light text-dark border">@Model.TrangThaiDon</span>
+                        </dd>
+
+                        <dt class="col-sm-5">Trạng thái thanh toán</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-light text-dark border">@Model.TrangThaiThanhToan</span>
+                        </dd>
+
+                        <dt class="col-sm-5">Phí vận chuyển</dt>
+                        <dd class="col-sm-7">@String.Format("{0:N0} đ", Model.PhiVanChuyen)</dd>
+
+                        <dt class="col-sm-5">Giảm giá KM</dt>
+                        <dd class="col-sm-7">@String.Format("{0:N0} đ", Model.GiamGiaKm)</dd>
+
+                        <dt class="col-sm-5">Giảm giá KCoin</dt>
+                        <dd class="col-sm-7">@String.Format("{0:N0} đ", Model.GiamGiaKcoin)</dd>
+
+                        <dt class="col-sm-5">Tổng tiền hàng</dt>
+                        <dd class="col-sm-7">@String.Format("{0:N0} đ", Model.TongTienHang)</dd>
+
+                        <dt class="col-sm-5">Tổng giảm giá</dt>
+                        <dd class="col-sm-7">@String.Format("{0:N0} đ", Model.TongGiamGia)</dd>
+
+                        <dt class="col-sm-5">Tổng thanh toán</dt>
+                        <dd class="col-sm-7 fw-semibold text-success">@String.Format("{0:N0} đ", Model.TongThanhToan)</dd>
+
+                        <dt class="col-sm-5">VAT</dt>
+                        <dd class="col-sm-7">@String.Format("{0:N0} đ", Model.Vat)</dd>
+
+                        <dt class="col-sm-5">Tổng sau VAT</dt>
+                        <dd class="col-sm-7">@String.Format("{0:N0} đ", Model.TongSauVat)</dd>
+
+                        <dt class="col-sm-5">Ghi chú</dt>
+                        <dd class="col-sm-7">@(!string.IsNullOrWhiteSpace(Model.GhiChu) ? Model.GhiChu : "Không có")</dd>
+                    </dl>
+                </div>
+
+                <div class="col-lg-6">
+                    <h5 class="fw-bold text-dark mb-3">Thông tin người nhận</h5>
+                    <dl class="row mb-0 text-dark">
+                        <dt class="col-sm-5">Tên người nhận</dt>
+                        <dd class="col-sm-7">@Model.TenNguoiNhan</dd>
+
+                        <dt class="col-sm-5">Số điện thoại</dt>
+                        <dd class="col-sm-7">@Model.SdtnguoiNhan</dd>
+
+                        <dt class="col-sm-5">Địa chỉ giao hàng</dt>
+                        <dd class="col-sm-7">@Model.DiaChiGiao</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">Sản phẩm trong đơn hàng</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle text-dark">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Tên sản phẩm</th>
+                            <th>SKU</th>
+                            <th class="text-center" style="width: 80px;">SL</th>
+                            <th class="text-end" style="width: 120px;">Đơn giá</th>
+                            <th class="text-end" style="width: 120px;">Giảm (%)</th>
+                            <th class="text-end" style="width: 140px;">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (chiTiet != null && chiTiet.Any())
+                        {
+                            foreach (var ct in chiTiet)
+                            {
+                                <tr>
+                                    <td>@ct.TenSpHienThi</td>
+                                    <td>@ct.Sku</td>
+                                    <td class="text-center">@ct.SoLuong</td>
+                                    <td class="text-end">@String.Format("{0:N0} đ", ct.DonGia)</td>
+                                    <td class="text-end">@ct.TyLeGiam.ToString("0.##")</td>
+                                    <td class="text-end">@String.Format("{0:N0} đ", ct.ThanhTien)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">
+                                    Không có chi tiết đơn hàng.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+﻿@model KIDORA.Data.KhachHang
+
+@{
+    ViewData["Title"] = "Chi tiết khách hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h2 text-dark mb-1">Chi tiết khách hàng</h1>
+            <div class="text-muted">Mã KH: <strong>@Model.MaKh</strong></div>
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.MaKh" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Sửa thông tin
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-lg-6 border-end">
+                    <h5 class="fw-bold text-dark mb-3">Thông tin tài khoản</h5>
+                    <dl class="row mb-0 text-dark">
+                        <dt class="col-sm-5">Họ tên</dt>
+                        <dd class="col-sm-7">@Model.MaKhNavigation?.HoTen</dd>
+
+                        <dt class="col-sm-5">Email</dt>
+                        <dd class="col-sm-7">@Model.MaKhNavigation?.Email</dd>
+
+                        <dt class="col-sm-5">Điện thoại</dt>
+                        <dd class="col-sm-7">@Model.MaKhNavigation?.DienThoai</dd>
+
+                        <dt class="col-sm-5">Giới tính</dt>
+                        <dd class="col-sm-7">@Model.MaKhNavigation?.GioiTinh</dd>
+
+                        <dt class="col-sm-5">Ngày sinh</dt>
+                        <dd class="col-sm-7">
+                            @(Model.MaKhNavigation?.NgaySinh.HasValue == true
+                                ? Model.MaKhNavigation.NgaySinh.Value.ToString("dd/MM/yyyy")
+                                : "")
+                        </dd>
+
+                        <dt class="col-sm-5">Trạng thái email</dt>
+                        <dd class="col-sm-7">
+                            @if (Model.MaKhNavigation != null && Model.MaKhNavigation.EmailConfirmed)
+                            {
+                                <span class="badge bg-success">Đã xác thực</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Chưa xác thực</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="col-lg-6">
+                    <h5 class="fw-bold text-dark mb-3">Thông tin thành viên</h5>
+                    <dl class="row mb-0 text-dark">
+                        <dt class="col-sm-5">Hạng thành viên</dt>
+                        <dd class="col-sm-7">
+                            @(Model.MaHangNavigation != null
+                                ? Model.MaHangNavigation.TenHang
+                                : "Chưa có hạng")
+                        </dd>
+
+                        <dt class="col-sm-5">Số dư K-Coin</dt>
+                        <dd class="col-sm-7">@Model.SoDuKcoin</dd>
+
+                        <dt class="col-sm-5">Ngày tham gia</dt>
+                        <dd class="col-sm-7">@Model.NgayThamGia.ToString("dd/MM/yyyy HH:mm")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

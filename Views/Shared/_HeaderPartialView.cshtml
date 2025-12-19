@@ -1,0 +1,210 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<div class="container-fluid fixed-top">
+    <!-- TOPBAR -->
+    <div class="container topbar bg-primary d-none d-lg-block">
+        <div class="d-flex justify-content-between">
+            <div class="top-info ps-2">
+                <small class="me-3">
+                    <i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                    <a href="#" class="text-white">55 Nguyễn Trãi, Quận 5, TP.HCM</a>
+                </small>
+                <small class="me-3">
+                    <i class="fas fa-envelope me-2 text-secondary"></i>
+                    <a href="#" class="text-white">shopkidora@gmail.com</a>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <div class="container px-0">
+        <nav class="navbar navbar-light bg-white navbar-expand-xl">
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand d-flex align-items-center">
+                <img src="/logo.png"
+                     alt="KIDORA"
+                     style="height:100px; width:auto; margin-right:10px;">
+            </a>
+
+            <button class="navbar-toggler py-2 px-3"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars text-primary"></span>
+            </button>
+
+            <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                <!-- MENU -->
+                <div class="navbar-nav mx-auto">
+
+                    <a asp-controller="Home"
+                       asp-action="Gioithieu"
+                       class="nav-item nav-link @(currentController == "Home" && currentAction == "Gioithieu" ? "active" : "")">
+                        GIỚI THIỆU
+                    </a>
+
+                    <a asp-controller="CamNang"
+                       asp-action="Index"
+                       class="nav-item nav-link @(currentController == "CamNang" ? "active" : "")">
+                        CẨM NANG
+                    </a>
+
+                    <a asp-controller="Home"
+                       asp-action="Contact"
+                       class="nav-item nav-link @(currentController == "Home" && currentAction == "Contact" ? "active" : "")">
+                        LIÊN HỆ
+                    </a>
+
+                    <a asp-controller="SanPham"
+                       asp-action="Index"
+                       class="nav-item nav-link @(currentController == "SanPham" ? "active" : "")">
+                        SẢN PHẨM
+                    </a>
+
+                </div>
+
+                <!-- RIGHT ICONS -->
+                <div class="d-flex m-3 me-0">
+                    <!-- SEARCH -->
+                    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+                            data-bs-toggle="modal"
+                            data-bs-target="#searchModal">
+                        <i class="fas fa-search text-primary"></i>
+                    </button>
+
+                    <!-- CART -->
+                    @await Component.InvokeAsync("GioHang")
+
+                    <!-- USER -->
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="dropdown my-auto">
+                            <a class="dropdown-toggle text-primary d-flex align-items-center"
+                               href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <i class="fas fa-user fa-2x"></i>
+                            </a>
+
+                            <!-- Scoped styles for better dropdown alignment -->
+                            <style>
+                                .profile-dropdown .dropdown-header-custom {
+                                    padding: .6rem 1rem;
+                                    font-weight: 700;
+                                    text-align: center;
+                                    color: var(--kidora-dark);
+                                }
+
+                                .profile-dropdown .dropdown-item {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: .75rem;
+                                    padding: .55rem 1rem;
+                                }
+
+                                    .profile-dropdown .dropdown-item i {
+                                        width: 24px;
+                                        text-align: center;
+                                        font-size: 1rem;
+                                        color: var(--kidora-blue);
+                                    }
+
+                                    .profile-dropdown .dropdown-item.text-danger i {
+                                        color: #dc3545 !important;
+                                    }
+
+                                .profile-dropdown .dropdown-divider {
+                                    margin: .35rem 0;
+                                }
+                            </style>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow profile-dropdown">
+                                <li class="dropdown-header-custom">
+                                    Xin chào, @(User.Identity?.Name)
+                                </li>
+
+                                <li><hr class="dropdown-divider" /></li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                                        <i class="fa fa-user-circle"></i>
+                                        <span>Thông tin cá nhân</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Profile" asp-action="Address">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Địa chỉ giao hàng</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Orders" asp-action="Index">
+                                        <i class="fas fa-receipt"></i>
+                                        <span>Đơn hàng của tôi</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Profile" asp-action="ChangePassword">
+                                        <i class="fa fa-key"></i>
+                                        <span>Đổi mật khẩu</span>
+                                    </a>
+                                </li>
+
+                                <li><hr class="dropdown-divider" /></li>
+
+                                <li>
+                                    <form method="post"
+                                          asp-controller="Account"
+                                          asp-action="Logout"
+                                          class="m-0">
+                                        <button type="submit"
+                                                class="dropdown-item text-danger"
+                                                style="background:transparent;border:none;width:100%;text-align:left;">
+                                            <i class="fa fa-sign-out-alt"></i>
+                                            <span>Đăng xuất</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account"
+                           asp-action="Login"
+                           class="my-auto d-flex align-items-center">
+                            <i class="fas fa-user fa-2x text-primary"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content rounded-0">
+            <div class="modal-header">
+                <h5 class="modal-title">Search by keyword</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center">
+                <div class="input-group w-75 mx-auto">
+                    <input type="search" class="form-control p-3" placeholder="keywords">
+                    <span class="input-group-text p-3">
+                        <i class="fa fa-search"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

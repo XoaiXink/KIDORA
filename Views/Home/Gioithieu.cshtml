@@ -1,0 +1,323 @@
+﻿@{
+    ViewData["Title"] = "Giới thiệu";
+}
+<div class="gioithieu-wrapper">
+    <!-- header spacer to avoid overlap with fixed header -->
+    .gioithieu-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 130px 16px 80px; /* ✅ tăng lên đúng chiều cao header */
+    font-family: "Roboto", "Noto Sans", sans-serif;
+    color: #111827;
+}
+    <!-- 1) Giới thiệu chung -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Giới thiệu chung</h1>
+            <p><strong>KIDORA</strong> ra đời với mong muốn mang đến cho trẻ em Việt Nam những sản phẩm chất lượng, an toàn và giàu tính giáo dục.</p>
+            <p>Chúng tôi hợp tác trực tiếp với các nhà cung cấp uy tín trong nước, lựa chọn kỹ càng từng món đồ chơi, từng cuốn sách để mang lại niềm vui, tri thức và sự phát triển toàn diện cho bé.</p>
+            <div class="hero-button">
+                <a asp-controller="SanPham" asp-action="Index">Xem sản phẩm</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="~/Anh/anhgioithieu/gt_anh1.jpg" alt="Bé vui chơi cùng đồ chơi KIDORA">
+        </div>
+    </section>
+
+    <!-- 2) Tầm nhìn & Sứ mệnh -->
+    <section class="vision-section">
+        <div class="vision-images">
+            <img src="~/Anh/anhgioithieu/Kids-playing-with-blocks (1).jpg" alt="Bé xây nhà">
+            <img src="~/Anh/anhgioithieu/gt_anh2.jpg" alt="Bé vẽ tranh">
+            <img src="~/Anh/anhgioithieu/gt_anh3.jpg" alt="Bé đọc sách">
+            <img src="~/Anh/anhgioithieu/gt_anh4.jpg" alt="Bé chơi đồ chơi">
+        </div>
+        <div class="vision-text">
+            <h1>Tầm nhìn & Sứ mệnh</h1>
+            <p>Kidora hướng đến trở thành thương hiệu đáng tin cậy số 1 về đồ chơi, sách và dụng cụ học tập cho trẻ em.</p>
+            <p>Chúng tôi cam kết mang đến sản phẩm giúp trẻ <strong>học mà chơi – chơi mà học</strong>, đồng hành cùng phụ huynh trên hành trình nuôi dạy con.</p>
+        </div>
+    </section>
+
+    <!-- 3) Danh mục sản phẩm -->
+    <section class="category-section">
+        <h1>Danh mục sản phẩm</h1>
+        <div class="category-list">
+            <div class="category-item">
+                <img src="~/Anh/anhgioithieu/sach.jpg" alt="Sách & Truyện">
+                <div class="category-title">Sách & Truyện</div>
+                <div class="category-desc">Mở ra thế giới tri thức, nuôi dưỡng thói quen đọc sách.</div>
+            </div>
+            <div class="category-item">
+                <img src="~/Anh/anhgioithieu/choi.jpg" alt="Đồ chơi thông minh">
+                <div class="category-title">Đồ chơi thông minh</div>
+                <div class="category-desc">Phát triển kỹ năng vận động, tư duy logic và cảm xúc.</div>
+            </div>
+            <div class="category-item">
+                <img src="~/Anh/anhgioithieu/dcht.jpg" alt="Dụng cụ học tập">
+                <div class="category-title">Dụng cụ học tập</div>
+                <div class="category-desc">Thiết kế đáng yêu, chất lượng cao, giúp bé hứng thú học tập.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4) Giá trị cốt lõi -->
+    <section class="values-section">
+        <h2>Giá trị cốt lõi</h2>
+        <div class="values-list">
+            <div class="value-item">
+                <img src="~/Anh/anhgioithieu/an-toan.png" alt="An toàn & chất lượng">
+                <p>An Toàn & Chất Lượng</p>
+            </div>
+            <div class="value-item">
+                <img src="~/Anh/anhgioithieu/sang-tao.png" alt="Sáng tạo & Giáo dục">
+                <p>Sáng Tạo & Giáo Dục</p>
+            </div>
+            <div class="value-item">
+                <img src="~/Anh/anhgioithieu/dong-hanh.png" alt="Đồng hành cùng phụ huynh">
+                <p>Đồng Hành Cùng Phụ Huynh</p>
+            </div>
+            <div class="value-item">
+                <img src="~/Anh/anhgioithieu/ptbv.png" alt="Phát triển bền vững">
+                <p>Phát Triển Bền Vững</p>
+            </div>
+            <div class="value-item">
+                <img src="~/Anh/anhgioithieu/minh-bach.png" alt="Minh bạch & Trách nhiệm">
+                <p>Minh Bạch & Trách Nhiệm</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5) Kidora - Nuôi dưỡng tiềm năng -->
+    <section class="mission-section">
+        <h1>KIDORA</h1>
+        <h2>Nuôi dưỡng tiềm năng - Chắp cánh tương lai</h2>
+        <p><em>"Sản phẩm an toàn – Nguồn gốc minh bạch – Giá hợp lý"</em></p>
+        <a asp-controller="SanPham" asp-action="Index">Khám Phá Thêm</a>
+    </section>
+</div>
+<style>
+    /* ====== Layout chung ====== */
+    .gioithieu-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 120px 16px 80px; /* reduce top padding since we use header-spacer */
+        font-family: "Roboto", "Noto Sans", sans-serif;
+        color: #111827;
+    }
+
+        .gioithieu-wrapper h1, .gioithieu-wrapper h2 {
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .gioithieu-wrapper p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+    /* ====== 1. Hero ====== */
+    .hero-section {
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        margin-bottom: 80px;
+    }
+
+    .hero-content {
+        flex: 1;
+    }
+
+    .hero-title {
+        font-size: 50px;
+        margin-bottom: 16px;
+        text-align: left;
+    }
+
+    .hero-subtitle {
+        font-size: 20px; /* tăng chữ dòng phụ */
+        font-weight: 600;
+        color: #1e1e1e;
+    }
+
+    .hero-button a {
+        display: inline-block;
+        padding: 12px 28px;
+        border-radius: 999px;
+        background: var(--kidora-blue);
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s ease;
+    }
+
+        .hero-button a:hover {
+            background: var(--kidora-blue-dark);
+        }
+
+    .hero-image {
+        flex: 1;
+        text-align: center;
+    }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 24px;
+        }
+
+    /* ====== 2. Tầm nhìn & Sứ mệnh ====== */
+    .vision-section {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        margin-bottom: 80px;
+    }
+
+    .vision-images {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+        .vision-images img {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+    .vision-text {
+        flex: 1;
+    }
+
+        .vision-text h2 {
+            font-size: 28px;
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+    /* ====== 3. Danh mục sản phẩm ====== */
+    .category-section {
+        margin-bottom: 80px;
+    }
+
+        .category-section h2 {
+            margin-bottom: 40px;
+        }
+
+    .category-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+    }
+
+    .category-item {
+        text-align: center;
+    }
+
+        .category-item img {
+            width: 100%;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+    .category-title {
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .category-desc {
+        font-size: 14px;
+        color: #4b5563;
+    }
+
+    /* ====== 4. Giá trị cốt lõi ====== */
+    .values-section {
+        margin-bottom: 100px;
+        text-align: center;
+    }
+
+        .values-section h2 {
+            margin-bottom: 40px;
+        }
+
+    .values-list {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-bottom: 60px;
+    }
+
+    .value-item {
+        flex: 1 1 150px;
+        background: #f9fafb;
+        padding: 20px;
+        border-radius: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .value-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .value-item img {
+            width: 48px;
+            margin-bottom: 10px;
+        }
+
+        .value-item p {
+            font-weight: 600;
+            margin: 0;
+        }
+
+    /* ====== 5. Kidora – Nuôi dưỡng tiềm năng ====== */
+    .mission-section {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+        .mission-section h2 {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .mission-section p {
+            font-size: 18px;
+            margin-bottom: 24px;
+        }
+
+        .mission-section a {
+            background: var(--kidora-blue);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .mission-section a:hover {
+                background: var(--kidora-blue-dark);
+            }
+
+    /* ====== Responsive ====== */
+    @@media (max-width: 992px) {
+        .hero-section, .vision-section {
+            flex-direction: column;
+        }
+
+        .category-list {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .category-list {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+

@@ -1,0 +1,32 @@
+﻿@model KIDORA.ViewModels.CamNangVM
+
+@{
+    ViewData["Title"] = Model.TieuDe;
+}
+<!-- FIX CHE HEADER -->
+<div style="height:140px;"></div>
+<div class="container py-5" style="max-width:900px">
+
+    <!-- TIÊU ĐỀ -->
+    <h1 class="mb-3">@Model.TieuDe</h1>
+
+    <!-- META -->
+    <p class="text-muted">
+        <i class="far fa-calendar-alt"></i> @Model.NgayDang.ToString("dd/MM/yyyy")
+        &nbsp; | &nbsp;
+        <i class="fas fa-user"></i> @Model.TacGia
+    </p>
+
+    <!-- ẢNH ĐẠI DIỆN -->
+    <img src="~/AnhCamNang/@Model.Anh"
+         class="img-fluid rounded mb-4"
+         alt="@Model.TieuDe" />
+
+    <!-- NỘI DUNG -->
+    <div style="font-size:18px; line-height:1.7;">
+        @Html.Raw(Model.NoiDung)
+    </div>
+
+</div>
+
+

@@ -1,0 +1,169 @@
+﻿@model IEnumerable<KIDORA.ViewModels.CamNangVM>
+
+@{
+    ViewData["Title"] = "Cẩm Nang";
+}
+<!-- FIX CHE HEADER -->
+<div style="height:140px;"></div>
+<div class="container py-5">
+
+    @foreach (var item in Model)
+    {
+        <div class="kidora-post-wrapper mb-5">
+
+            <div class="kidora-post-card">
+
+                <!-- ẢNH -->
+                <div class="kidora-thumb">
+                    <img src="~/AnhCamNang/@item.Anh"
+                         alt="@item.TieuDe" />
+                </div>
+
+                <!-- NỘI DUNG -->
+                <div class="kidora-content text-center">
+
+                    <!-- CATEGORY -->
+                    <span class="kidora-category">Cẩm nang</span>
+
+                    <!-- TITLE -->
+                    <h2 class="kidora-title">
+                        @item.TieuDe
+                    </h2>
+
+                    <!-- META  -->
+                    <div class="kidora-meta">
+                        <span>
+                            <i class="far fa-calendar"></i>
+                            @item.NgayDang.ToString("dd/MM/yyyy")
+                        </span>
+                        <span>
+                            <i class="fas fa-user"></i>
+                            @item.TacGia
+                        </span>
+                        <span>
+                            <i class="fa fa-comments"></i>
+                            0 Comment
+                        </span>
+                    </div>
+
+                    <!-- TÓM TẮT -->
+                    <p class="kidora-excerpt">
+                        @(item.TomTat?.Length > 180
+                                            ? item.TomTat.Substring(0, 180) + "..."
+                                            : item.TomTat)
+                </p>
+
+                    <!-- BUTTON -->
+                    <a asp-controller="CamNang"
+                       asp-action="ChiTiet"
+                       asp-route-id="@item.MaBai"
+                       class="kidora-btn">
+                        Xem thêm
+                    </a>
+
+                </div>
+            </div>
+        </div>
+        }
+
+</div>
+<style>
+/* Wrapper để mỗi cẩm nang tách biệt */
+.kidora-post-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+/* Card chính */
+.kidora-post-card {
+    width: 100%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+    transition: all .3s ease;
+}
+
+.kidora-post-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(0,0,0,.12);
+}
+
+/* Ảnh – KHÔNG LỆCH */
+.kidora-thumb {
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+}
+
+.kidora-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Nội dung */
+.kidora-content {
+    padding: 40px 30px;
+}
+
+/* Category */
+.kidora-category {
+    display: inline-block;
+    background: #1e73be;
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: -30px;
+}
+
+/* Title */
+.kidora-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 20px 0 10px;
+}
+
+/* Meta */
+.kidora-meta {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.kidora-meta i {
+    margin-right: 6px;
+}
+
+/* Tóm tắt */
+.kidora-excerpt {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto 30px;
+}
+
+/* Button giống mẫu */
+.kidora-btn {
+    display: inline-block;
+    padding: 12px 40px;
+    border: 2px solid #1e73be;
+    color: #1e73be;
+    font-weight: 600;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all .3s ease;
+}
+
+.kidora-btn:hover {
+    background: #1e73be;
+    color: #fff;
+}
+
+    </style >
