@@ -79,22 +79,15 @@
                 </tbody>
             </table>
         </div>
-        <button>
-        <a asp-action="ThanhToan" asp-controller="GioHang"
-           class="thanhtoan">
-            <div class="buttonthanhtoan">
-                Tiến hành thanh toán
-            </div>
-        </a>
-        </button>
+        
         <div class="row g-4 justify-content-end">
             <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
                 <div class="bg-light rounded">
                     <div class="p-4">
-                        <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                        <h1 class="display-6 mb-4">Giỏ hàng <span class="fw-normal"></span></h1>
 
                         <div class="d-flex justify-content-between mb-4">
-                            <h5 class="mb-0 me-4">Subtotal:</h5>
+                            <h5 class="mb-0 me-4">Tổng tiền:</h5>
                             <p class="mb-0">
                                 <span id="cart-subtotal">@Model.Sum(p => p.ThanhTien).ToString("N0")</span> VND
                             </p>
@@ -103,10 +96,32 @@
                 </div>
             </div>
         </div>
+        <a asp-action="ThanhToan"
+           asp-controller="GioHang"
+           class="btn-thanhtoan">
+            Tiến hành thanh toán
+        </a>
+
 
     </div>
 </div>
+<style>
+    .btn-thanhtoan {
+        display: inline-block;
+        font-size: 22px; /* 👈 font 22 */
+        font-weight: 600;
+        padding: 14px 28px;
+        margin-left: 24px; /* 👈 dịch sang phải */
 
+        color: black;
+        background-color: transparent;
+        border: 2px solid ;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+</style>
 @section Scripts {
     <script>
                 document.addEventListener("click", function (e) {
