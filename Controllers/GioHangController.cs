@@ -123,8 +123,41 @@ namespace KIDORA.Controllers
             var model = new ThanhToanVM
             {
                 GioHang = gioHang,
-                // Tài khoản demo nếu có đăng nhập thì load thông tin từ DB
             };
+
+            // Nếu user đã đăng nhập, load địa chỉ đã lưu và thông tin cá nhân
+            var currentUserId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                // Load saved addresses
+                var diaChis = _context.DiaChiKhachHangs
+                    .Where(d => d.MaKh == currentUserId)
+                    .OrderByDescending(d => d.MacDinh)
+                    .ToList();
+
+                model.DiaChiDaLuu = diaChis;
+
+                // Prefill with default address or user profile
+                var defaultAddr = diaChis.FirstOrDefault(d => d.MacDinh) ?? diaChis.FirstOrDefault();
+                if (defaultAddr != null)
+                {
+                    model.HoTen = defaultAddr.TenNguoiNhan;
+                    model.DienThoai = defaultAddr.DienThoaiNhan;
+                    model.DiaChi = defaultAddr.DiaChiChiTiet;
+                    model.TinhThanh = defaultAddr.TinhThanh;
+                    model.QuanHuyen = defaultAddr.QuanHuyen;
+                    model.PhuongXa = defaultAddr.PhuongXa;
+                }
+                else
+                {
+                    var nguoiDung = _context.NguoiDungs.FirstOrDefault(n => n.Id == currentUserId);
+                    if (nguoiDung != null)
+                    {
+                        model.HoTen = nguoiDung.HoTen;
+                        model.DienThoai = nguoiDung.DienThoai;
+                    }
+                }
+            }
             return View(model);
         }
 
@@ -138,9 +171,36 @@ namespace KIDORA.Controllers
                 return RedirectToAction("Index");
             }
 
+            // current user id for this request
+            var currentUserId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // If user selected a saved address, overwrite model fields with that address
+            var savedAddressId = Request.Form["savedAddress"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(savedAddressId))
+            {
+                if (int.TryParse(savedAddressId, out int maDiaChi))
+                {
+                    var dc = _context.DiaChiKhachHangs.FirstOrDefault(d => d.MaDiaChi == maDiaChi);
+                    if (dc != null)
+                    {
+                        model.HoTen = dc.TenNguoiNhan;
+                        model.DienThoai = dc.DienThoaiNhan;
+                        model.DiaChi = dc.DiaChiChiTiet;
+                        model.TinhThanh = dc.TinhThanh;
+                        model.QuanHuyen = dc.QuanHuyen;
+                        model.PhuongXa = dc.PhuongXa;
+                    }
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 model.GioHang = gioHang;
+                // reload saved addresses for redisplay
+                if (!string.IsNullOrEmpty(currentUserId))
+                {
+                    model.DiaChiDaLuu = _context.DiaChiKhachHangs.Where(d => d.MaKh == currentUserId).OrderByDescending(d => d.MacDinh).ToList();
+                }
                 return View(model);
             }
 
@@ -169,7 +229,7 @@ namespace KIDORA.Controllers
 
             // Tạo đơn hàng mới
             // Lấy MaKh từ user đang đăng nhập nếu có để liên kết đơn hàng với khách.
-            var currentUserId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            // use currentUserId declared above
 
             var donHang = new DonHang
             {

@@ -12,14 +12,13 @@
             <a asp-action="Edit" asp-route-id="@Model.MaSp" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Chỉnh sửa
             </a>
-            <form asp-action="ToggleVisibility"
+            <form asp-action="ToggleVisibilityPost"
                   asp-controller="AdminSanPhams"
                   asp-area="Admin"
                   method="post"
                   class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.MaSp" />
-                <input type="hidden" name="disable" value="@(Model.DangBan)" />
                 <button type="submit" class="btn @(Model.DangBan ? "btn-warning" : "btn-success")">
                     <i class="fas @(Model.DangBan ? "fa-eye-slash" : "fa-eye")"></i>
                     @(Model.DangBan ? "Vô hiệu hóa" : "Kích hoạt")

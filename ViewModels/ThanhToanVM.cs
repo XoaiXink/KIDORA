@@ -1,11 +1,13 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using KIDORA.Data;
 
 namespace KIDORA.ViewModels
 {
     public class ThanhToanVM
     {
-        public List<SanPhamGioHang>? GioHang { get; set; }
+        public List<SanPhamGioHang> GioHang { get; set; } = new();
         // Thông tin người nhận hàng bắt buộc phải có
         public bool GiongKhachHang { get; set; } = true;
 
@@ -23,11 +25,12 @@ namespace KIDORA.ViewModels
         public string DienThoai { get; set; }
 
         [Display(Name = "Ghi chú")]
-        public string GhiChu { get; set; }
+        public string GhiChu { get; set; } = string.Empty;
 
         public string? TinhThanh { get; set; }
         public string? QuanHuyen { get; set; }
         public string? PhuongXa { get; set; }
+        public List<DiaChiKhachHang> DiaChiDaLuu { get; set; } = new();
 
         // Có thể kèm theo danh sách sản phẩm để hiển thị lại bên trang Checkout (tùy chọn)
         // public List<GioHangVM>? GioHang { get; set; }

@@ -15,7 +15,8 @@
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit" asp-route-id="@Model.MaSp" method="post">
+                @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="MaSp" />
 

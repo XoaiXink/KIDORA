@@ -111,14 +111,13 @@
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
 
-                                            <form asp-action="ToggleVisibility"
+                                            <form asp-action="ToggleVisibilityPost"
                                                   asp-controller="AdminSanPhams"
                                                   asp-area="Admin"
                                                   method="post"
                                                   class="d-inline">
                                                 @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@item.MaSp" />
-                                                <input type="hidden" name="disable" value="@(item.DangBan)" />
                                                 <button type="submit"
                                                         class="btn @(item.DangBan ? "btn-outline-warning" : "btn-outline-success")"
                                                         title="@(item.DangBan ? "Vô hiệu hóa / Ẩn" : "Kích hoạt / Hiển thị")">

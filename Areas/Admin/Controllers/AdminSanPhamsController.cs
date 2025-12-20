@@ -135,12 +135,31 @@ namespace KIDORA.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(sanPham);
+                    // Load existing entity and update specific fields to avoid accidental overwrites
+                    var existing = await _context.SanPhams.FirstOrDefaultAsync(s => s.MaSp == id);
+                    if (existing == null) return NotFound();
+
+                    existing.Sku = sanPham.Sku;
+                    existing.TenSp = sanPham.TenSp;
+                    existing.MoTaNgan = sanPham.MoTaNgan;
+                    existing.MoTaChiTiet = sanPham.MoTaChiTiet;
+                    existing.MaDanhMuc = sanPham.MaDanhMuc;
+                    existing.MaNcc = sanPham.MaNcc;
+                    existing.ThuongHieu = sanPham.ThuongHieu;
+                    existing.DoTuoiToiThieu = sanPham.DoTuoiToiThieu;
+                    existing.DoTuoiToiDa = sanPham.DoTuoiToiDa;
+                    existing.DonGiaBan = sanPham.DonGiaBan;
+                    existing.GiaNiemYet = sanPham.GiaNiemYet;
+                    existing.KhoiLuong = sanPham.KhoiLuong;
+                    existing.AnhChinh = sanPham.AnhChinh;
+                    // IMPORTANT: update DangBan from the checkbox value
+                    existing.DangBan = sanPham.DangBan;
+
+                    _context.Update(existing);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -198,7 +217,7 @@ namespace KIDORA.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleVisibility(string id, bool disable = true)
+        public async Task<IActionResult> ToggleVisibilityPost(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -211,10 +230,11 @@ namespace KIDORA.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            sanPham.DangBan = !disable;
+            // Toggle current state on server-side to avoid relying on client-sent values
+            sanPham.DangBan = !sanPham.DangBan;
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = disable ? "Đã vô hiệu hóa sản phẩm." : "Đã kích hoạt sản phẩm.";
+            TempData["Success"] = sanPham.DangBan ? "Đã kích hoạt sản phẩm." : "Đã vô hiệu hóa sản phẩm.";
             return RedirectToAction(nameof(Index));
         }
 

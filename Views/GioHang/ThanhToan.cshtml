@@ -1,4 +1,5 @@
-﻿@model KIDORA.ViewModels.ThanhToanVM
+﻿@using System.Text.Json
+@model KIDORA.ViewModels.ThanhToanVM
 @{
     ViewData["Title"] = "Thanh Toán";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -33,6 +34,38 @@
                                 <i class="fa fa-truck me-2 text-primary"></i>
                                 Thông tin giao hàng
                             </h4>
+
+                            @if (Model.DiaChiDaLuu?.Any() == true)
+                            {
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Chọn địa chỉ đã lưu</label>
+                                    <div class="list-group">
+                                        @foreach (var diaChi in Model.DiaChiDaLuu)
+                                        {
+                                            <label class="list-group-item list-group-item-action d-flex gap-3 align-items-start">
+                                                <input class="form-check-input mt-1" type="checkbox" name="savedAddress"
+                                                       value="@diaChi.MaDiaChi"
+                                                       data-ten="@diaChi.TenNguoiNhan"
+                                                       data-phone="@diaChi.DienThoaiNhan"
+                                                       data-diachi="@diaChi.DiaChiChiTiet"
+                                                       data-phuong="@diaChi.PhuongXa"
+                                                       data-quan="@diaChi.QuanHuyen"
+                                                       data-tinh="@diaChi.TinhThanh"
+                                                       @((diaChi.MacDinh) ? "checked=\"checked\"" : "") />
+                                                <div>
+                                                    <div class="fw-semibold">@diaChi.TenNguoiNhan</div>
+                                                    <div class="text-muted small">@diaChi.DienThoaiNhan</div>
+                                                    <div class="small">@diaChi.DiaChiChiTiet, @diaChi.PhuongXa, @diaChi.QuanHuyen, @diaChi.TinhThanh</div>
+                                                    @if (diaChi.MacDinh)
+                                                    {
+                                                        <span class="badge bg-primary-subtle text-primary border border-primary mt-1">Mặc định</span>
+                                                    }
+                                                </div>
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            }
 
                             <!-- Họ tên -->
                             <div class="mb-3">
@@ -178,65 +211,149 @@
     </div>
 </div>
 <!-- Checkout Page End -->
-<!-- ================= SCRIPT LOAD TỈNH / QUẬN / PHƯỜNG ================= -->
 <script>
-    const tinhSelect = document.getElementById("tinh");
-    const quanSelect = document.getElementById("quan");
-    const phuongSelect = document.getElementById("phuong");
+    document.addEventListener("DOMContentLoaded", function () {
 
-    // Load tỉnh
-    fetch("https://provinces.open-api.vn/api/p/")
-        .then(res => res.json())
-        .then(data => {
-            data.forEach(tinh => {
-                tinhSelect.innerHTML += `
-                    <option value="${tinh.name}" data-code="${tinh.code}">
-                        ${tinh.name}
-                    </option>`;
+        /* ================= DOM ================= */
+        const tinhSelect = document.getElementById("tinh");
+        const quanSelect = document.getElementById("quan");
+        const phuongSelect = document.getElementById("phuong");
+
+        const hoTenInput = document.querySelector('[name="HoTen"]');
+        const phoneInput = document.querySelector('[name="DienThoai"]');
+        const diaChiInput = document.querySelector('[name="DiaChi"]');
+
+        const savedAddressCheckboxes = document.querySelectorAll('input[name="savedAddress"]');
+
+        let pendingAddress = null; // 🔑 xử lý async load tỉnh
+
+        /* ================= RESET ================= */
+        function resetQuanHuyen() {
+            quanSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
+            quanSelect.disabled = true;
+        }
+
+        function resetPhuongXa() {
+            phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
+            phuongSelect.disabled = true;
+        }
+
+        function clearAutoFill() {
+            hoTenInput.value = "";
+            phoneInput.value = "";
+            diaChiInput.value = "";
+            tinhSelect.value = "";
+            resetQuanHuyen();
+            resetPhuongXa();
+        }
+
+        /* ================= LOAD API ================= */
+        function loadQuanHuyen(tinhCode, preQuan, prePhuong) {
+            resetQuanHuyen();
+            resetPhuongXa();
+            if (!tinhCode) return;
+
+            fetch(`https://provinces.open-api.vn/api/p/${tinhCode}?depth=2`)
+                .then(res => res.json())
+                .then(data => {
+                    quanSelect.disabled = false;
+                    data.districts.forEach(q => {
+                        quanSelect.innerHTML += `
+                            <option value="${q.name}" data-code="${q.code}">
+                                ${q.name}
+                            </option>`;
+                    });
+
+                    if (preQuan) {
+                        quanSelect.value = preQuan;
+                        const code = quanSelect.selectedOptions[0]?.dataset.code;
+                        loadPhuong(code, prePhuong);
+                    }
+                });
+        }
+
+        function loadPhuong(quanCode, prePhuong) {
+            resetPhuongXa();
+            if (!quanCode) return;
+
+            fetch(`https://provinces.open-api.vn/api/d/${quanCode}?depth=2`)
+                .then(res => res.json())
+                .then(data => {
+                    phuongSelect.disabled = false;
+                    data.wards.forEach(p => {
+                        phuongSelect.innerHTML += `
+                            <option value="${p.name}">${p.name}</option>`;
+                    });
+
+                    if (prePhuong) {
+                        phuongSelect.value = prePhuong;
+                    }
+                });
+        }
+
+        /* ================= APPLY SAVED ADDRESS ================= */
+        function tryApplyPendingAddress() {
+            if (!pendingAddress) return;
+            if (tinhSelect.options.length <= 1) return; // tỉnh chưa load xong
+
+            const { ten, phone, diachi, tinh, quan, phuong } = pendingAddress;
+
+            hoTenInput.value = ten || "";
+            phoneInput.value = phone || "";
+            diaChiInput.value = diachi || "";
+
+            const matchedTinh = Array.from(tinhSelect.options)
+                .find(o => o.value === tinh);
+
+            if (matchedTinh) {
+                tinhSelect.value = tinh;
+                loadQuanHuyen(matchedTinh.dataset.code, quan, phuong);
+                pendingAddress = null;
+            }
+        }
+
+        /* ================= LOAD TỈNH ================= */
+        fetch("https://provinces.open-api.vn/api/p/")
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(tinh => {
+                    tinhSelect.innerHTML += `
+                        <option value="${tinh.name}" data-code="${tinh.code}">
+                            ${tinh.name}
+                        </option>`;
+                });
+
+                tryApplyPendingAddress(); // 🔑 quan trọng
+            });
+
+        /* ================= EVENT ================= */
+        savedAddressCheckboxes.forEach(cb => {
+            cb.addEventListener("change", function () {
+
+                // chỉ cho chọn 1 địa chỉ
+                savedAddressCheckboxes.forEach(x => {
+                    if (x !== this) x.checked = false;
+                });
+
+                if (this.checked) {
+                    pendingAddress = this.dataset;
+                    tryApplyPendingAddress();
+                } else {
+                    pendingAddress = null;
+                    clearAutoFill();
+                }
             });
         });
 
-    // Chọn tỉnh → load quận
-    tinhSelect.addEventListener("change", function () {
-        const code = this.selectedOptions[0]?.dataset.code;
+        tinhSelect.addEventListener("change", function () {
+            const code = this.selectedOptions[0]?.dataset.code;
+            loadQuanHuyen(code);
+        });
 
-        quanSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
-        phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
-        phuongSelect.disabled = true;
+        quanSelect.addEventListener("change", function () {
+            const code = this.selectedOptions[0]?.dataset.code;
+            loadPhuong(code);
+        });
 
-        if (!code) return;
-
-        fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`)
-            .then(res => res.json())
-            .then(data => {
-                quanSelect.disabled = false;
-                data.districts.forEach(q => {
-                    quanSelect.innerHTML += `
-                        <option value="${q.name}" data-code="${q.code}">
-                            ${q.name}
-                        </option>`;
-                });
-            });
-    });
-
-    // Chọn quận → load phường
-    quanSelect.addEventListener("change", function () {
-        const code = this.selectedOptions[0]?.dataset.code;
-
-        phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
-
-        if (!code) return;
-
-        fetch(`https://provinces.open-api.vn/api/d/${code}?depth=2`)
-            .then(res => res.json())
-            .then(data => {
-                phuongSelect.disabled = false;
-                data.wards.forEach(p => {
-                    phuongSelect.innerHTML += `
-                        <option value="${p.name}">
-                            ${p.name}
-                        </option>`;
-                });
-            });
     });
 </script>
