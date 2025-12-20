@@ -1,0 +1,47 @@
+﻿@model KIDORA.ViewModels.SearchResultVM
+@{
+    ViewData["Title"] = "Tìm kiếm";
+}
+
+<div class="container py-5">
+    <h2>Kết quả tìm kiếm cho: "@Model.Keyword"</h2>
+
+    <h4 class="mt-4">Sản phẩm (@(Model.Products?.Count ?? 0))</h4>
+    <div class="row g-3">
+        @foreach (var p in Model.Products)
+        {
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="~/Anh/@p.AnhChinh" class="card-img-top" alt="@p.TenSp" style="height:150px;object-fit:cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@p.TenSp</h5>
+                        <p class="card-text text-danger">@p.DonGiaBan.ToString("N0") đ</p>
+                        <a asp-controller="SanPham" asp-action="ChiTietSanPham" asp-route-id="@p.MaSp" class="btn btn-sm btn-primary">Xem</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h4 class="mt-5">BÀI VIẾT (@(Model.CamNangs?.Count ?? 0))</h4>
+    <div class="list-group">
+        @foreach (var c in Model.CamNangs)
+        {
+            <a asp-controller="CamNang" asp-action="ChiTiet" asp-route-id="@c.MaBai" class="list-group-item list-group-item-action">
+                <h5 class="mb-1">@c.TieuDe</h5>
+                <p class="mb-1">@c.TomTat</p>
+            </a>
+        }
+    </div>
+
+    <h4 class="mt-5">TRANG VÀ CHÍNH SÁCH</h4>
+    <div class="list-group">
+        @foreach (var p in Model.Pages)
+        {
+            <a href="@p.Url" class="list-group-item list-group-item-action">
+                <h5 class="mb-1">@p.Title</h5>
+                <p class="mb-1">@p.Snippet</p>
+            </a>
+        }
+    </div>
+</div>

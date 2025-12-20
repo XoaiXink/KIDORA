@@ -87,6 +87,27 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+// Ensure HTML responses include charset=utf-8. Run the rest of the pipeline first so
+// framework components (MVC, static files) can set Content-Type, then we add
+// charset if missing.
+app.Use(async (context, next) =>
+{
+    await next();
+
+    // Prefer Response.ContentType (may be null) and only adjust text/html responses.
+    var contentType = context.Response.ContentType;
+    if (string.IsNullOrEmpty(contentType))
+    {
+        // If nothing set, default to HTML UTF-8
+        context.Response.ContentType = "text/html; charset=utf-8";
+    }
+    else if (contentType.StartsWith("text/html", StringComparison.OrdinalIgnoreCase)
+             && !contentType.Contains("charset=", StringComparison.OrdinalIgnoreCase))
+    {
+        // Append charset if missing
+        context.Response.ContentType = contentType + "; charset=utf-8";
+    }
+});
 
 // ================= ROUTES =================
 app.MapControllerRoute(

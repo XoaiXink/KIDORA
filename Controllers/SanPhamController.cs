@@ -162,10 +162,16 @@ namespace KIDORA.Controllers
             };
 
             // ===== RELATED PRODUCT =====
-            ViewBag.RelatedProducts = _context.SanPhams
+            // Lấy các sản phẩm khác cùng danh mục (không bao gồm sản phẩm hiện tại), loại bỏ trùng lặp,
+            // sắp xếp và giới hạn 8 mục. Dùng AsNoTracking vì chỉ đọc.
+            var relatedProducts = _context.SanPhams
+                .AsNoTracking()
                 .Where(sp => sp.MaDanhMuc == product.MaDanhMuc
                           && sp.MaSp != product.MaSp
                           && sp.DangBan)
+                .GroupBy(sp => sp.MaSp)
+                .Select(g => g.First())
+                .OrderBy(sp => sp.MaSp)
                 .Take(8)
                 .Select(sp => new ListSanPhamVM
                 {
@@ -176,6 +182,8 @@ namespace KIDORA.Controllers
                     AnhChinh = sp.AnhChinh ?? ""
                 })
                 .ToList();
+
+            ViewBag.RelatedProducts = relatedProducts;
 
             // ===== ĐÁNH GIÁ SẢN PHẨM =====
             vm.DanhGias = _context.DanhGiaSanPhams

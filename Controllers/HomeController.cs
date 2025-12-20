@@ -91,6 +91,85 @@ namespace KIDORA.Controllers
             return View();
         }
 
+        // Aggregated search across products, cam nang, and static pages (policy/contact)
+        [HttpGet]
+        public IActionResult Search(string q)
+        {
+            var vm = new ViewModels.SearchResultVM { Keyword = q ?? string.Empty };
+
+            if (string.IsNullOrWhiteSpace(q))
+            {
+                return View(vm);
+            }
+
+            var key = q.Trim().ToLower();
+
+            // Products
+            vm.Products = _context.SanPhams
+                .Where(p => p.DangBan && (
+                    p.TenSp.ToLower().Contains(key) ||
+                    p.Sku.ToLower().Contains(key) ||
+                    p.MaSp.ToLower().Contains(key) ||
+                    (p.MoTaNgan ?? "").ToLower().Contains(key)
+                ))
+                .Select(p => new ListSanPhamVM
+                {
+                    MaSp = p.MaSp,
+                    TenSp = p.TenSp,
+                    DonGiaBan = p.DonGiaBan,
+                    MoTaNgan = p.MoTaNgan ?? "",
+                    AnhChinh = p.AnhChinh ?? ""
+                })
+                .Take(50)
+                .ToList();
+
+            // Cam nang (articles)
+            // Use database collation that is accent-insensitive so searches without diacritics match Vietnamese text
+            var pattern = $"%{q}%";
+            const string viCollation = "Vietnamese_CI_AI"; // case-insensitive, accent-insensitive
+
+            vm.CamNangs = _context.CamNangs
+                .Where(c =>
+                    EF.Functions.Like(EF.Functions.Collate(c.TieuDe, viCollation), pattern) ||
+                    EF.Functions.Like(EF.Functions.Collate(c.TomTat ?? string.Empty, viCollation), pattern) ||
+                    EF.Functions.Like(EF.Functions.Collate(c.NoiDung ?? string.Empty, viCollation), pattern)
+                )
+                .Select(c => new CamNangVM
+                {
+                    MaBai = c.MaBai,
+                    TieuDe = c.TieuDe,
+                    Anh = c.Anh,
+                    NgayDang = c.NgayDang,
+                    TacGia = c.TacGia,
+                    TomTat = c.TomTat ?? "",
+                    NoiDung = c.NoiDung ?? ""
+                })
+                .Take(50)
+                .ToList();
+
+            // Static pages: we'll search small set of known pages by keyword and build simple results
+            var pages = new List<ViewModels.PageResultVM>();
+            var lower = key;
+
+            // Check if the user's query mentions policy/payment/shipping/privacy (use contains on the query)
+            if (lower.Contains("chính sách") || lower.Contains("chinh sach") || lower.Contains("bảo mật") || lower.Contains("bao mat") || lower.Contains("giao hàng") || lower.Contains("giao hang") || lower.Contains("thanh toán") || lower.Contains("thanh toan"))
+            {
+                pages.Add(new ViewModels.PageResultVM { Title = "Chính sách bảo mật", Url = Url.Action("ChinhSachBaoMat", "DieuKhoanChinhSach"), Snippet = "Chính sách bảo mật thông tin khách hàng" });
+                pages.Add(new ViewModels.PageResultVM { Title = "Chính sách giao hàng", Url = Url.Action("ChinhSachGiaoHang", "DieuKhoanChinhSach"), Snippet = "Thông tin về phí và điều kiện giao hàng" });
+                pages.Add(new ViewModels.PageResultVM { Title = "Chính sách thanh toán", Url = Url.Action("ChinhSachThanhToan", "DieuKhoanChinhSach"), Snippet = "Hướng dẫn các phương thức thanh toán" });
+            }
+
+            // Contact page
+            if (lower.Contains("liên hệ") || lower.Contains("lien he") || lower.Contains("contact") || lower.Contains("hotline"))
+            {
+                pages.Add(new ViewModels.PageResultVM { Title = "Liên hệ", Url = Url.Action("Contact", "Home"), Snippet = "Gửi liên hệ hoặc thông tin hỗ trợ" });
+            }
+
+            vm.Pages = pages;
+
+            return View(vm);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

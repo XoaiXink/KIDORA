@@ -4,6 +4,7 @@ using KIDORA.Models.Services;
 using KIDORA.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace KIDORA.Controllers
 {
@@ -72,7 +73,8 @@ namespace KIDORA.Controllers
             HttpContext.Session.Set(MySetting.GIOHANG_KEY, gioHang);
 
             TempData["Success"] = "Đã thêm vào giỏ!";
-            return RedirectToAction("Index");
+            // Sau khi thêm, chuyển hướng đến trang giỏ hàng để người dùng có thể tiến hành mua
+            return RedirectToAction("Index", "GioHang");
         }
         public IActionResult XoaGioHang(string id)
         {
@@ -166,11 +168,14 @@ namespace KIDORA.Controllers
             var diaChiDayDu = $"{model.DiaChi}, {model.PhuongXa}, {model.QuanHuyen}, {model.TinhThanh}".Trim(',', ' ');
 
             // Tạo đơn hàng mới
+            // Lấy MaKh từ user đang đăng nhập nếu có để liên kết đơn hàng với khách.
+            var currentUserId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var donHang = new DonHang
             {
                 MaDonHang = maDonHang,
                 SoDonHang = soDonHang,
-                MaKh = "KH000001", // TODO: Lấy từ User.Identity
+                MaKh = string.IsNullOrEmpty(currentUserId) ? "KH000001" : currentUserId,
                 NgayDat = DateTime.Now,
                 TrangThaiDon = "Chờ xác nhận",
                 TrangThaiThanhToan = "Chưa thanh toán",
@@ -191,52 +196,62 @@ namespace KIDORA.Controllers
 
             _context.DonHangs.Add(donHang);
 
-            // Thêm chi tiết đơn hàng — đảm bảo luôn thêm, tạo biến thể mặc định nếu cần
-            foreach (var item in gioHang)
-            {
-                // Tìm biến thể theo MaSp
-                var bienThe = _context.BienTheSanPhams.FirstOrDefault(bt => bt.MaSp == item.MaSp);
-
-                if (bienThe == null)
-                {
-                    // Nếu không có, tạo biến thể mặc định tạm thời để tránh bỏ qua chi tiết
-                    var sp = _context.SanPhams.FirstOrDefault(s => s.MaSp == item.MaSp);
-
-                    var newBienThe = new BienTheSanPham
-                    {
-                        MaBienThe = GenerateBienTheId(),
-                        MaSp = item.MaSp,
-                        Sku = sp?.Sku ?? $"{item.MaSp}-DEF",
-                        TenBienThe = "Mặc định",
-                        DangBan = true
-                    };
-
-                    _context.BienTheSanPhams.Add(newBienThe);
-                    bienThe = newBienThe;
-                }
-
-                var chiTiet = new ChiTietDonHang
-                {
-                    MaDonHang = maDonHang,
-                    MaBienThe = bienThe.MaBienThe,
-                    Sku = bienThe.Sku,
-                    TenSpHienThi = item.TenSp,
-                    DonGia = item.DonGiaBan,
-                    SoLuong = item.SoLuong,
-                    TyLeGiam = 0,
-                    ThanhTien = item.ThanhTien
-                };
-
-                _context.ChiTietDonHangs.Add(chiTiet);
-            }
-
+            // Use a transaction: save order first, then add details to avoid tracking/key conflicts
+            using var transaction = _context.Database.BeginTransaction();
             try
             {
                 _context.SaveChanges();
+
+                // Thêm chi tiết đơn hàng — đảm bảo luôn thêm, tạo biến thể mặc định nếu cần
+                // Prepare starting ID for ChiTietDonHang since DB model uses non-generated PK
+                var nextCtId = (_context.ChiTietDonHangs.Select(c => (int?)c.MaCtdh).Max() ?? 0) + 1;
+
+                foreach (var item in gioHang)
+                {
+                    // Tìm biến thể theo MaSp
+                    var bienThe = _context.BienTheSanPhams.FirstOrDefault(bt => bt.MaSp == item.MaSp);
+
+                    if (bienThe == null)
+                    {
+                        // Nếu không có, tạo biến thể mặc định tạm thời để tránh bỏ qua chi tiết
+                        var sp = _context.SanPhams.FirstOrDefault(s => s.MaSp == item.MaSp);
+
+                        var newBienThe = new BienTheSanPham
+                        {
+                            MaBienThe = GenerateBienTheId(),
+                            MaSp = item.MaSp,
+                            Sku = sp?.Sku ?? $"{item.MaSp}-DEF",
+                            TenBienThe = "Mặc định",
+                            DangBan = true
+                        };
+
+                        _context.BienTheSanPhams.Add(newBienThe);
+                        bienThe = newBienThe;
+                    }
+
+                    var chiTiet = new ChiTietDonHang
+                    {
+                        MaCtdh = nextCtId++,
+                        MaDonHang = maDonHang,
+                        MaBienThe = bienThe.MaBienThe,
+                        Sku = bienThe.Sku,
+                        TenSpHienThi = item.TenSp,
+                        DonGia = item.DonGiaBan,
+                        SoLuong = item.SoLuong,
+                        TyLeGiam = 0,
+                        ThanhTien = item.ThanhTien
+                    };
+
+                    _context.ChiTietDonHangs.Add(chiTiet);
+                }
+
+                _context.SaveChanges();
+                transaction.Commit();
             }
             catch (Exception ex)
             {
-                // Bắt lỗi để biết nguyên nhân nếu có lỗi CSDL
+                // Rollback and show error
+                try { transaction.Rollback(); } catch { }
                 TempData["ErrorMessage"] = "Lỗi khi lưu đơn hàng: " + ex.Message;
                 return RedirectToAction("Index");
             }

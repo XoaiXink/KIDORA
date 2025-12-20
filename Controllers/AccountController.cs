@@ -54,6 +54,7 @@ public class AccountController : Controller
         {
             new Claim(ClaimTypes.Name, user.HoTen),
             new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim("UserId", user.Id),
             new Claim(ClaimTypes.Role, user.LoaiNguoiDung)
         };
@@ -140,6 +141,7 @@ public class AccountController : Controller
    {
        new Claim(ClaimTypes.Name, user.HoTen),
        new Claim(ClaimTypes.Email, user.Email),
+       new Claim(ClaimTypes.NameIdentifier, user.Id),
        new Claim("UserId", user.Id),
        new Claim(ClaimTypes.Role, user.LoaiNguoiDung)
    };

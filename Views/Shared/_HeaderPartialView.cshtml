@@ -194,17 +194,41 @@
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content rounded-0">
             <div class="modal-header">
-                <h5 class="modal-title">Search by keyword</h5>
+                <h5 class="modal-title">Tìm kiếm</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body d-flex align-items-center">
+
+            <!-- Search form: submit GET to Home/Search for aggregated site search -->
+            <form method="get" asp-controller="Home" asp-action="Search" class="modal-body d-flex align-items-center justify-content-center">
                 <div class="input-group w-75 mx-auto">
-                    <input type="search" class="form-control p-3" placeholder="keywords">
-                    <span class="input-group-text p-3">
+                    <input id="searchInput" name="q" type="search" class="form-control p-3" placeholder="Tìm sản phẩm, bài viết, chính sách..." aria-label="Tìm kiếm" />
+                    <button class="btn btn-primary" type="submit" aria-label="Tìm kiếm">
                         <i class="fa fa-search"></i>
-                    </span>
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    // Focus input when modal opens
+    (function () {
+        var searchModalEl = document.getElementById('searchModal');
+        if (searchModalEl) {
+            searchModalEl.addEventListener('shown.bs.modal', function () {
+                var input = document.getElementById('searchInput');
+                if (input) input.focus();
+            });
+        }
+
+        // If user clicks the header search button, open modal and focus input
+        var headerSearchBtn = document.querySelector('.btn-search');
+        if (headerSearchBtn) {
+            headerSearchBtn.addEventListener('click', function () {
+                var modal = new bootstrap.Modal(document.getElementById('searchModal'));
+                modal.show();
+            });
+        }
+    })();
+</script>
