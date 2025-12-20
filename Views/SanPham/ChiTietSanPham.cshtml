@@ -41,14 +41,28 @@
                         <h4 class="fw-bold mb-3">@Model.TenSp</h4>
                         <p class="mb-3">Danh mục: @Model.TenDanhMuc</p>
                         <p class="mb-3">Số lượng tồn: @Model.SoLuongTon</p>
+                        @{
+                            // Filter out placeholder/invalid variants so selector only shows for real variants
+                            var variants = Model.BienThes?.Where(bt => !string.IsNullOrWhiteSpace(bt.MaBienThe) &&
+                                                                     !string.IsNullOrWhiteSpace(bt.TenBienThe) &&
+                                                                     bt.TenBienThe.Trim().ToLower() != "chọn biến thể").ToList()
+                                           ?? new List<KIDORA.ViewModels.BienTheVM>();
+
+                            var displayPrice = Model.DonGiaBan;
+                            var singleVariant = variants.Count == 1 ? variants[0] : null;
+                            if (singleVariant != null) displayPrice = singleVariant.GiaBan;
+                        }
+
                         <h5 class="fw-bold mb-3 text-danger" id="giaHienThi">
-                            @Model.DonGiaBan.ToString("N0") đ
+                            @displayPrice.ToString("N0") đ
                         </h5>
-                        @if (Model.BienThes.Any())
+
+                        @* Only show selector when there are more than 1 real variants *@
+                        @if (variants.Count > 1)
                         {
                             <label class="fw-bold">Chọn biến thể</label>
-                            <select class="form-select mb-3" id="variantSelect">
-                                @foreach (var bt in Model.BienThes)
+                            <select class="form-select mb-3" id="variantSelect" name="variantId">
+                                @foreach (var bt in variants)
                                 {
                                     <option value="@bt.MaBienThe"
                                             data-gia="@bt.GiaBan"
@@ -58,6 +72,11 @@
                                     </option>
                                 }
                             </select>
+                        }
+                        else if (singleVariant != null)
+                        {
+                            // include hidden variant id so AddToCart can pick it up if needed
+                            <input type="hidden" name="variantId" value="@singleVariant.MaBienThe" />
                         }
 
                         <div class="d-flex mb-4">

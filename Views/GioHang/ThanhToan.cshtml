@@ -23,128 +23,89 @@
         <div asp-validation-summary="All" class="text-danger mb-3"></div>
         <form asp-action="ThanhToan" asp-controller="GioHang" method="post">
             <div class="row g-5">
-                <!-- Thông tin giao hàng -->
+                <!-- THÔNG TIN GIAO HÀNG -->
                 <div class="col-md-12 col-lg-6 col-xl-7">
-                    <h4 class="mb-4">Thông tin giao hàng</h4>
 
-                    <div class="form-item">
-                        <label class="form-label my-3">Họ tên người nhận <sup class="text-danger">*</sup></label>
-                        <input type="text" asp-for="HoTen" class="form-control" required
-                               placeholder="Nhập họ tên người nhận hàng">
-                        <span asp-validation-for="HoTen" class="text-danger"></span>
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-4">
+
+                            <h4 class="mb-4 border-bottom pb-2">
+                                <i class="fa fa-truck me-2 text-primary"></i>
+                                Thông tin giao hàng
+                            </h4>
+
+                            <!-- Họ tên -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Họ tên người nhận <sup class="text-danger">*</sup>
+                                </label>
+                                <input asp-for="HoTen" class="form-control"
+                                       placeholder="Nhập họ tên người nhận hàng" required>
+                                <span asp-validation-for="HoTen" class="text-danger"></span>
+                            </div>
+
+                            <!-- SĐT -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Số điện thoại <sup class="text-danger">*</sup>
+                                </label>
+                                <input asp-for="DienThoai" type="tel" class="form-control"
+                                       placeholder="Nhập số điện thoại liên hệ"
+                                       pattern="[0-9]{10,11}" required>
+                                <span asp-validation-for="DienThoai" class="text-danger"></span>
+                            </div>
+
+                            <!-- ĐỊA CHỈ HÀNH CHÍNH -->
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">
+                                        Tỉnh / Thành phố <sup class="text-danger">*</sup>
+                                    </label>
+                                    <select id="tinh" asp-for="TinhThanh" class="form-select" required>
+                                        <option value="">-- Chọn tỉnh/thành phố --</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">
+                                        Quận / Huyện <sup class="text-danger">*</sup>
+                                    </label>
+                                    <select id="quan" asp-for="QuanHuyen" class="form-select" required disabled>
+                                        <option value="">-- Chọn quận/huyện --</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">
+                                        Phường / Xã <sup class="text-danger">*</sup>
+                                    </label>
+                                    <select id="phuong" asp-for="PhuongXa" class="form-select" required disabled>
+                                        <option value="">-- Chọn phường/xã --</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Địa chỉ chi tiết -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Địa chỉ cụ thể <sup class="text-danger">*</sup>
+                                </label>
+                                <input asp-for="DiaChi" class="form-control"
+                                       placeholder="Số nhà, tên đường"
+                                       required>
+                                <span asp-validation-for="DiaChi" class="text-danger"></span>
+                            </div>
+
+                            <!-- Ghi chú -->
+                            <div class="mb-0">
+                                <label class="form-label">Ghi chú đơn hàng</label>
+                                <textarea asp-for="GhiChu" class="form-control" rows="3"
+                                          placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao"></textarea>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <div class="form-item">
-                        <label class="form-label my-3">Số điện thoại <sup class="text-danger">*</sup></label>
-                        <input type="tel" asp-for="DienThoai" class="form-control" required
-                               placeholder="Nhập số điện thoại liên hệ" pattern="[0-9]{10,11}">
-                        <span asp-validation-for="DienThoai" class="text-danger"></span>
-                    </div>
-
-
-                    <!-- TỈNH / THÀNH --> <sup class="text-danger">*</sup></label>
-                    <div class="mb-3">
-                        <label class="form-label">Tỉnh / Thành phố</label>
-                        <select id="tinh" asp-for="TinhThanh" class="form-select p-3" required>
-                            <option value="">-- Chọn tỉnh/thành phố --</option>
-                        </select>
-                    </div>
-
-                    <!-- QUẬN / HUYỆN -->
-                    <div class="mb-3">
-                        <label class="form-label">Quận / Huyện</label> <sup class="text-danger">*</sup></label>
-                        <select id="quan" asp-for="QuanHuyen" class="form-select p-3" required disabled>
-                            <option value="">-- Chọn quận/huyện --</option>
-                        </select>
-                    </div>
-
-                    <!-- PHƯỜNG / XÃ -->
-                    <div class="mb-3">
-                        <label class="form-label">Phường / Xã</label> <sup class="text-danger">*</sup></label>
-                        <select id="phuong" asp-for="PhuongXa" class="form-select p-3" required disabled>
-                            <option value="">-- Chọn phường/xã --</option>
-                        </select>
-                    </div>
-
-
-
-                    <div class="form-item">
-                        <label class="form-label my-3">Địa chỉ giao hàng <sup class="text-danger">*</sup></label>
-                        <input type="text" asp-for="DiaChi" class="form-control" required
-                               placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố">
-                        <span asp-validation-for="DiaChi" class="text-danger"></span>
-                    </div>
-
-
-
-                    <script>
-                        const tinhSelect = document.getElementById("tinh");
-                        const quanSelect = document.getElementById("quan");
-                        const phuongSelect = document.getElementById("phuong");
-
-                        // Load Tỉnh / Thành
-                        fetch("https://provinces.open-api.vn/api/p/")
-                            .then(res => res.json())
-                            .then(data => {
-                                data.forEach(tinh => {
-                                    tinhSelect.innerHTML += `
-                                        <option value="${tinh.name}" data-code="${tinh.code}">
-                                            ${tinh.name}
-                                        </option>`;
-                                });
-                            });
-
-                        // Khi chọn TỈNH → load QUẬN
-                        tinhSelect.addEventListener("change", function () {
-                            const code = this.selectedOptions[0].dataset.code;
-
-                            quanSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
-                            phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
-                            phuongSelect.disabled = true;
-
-                            if (!code) return;
-
-                            fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`)
-                                .then(res => res.json())
-                                .then(data => {
-                                    quanSelect.disabled = false;
-                                    data.districts.forEach(q => {
-                                        quanSelect.innerHTML += `
-                                            <option value="${q.name}" data-code="${q.code}">
-                                                ${q.name}
-                                            </option>`;
-                                    });
-                                });
-                        });
-
-                        // Khi chọn QUẬN → load PHƯỜNG
-                        quanSelect.addEventListener("change", function () {
-                            const code = this.selectedOptions[0].dataset.code;
-
-                            phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
-
-                            if (!code) return;
-
-                            fetch(`https://provinces.open-api.vn/api/d/${code}?depth=2`)
-                                .then(res => res.json())
-                                .then(data => {
-                                    phuongSelect.disabled = false;
-                                    data.wards.forEach(p => {
-                                        phuongSelect.innerHTML += `
-                                            <option value="${p.name}">
-                                                ${p.name}
-                                            </option>`;
-                                    });
-                                });
-                        });
-                    </script>
-
-
-                    <div class="form-item">
-                        <label class="form-label my-3">Ghi chú đơn hàng</label>
-                        <textarea asp-for="GhiChu" class="form-control" rows="4"
-                                  placeholder="Ghi chú về đơn hàng (ví dụ: thời gian giao hàng mong muốn)"></textarea>
-                    </div>
                 </div>
 
                 <!-- Tóm tắt đơn hàng -->
@@ -217,3 +178,65 @@
     </div>
 </div>
 <!-- Checkout Page End -->
+<!-- ================= SCRIPT LOAD TỈNH / QUẬN / PHƯỜNG ================= -->
+<script>
+    const tinhSelect = document.getElementById("tinh");
+    const quanSelect = document.getElementById("quan");
+    const phuongSelect = document.getElementById("phuong");
+
+    // Load tỉnh
+    fetch("https://provinces.open-api.vn/api/p/")
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(tinh => {
+                tinhSelect.innerHTML += `
+                    <option value="${tinh.name}" data-code="${tinh.code}">
+                        ${tinh.name}
+                    </option>`;
+            });
+        });
+
+    // Chọn tỉnh → load quận
+    tinhSelect.addEventListener("change", function () {
+        const code = this.selectedOptions[0]?.dataset.code;
+
+        quanSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
+        phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
+        phuongSelect.disabled = true;
+
+        if (!code) return;
+
+        fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`)
+            .then(res => res.json())
+            .then(data => {
+                quanSelect.disabled = false;
+                data.districts.forEach(q => {
+                    quanSelect.innerHTML += `
+                        <option value="${q.name}" data-code="${q.code}">
+                            ${q.name}
+                        </option>`;
+                });
+            });
+    });
+
+    // Chọn quận → load phường
+    quanSelect.addEventListener("change", function () {
+        const code = this.selectedOptions[0]?.dataset.code;
+
+        phuongSelect.innerHTML = '<option value="">-- Chọn phường/xã --</option>';
+
+        if (!code) return;
+
+        fetch(`https://provinces.open-api.vn/api/d/${code}?depth=2`)
+            .then(res => res.json())
+            .then(data => {
+                phuongSelect.disabled = false;
+                data.wards.forEach(p => {
+                    phuongSelect.innerHTML += `
+                        <option value="${p.name}">
+                            ${p.name}
+                        </option>`;
+                });
+            });
+    });
+</script>
