@@ -35,6 +35,8 @@
         // BIẾN THỂ
         // =======================
         public List<BienTheVM> BienThes { get; set; } = new();
+        public List<DanhGiaVM> DanhGias { get; set; } = new();
+
     }
 
     // ====== BIẾN THỂ ======
@@ -48,5 +50,17 @@
         public int SoLuongTon { get; set; }
 
         public List<string> AnhBienThe { get; set; } = new();
+    }
+    public class DanhGiaVM
+    {
+        public int MaDanhGia { get; set; }
+        public int DiemDanhGia { get; set; }
+
+        public string NoiDung { get; set; }
+        public DateTime NgayDanhGia { get; set; }
+        public string TrangThai { get; set; }
+        public string MaKH { get; set; }
+        public string HoTen { get; set; }
+
     }
 }

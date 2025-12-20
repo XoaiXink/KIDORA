@@ -2,6 +2,7 @@
 using KIDORA.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace KIDORA.Controllers
 {
@@ -160,7 +161,7 @@ namespace KIDORA.Controllers
                 }).ToList()
             };
 
-            // ===== RELATED PRODUCT  =====
+            // ===== RELATED PRODUCT =====
             ViewBag.RelatedProducts = _context.SanPhams
                 .Where(sp => sp.MaDanhMuc == product.MaDanhMuc
                           && sp.MaSp != product.MaSp
@@ -176,7 +177,63 @@ namespace KIDORA.Controllers
                 })
                 .ToList();
 
+            // ===== ĐÁNH GIÁ SẢN PHẨM =====
+            vm.DanhGias = _context.DanhGiaSanPhams
+     .Include(dg => dg.MaKhNavigation)              // KHACHHANG
+         .ThenInclude(kh => kh.MaKhNavigation)     // NGUOIDUNG
+     .Where(dg => dg.MaSp == product.MaSp)
+     .OrderByDescending(dg => dg.NgayDanhGia)
+     .Select(dg => new DanhGiaVM
+     {
+         MaDanhGia = dg.MaDanhGia,
+         DiemDanhGia = dg.DiemDanhGia,
+         NoiDung = dg.NoiDung ?? "",
+         NgayDanhGia = dg.NgayDanhGia,
+         MaKH = dg.MaKh,
+
+         // ⭐ LẤY TÊN TỪ NGUOIDUNG
+         HoTen = dg.MaKhNavigation.MaKhNavigation.HoTen
+     })
+     .ToList();
+
             return View(vm);
         }
+        [HttpPost]
+        public IActionResult ThemDanhGia(
+    string MaSp,
+    string NoiDung,
+    int DiemDanhGia)
+        {
+            // 1. Lấy ID người dùng đang login
+            var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (Id == null)
+                return RedirectToAction("Login", "Account");
+
+            // 2. Lấy KhachHang tương ứng
+            var kh = _context.KhachHangs
+                .FirstOrDefault(k => k.MaKh == Id);
+
+            if (kh == null)
+                return BadRequest("Không tìm thấy khách hàng");
+
+            // 3. Tạo đánh giá
+            var danhGia = new DanhGiaSanPham
+            {
+                MaSp = MaSp,
+                MaKh = kh.MaKh,           // ✅ ĐÚNG: FK KHACHHANG
+                NoiDung = NoiDung,
+                DiemDanhGia = DiemDanhGia,
+                NgayDanhGia = DateTime.Now,
+                TrangThai = "Chờ duyệt"
+            };
+
+            _context.DanhGiaSanPhams.Add(danhGia);
+            _context.SaveChanges();
+
+            // 4. Redirect về đúng tab
+            return Redirect($"/SanPham/ChiTietSanPham/{MaSp}#nav-mission");
+        }
+
+
     }
 }
