@@ -349,7 +349,7 @@ input + button i,
             color: #fff !important;
         }
 
-/* ===== PRICE SLIDER (XANH LÁ → XANH DƯƠNG) ===== */
+/* ===== PRICE SLIDER (XANH LÁ → XANH DƯÔNG) ===== */
 input[type=range]::-webkit-slider-thumb {
     background: var(--kidora-blue) !important;
 }
@@ -528,9 +528,9 @@ a.btn[data-role="add-to-cart"] {
 .page-home .add-to-cart,
 .page-product .add-to-cart,
 .page-home a.btn.btn-outline-primary.rounded-pill,
-.page-product a.btn.btn-outline-primary.rounded-pill,
+.page_product a.btn.btn-outline-primary.rounded-pill,
 .page-home a.btn.border.rounded-pill,
-.page-product a.btn.border.rounded-pill {
+.page_product a.btn.border.rounded-pill {
     background-color: transparent !important;
     border-color: var(--kidora-blue) !important;
     color: var(--kidora-yellow) !important;
