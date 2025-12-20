@@ -390,6 +390,7 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync();
-        return RedirectToAction("Login");
+        // Ensure redirect goes to the root Account/Login (no area)
+        return RedirectToAction("Login", "Account", new { area = "" });
     }
 }

@@ -56,16 +56,17 @@
                         <tr>
                             <th class="text-center">#</th>
                             <th>Hình ảnh</th>
-                            <th>@Html.DisplayNameFor(model => model.TenSp)</th>
-                            <th>@Html.DisplayNameFor(model => model.Sku)</th>
-                            <th>@Html.DisplayNameFor(model => model.MaDanhMucNavigation.TenDanhMuc)</th>
-                            <th>@Html.DisplayNameFor(model => model.MaNccNavigation.TenNcc)</th>
-                            <th class="text-end">@Html.DisplayNameFor(model => model.DonGiaBan)</th>
-                            <th class="text-end">@Html.DisplayNameFor(model => model.GiaNiemYet)</th>
-                            <th class="text-center">@Html.DisplayNameFor(model => model.DangBan)</th>
+                            <th>Tên sản phẩm</th>
+                            <th>SKU</th>
+                            <th>Danh mục</th>
+                            <th>Nhà cung cấp</th>
+                            <th class="text-end">Giá bán</th>
+                            <th class="text-end">Giá niêm yết</th>
+                            <th class="text-center">Trạng thái</th>
                             <th class="text-center">Hành động</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @if (Model.Any())
                         {

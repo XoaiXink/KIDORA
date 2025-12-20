@@ -21,16 +21,17 @@
                     <thead class="table-dark">
                         <tr>
                             <th class="text-center">#</th>
-                            <th>@Html.DisplayNameFor(model => model.TenNcc)</th>
-                            <th>@Html.DisplayNameFor(model => model.TenLienHe)</th>
-                            <th>@Html.DisplayNameFor(model => model.DienThoai)</th>
-                            <th>@Html.DisplayNameFor(model => model.Email)</th>
-                            <th>@Html.DisplayNameFor(model => model.DiaChi)</th>
-                            <th>@Html.DisplayNameFor(model => model.QuocGia)</th>
-                            <th class="text-center">@Html.DisplayNameFor(model => model.ConHopTac)</th>
+                            <th>Tên NCC</th>
+                            <th>Tên liên hệ</th>
+                            <th>Điện thoại</th>
+                            <th>Email</th>
+                            <th>Địa chỉ</th>
+                            <th>Quốc gia</th>
+                            <th class="text-center">Trạng thái</th>
                             <th class="text-center">Hành động</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach (var item in Model)
                         {
@@ -84,124 +85,3 @@
         </div>
     </div>
 </div>
-@* <div class="table-responsive">
-    <table class="table table-responsive-sm">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>1</th>
-                <td>Kolor Tea Shirt For Man</td>
-                <td>
-                    <span class="badge badge-primary">Sale</span>
-                </td>
-                <td>January 22</td>
-                <td class="color-primary">$21.56</td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td>Kolor Tea Shirt For Women</td>
-                <td>
-                    <span class="badge badge-success">Tax</span>
-                </td>
-                <td>January 30</td>
-                <td class="color-success">$55.32</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Blue Backpack For Baby</td>
-                <td>
-                    <span class="badge badge-danger">Extended</span>
-                </td>
-                <td>January 25</td>
-                <td class="color-danger">$14.85</td>
-            </tr>
-        </tbody>
-    </table>
-</div> *@
-
-@* <h1>Index</h1> *@
-
-@* <p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TenNcc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TenLienHe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DienThoai)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DiaChi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ThanhPho)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.QuocGia)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HinhThucThanhToan)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ConHopTac)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenNcc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenLienHe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DienThoai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DiaChi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ThanhPho)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.QuocGia)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HinhThucThanhToan)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConHopTac)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaNcc">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaNcc">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaNcc">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@

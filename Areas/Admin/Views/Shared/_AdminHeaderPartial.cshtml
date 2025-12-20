@@ -1,0 +1,38 @@
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@inject KIDORA.Data.KidoraDbContext _db
+
+@{
+    var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    KIDORA.Data.Admin admin = null;
+    if (!string.IsNullOrEmpty(userId))
+    {
+        admin = await _db.Admins.Include(a => a.MaAdminNavigation).FirstOrDefaultAsync(a => a.MaAdmin == userId);
+    }
+
+    var displayName = admin?.MaAdminNavigation?.HoTen ?? Context.User?.Identity?.Name ?? "Admin";
+    var role = admin?.Quyen ?? "";
+}
+
+<li class="nav-item dropdown header-profile">
+    <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+        <i class="mdi mdi-account"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+        <div class="px-3 py-2 text-center border-bottom">
+            <strong>@displayName</strong>
+            @if (!string.IsNullOrEmpty(role))
+            {
+                <div class="small text-muted">@role</div>
+            }
+        </div>
+        <a asp-area="Admin" asp-controller="Home" asp-action="Profile" class="dropdown-item">
+            <i class="icon-user"></i>
+            <span class="ml-2">Profile</span>
+        </a>
+        <a asp-area="" asp-controller="Account" asp-action="Logout" class="dropdown-item">
+            <i class="icon-key"></i>
+            <span class="ml-2">Logout</span>
+        </a>
+    </div>
+</li>
