@@ -112,9 +112,12 @@ namespace KIDORA.Controllers
         }
 
 
-        public IActionResult ChiTietSanPham(string id)
+        public async Task<IActionResult> ChiTietSanPham(string id)
         {
-            var product = _context.SanPhams
+            if (string.IsNullOrWhiteSpace(id))
+                return Redirect("/404");
+
+            var product = await _context.SanPhams
                 .Include(sp => sp.MaDanhMucNavigation)
                 .Include(sp => sp.AnhSanPhams)
                 .Include(sp => sp.BienTheSanPhams)
@@ -123,7 +126,8 @@ namespace KIDORA.Controllers
                     .ThenInclude(bt => bt.BienTheTonKho)
                 .Include(sp => sp.BienTheSanPhams)
                     .ThenInclude(bt => bt.BienTheHinhs)
-                .FirstOrDefault(sp => sp.MaSp == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(sp => sp.MaSp == id);
 
             if (product == null) return Redirect("/404");
 
@@ -131,46 +135,33 @@ namespace KIDORA.Controllers
             {
                 MaSp = product.MaSp,
                 TenSp = product.TenSp,
-                TenDanhMuc = product.MaDanhMucNavigation.TenDanhMuc,
+                TenDanhMuc = product.MaDanhMucNavigation?.TenDanhMuc ?? "",
                 MaDanhMuc = product.MaDanhMuc,
 
-                MoTaNgan = product.MoTaNgan ?? "",
-                MoTaChiTiet = product.MoTaChiTiet ?? "",
+                MoTaNgan = product.MoTaNgan ?? string.Empty,
+                MoTaChiTiet = product.MoTaChiTiet ?? string.Empty,
                 DonGiaBan = product.DonGiaBan,
                 SoLuongTon = product.SoLuongTon,
 
-                // ===== ẢNH SẢN PHẨM =====
-                AnhChinh = product.AnhChinh,
-                AnhSanPhams = product.AnhSanPhams
-                    .OrderByDescending(x => x.AnhChinh)
-                    .Select(x => x.DuongDanAnh)
-                    .ToList(),
+                AnhChinh = product.AnhChinh ?? string.Empty,
+                AnhSanPhams = product.AnhSanPhams?.OrderByDescending(x => x.AnhChinh).Select(x => x.DuongDanAnh).ToList() ?? new List<string>(),
 
-                // ===== BIẾN THỂ =====
-                BienThes = product.BienTheSanPhams.Select(bt => new BienTheVM
+                BienThes = product.BienTheSanPhams?.Select(bt => new BienTheVM
                 {
                     MaBienThe = bt.MaBienThe,
                     TenBienThe = bt.TenBienThe,
-                    GiaBan = bt.BienTheGium!.GiaBan,
-                    GiaNiemYet = bt.BienTheGium!.GiaNiemYet,
-                    SoLuongTon = bt.BienTheTonKho.SoLuongTon,
-                    AnhBienThe = bt.BienTheHinhs
-                        .OrderByDescending(x => x.AnhChinh)
-                        .Select(x => x.DuongDanAnh)
-                        .ToList()
-                }).ToList()
+                    GiaBan = bt.BienTheGium?.GiaBan ?? 0,
+                    GiaNiemYet = bt.BienTheGium?.GiaNiemYet ?? 0,
+                    SoLuongTon = bt.BienTheTonKho?.SoLuongTon ?? 0,
+                    AnhBienThe = bt.BienTheHinhs?.OrderByDescending(x => x.AnhChinh).Select(x => x.DuongDanAnh).ToList() ?? new List<string>()
+                }).ToList() ?? new List<BienTheVM>()
             };
 
-            // ===== RELATED PRODUCT =====
-            // Lấy các sản phẩm khác cùng danh mục (không bao gồm sản phẩm hiện tại), loại bỏ trùng lặp,
-            // sắp xếp và giới hạn 8 mục. Dùng AsNoTracking vì chỉ đọc.
-            var relatedProducts = _context.SanPhams
+            // Related products (async)
+            // Related products: avoid GroupBy -> First pattern which can cause EF translation issues.
+            var relatedProducts = await _context.SanPhams
                 .AsNoTracking()
-                .Where(sp => sp.MaDanhMuc == product.MaDanhMuc
-                          && sp.MaSp != product.MaSp
-                          && sp.DangBan)
-                .GroupBy(sp => sp.MaSp)
-                .Select(g => g.First())
+                .Where(sp => sp.MaDanhMuc == product.MaDanhMuc && sp.MaSp != product.MaSp && sp.DangBan)
                 .OrderBy(sp => sp.MaSp)
                 .Take(8)
                 .Select(sp => new ListSanPhamVM
@@ -178,31 +169,29 @@ namespace KIDORA.Controllers
                     MaSp = sp.MaSp,
                     TenSp = sp.TenSp,
                     DonGiaBan = sp.DonGiaBan,
-                    MoTaNgan = sp.MoTaNgan ?? "",
-                    AnhChinh = sp.AnhChinh ?? ""
+                    MoTaNgan = sp.MoTaNgan ?? string.Empty,
+                    AnhChinh = sp.AnhChinh ?? string.Empty
                 })
-                .ToList();
+                .ToListAsync();
 
             ViewBag.RelatedProducts = relatedProducts;
 
-            // ===== ĐÁNH GIÁ SẢN PHẨM =====
-            vm.DanhGias = _context.DanhGiaSanPhams
-     .Include(dg => dg.MaKhNavigation)              // KHACHHANG
-         .ThenInclude(kh => kh.MaKhNavigation)     // NGUOIDUNG
-     .Where(dg => dg.MaSp == product.MaSp)
-     .OrderByDescending(dg => dg.NgayDanhGia)
-     .Select(dg => new DanhGiaVM
-     {
-         MaDanhGia = dg.MaDanhGia,
-         DiemDanhGia = dg.DiemDanhGia,
-         NoiDung = dg.NoiDung ?? "",
-         NgayDanhGia = dg.NgayDanhGia,
-         MaKH = dg.MaKh,
-
-         // ⭐ LẤY TÊN TỪ NGUOIDUNG
-         HoTen = dg.MaKhNavigation.MaKhNavigation.HoTen
-     })
-     .ToList();
+            // Ratings (async)
+            vm.DanhGias = await _context.DanhGiaSanPhams
+                .AsNoTracking()
+                .Include(dg => dg.MaKhNavigation).ThenInclude(kh => kh.MaKhNavigation)
+                .Where(dg => dg.MaSp == product.MaSp)
+                .OrderByDescending(dg => dg.NgayDanhGia)
+                .Select(dg => new DanhGiaVM
+                {
+                    MaDanhGia = dg.MaDanhGia,
+                    DiemDanhGia = dg.DiemDanhGia,
+                    NoiDung = dg.NoiDung ?? string.Empty,
+                    NgayDanhGia = dg.NgayDanhGia,
+                    MaKH = dg.MaKh,
+                    HoTen = dg.MaKhNavigation!.MaKhNavigation != null ? dg.MaKhNavigation.MaKhNavigation.HoTen : string.Empty
+                })
+                .ToListAsync();
 
             return View(vm);
         }
