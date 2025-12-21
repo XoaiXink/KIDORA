@@ -29,10 +29,30 @@
                 <div class="col-lg-6">
                     <div class="footer-box footer-left">
                         <h4 class="footer-title">Điều khoản & Chính sách</h4>
-                        <a class="footer-link">Chính sách giao hàng</a>
-                        <a class="footer-link">Chính sách bảo mật</a>
-                        <a class="footer-link">Chính sách giao hàng và đổi trả</a>
-                        <a class="footer-link">Chính sách thanh toán</a>
+
+                        <a class="footer-link"
+                           asp-controller="DieuKhoanChinhSach"
+                           asp-action="ChinhSachGiaoHang">
+                            Chính sách giao hàng
+                        </a>
+
+                        <a class="footer-link"
+                           asp-controller="DieuKhoanChinhSach"
+                           asp-action="ChinhSachBaoMat">
+                            Chính sách bảo mật
+                        </a>
+
+                        <a class="footer-link"
+                           asp-controller="DieuKhoanChinhSach"
+                           asp-action="chinhSachBaoHangVaDoiTra">
+                            Chính sách giao hàng và đổi trả
+                        </a>
+
+                        <a class="footer-link"
+                           asp-controller="DieuKhoanChinhSach"
+                           asp-action="ChinhSachThanhToan">
+                            Chính sách thanh toán
+                        </a>
                     </div>
                 </div>
 

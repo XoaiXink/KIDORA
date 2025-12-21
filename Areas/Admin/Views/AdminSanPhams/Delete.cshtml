@@ -6,6 +6,8 @@
 }
 
 <div class="container-fluid my-4">
+
+    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h2 text-danger">Xóa sản phẩm</h1>
         <a asp-action="Index" class="btn btn-secondary">
@@ -13,50 +15,79 @@
         </a>
     </div>
 
-    <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Cảnh báo!</h4>
-        <p>Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.</p>
+    <!-- CẢNH BÁO -->
+    <div class="alert alert-warning text-dark" role="alert">
+        <h4 class="alert-heading">
+            <i class="fas fa-exclamation-triangle me-2"></i> Cảnh báo
+        </h4>
+        <p class="mb-0">
+            Bạn có chắc chắn muốn <strong>xóa vĩnh viễn</strong> sản phẩm này không?
+            Hành động này <strong>không thể hoàn tác</strong>.
+        </p>
     </div>
 
+    <!-- CARD -->
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="row">
+
+                <!-- ẢNH SẢN PHẨM -->
                 <div class="col-md-4">
                     @if (!string.IsNullOrEmpty(Model.AnhChinh))
                     {
-                        <img src="~/Anh/@Model.AnhChinh" alt="@Model.TenSp" class="img-fluid rounded shadow" />
+                        <img src="~/Anh/@Model.AnhChinh"
+                             alt="@Model.TenSp"
+                             class="img-fluid rounded shadow" />
                     }
                     else
                     {
-                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                             style="height:300px;">
                             <span class="text-muted">Chưa có ảnh</span>
                         </div>
                     }
                 </div>
+
+                <!-- THÔNG TIN -->
                 <div class="col-md-8">
                     <dl class="row">
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaSp)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaSp)</dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Sku)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Sku)</dd>
+                        <dt class="col-sm-4">Mã sản phẩm</dt>
+                        <dd class="col-sm-8">@Model.MaSp</dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.TenSp)</dt>
-                        <dd class="col-sm-8"><strong>@Html.DisplayFor(model => model.TenSp)</strong></dd>
+                        <dt class="col-sm-4">SKU</dt>
+                        <dd class="col-sm-8">@Model.Sku</dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaDanhMucNavigation.TenDanhMuc)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaDanhMucNavigation.TenDanhMuc)</dd>
+                        <dt class="col-sm-4">Tên sản phẩm</dt>
+                        <dd class="col-sm-8">
+                            <strong>@Model.TenSp</strong>
+                        </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaNccNavigation.TenNcc)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaNccNavigation.TenNcc)</dd>
+                        <dt class="col-sm-4">Danh mục</dt>
+                        <dd class="col-sm-8">
+                            @Model.MaDanhMucNavigation?.TenDanhMuc
+                        </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DonGiaBan)</dt>
-                        <dd class="col-sm-8"><strong class="text-success">@Model.DonGiaBan.ToString("N0") đ</strong></dd>
+                        <dt class="col-sm-4">Nhà cung cấp</dt>
+                        <dd class="col-sm-8">
+                            @Model.MaNccNavigation?.TenNcc
+                        </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.GiaNiemYet)</dt>
-                        <dd class="col-sm-8"><del class="text-muted">@Model.GiaNiemYet.ToString("N0") đ</del></dd>
+                        <dt class="col-sm-4">Giá bán</dt>
+                        <dd class="col-sm-8">
+                            <strong class="text-success">
+                                @Model.DonGiaBan.ToString("N0") đ
+                            </strong>
+                        </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DangBan)</dt>
+                        <dt class="col-sm-4">Giá niêm yết</dt>
+                        <dd class="col-sm-8">
+                            <del class="text-muted">
+                                @Model.GiaNiemYet.ToString("N0") đ
+                            </del>
+                        </dd>
+
+                        <dt class="col-sm-4">Trạng thái</dt>
                         <dd class="col-sm-8">
                             @{
                                 var badgeClass = Model.DangBan ? "bg-success" : "bg-danger";
@@ -64,21 +95,28 @@
                             }
                             <span class="badge @badgeClass p-2">@badgeText</span>
                         </dd>
+
                     </dl>
                 </div>
             </div>
 
             <hr />
 
+            <!-- FORM XÁC NHẬN -->
             <form asp-action="Delete" method="post" class="mt-3">
+                @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="MaSp" />
-                <div class="form-group">
+
+                <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Xác nhận xóa
+                        <i class="fas fa-trash me-1"></i> Xác nhận xóa
                     </button>
-                    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Hủy
+                    </a>
                 </div>
             </form>
+
         </div>
     </div>
 </div>

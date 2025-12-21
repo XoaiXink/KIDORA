@@ -17,48 +17,53 @@
         <div class="card-body">
             <form asp-action="Edit" asp-route-id="@Model.MaSp" method="post">
                 @Html.AntiForgeryToken()
+
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="MaSp" />
 
+                <!-- MÃ SP & SKU -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label asp-for="MaSp" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Mã sản phẩm</label>
                             <input asp-for="MaSp" class="form-control" readonly />
                             <span asp-validation-for="MaSp" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label asp-for="Sku" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">SKU</label>
                             <input asp-for="Sku" class="form-control" />
                             <span asp-validation-for="Sku" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
 
+                <!-- TÊN SP -->
                 <div class="form-group mb-3">
-                    <label asp-for="TenSp" class="form-label fw-bold"></label>
+                    <label class="form-label fw-bold">Tên sản phẩm</label>
                     <input asp-for="TenSp" class="form-control" />
                     <span asp-validation-for="TenSp" class="text-danger"></span>
                 </div>
 
+                <!-- MÔ TẢ -->
                 <div class="form-group mb-3">
-                    <label asp-for="MoTaNgan" class="form-label fw-bold"></label>
+                    <label class="form-label fw-bold">Mô tả ngắn</label>
                     <textarea asp-for="MoTaNgan" class="form-control" rows="3"></textarea>
                     <span asp-validation-for="MoTaNgan" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label asp-for="MoTaChiTiet" class="form-label fw-bold"></label>
+                    <label class="form-label fw-bold">Mô tả chi tiết</label>
                     <textarea asp-for="MoTaChiTiet" class="form-control" rows="5"></textarea>
                     <span asp-validation-for="MoTaChiTiet" class="text-danger"></span>
                 </div>
 
+                <!-- DANH MỤC & NCC -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label asp-for="MaDanhMuc" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Danh mục</label>
                             <select asp-for="MaDanhMuc" class="form-select" asp-items="ViewBag.MaDanhMuc">
                                 <option value="">-- Chọn danh mục --</option>
                             </select>
@@ -67,7 +72,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label asp-for="MaNcc" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Nhà cung cấp</label>
                             <select asp-for="MaNcc" class="form-select" asp-items="ViewBag.MaNcc">
                                 <option value="">-- Chọn nhà cung cấp --</option>
                             </select>
@@ -76,75 +81,84 @@
                     </div>
                 </div>
 
+                <!-- THƯƠNG HIỆU & ĐỘ TUỔI -->
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group mb-3">
-                            <label asp-for="ThuongHieu" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Thương hiệu</label>
                             <input asp-for="ThuongHieu" class="form-control" />
                             <span asp-validation-for="ThuongHieu" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group mb-3">
-                            <label asp-for="DoTuoiToiThieu" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Độ tuổi tối thiểu</label>
                             <input asp-for="DoTuoiToiThieu" class="form-control" type="number" />
                             <span asp-validation-for="DoTuoiToiThieu" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group mb-3">
-                            <label asp-for="DoTuoiToiDa" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Độ tuổi tối đa</label>
                             <input asp-for="DoTuoiToiDa" class="form-control" type="number" />
                             <span asp-validation-for="DoTuoiToiDa" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
 
+                <!-- GIÁ & KHỐI LƯỢNG -->
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group mb-3">
-                            <label asp-for="DonGiaBan" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Giá bán</label>
                             <input asp-for="DonGiaBan" class="form-control" type="number" step="0.01" />
                             <span asp-validation-for="DonGiaBan" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group mb-3">
-                            <label asp-for="GiaNiemYet" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Giá niêm yết</label>
                             <input asp-for="GiaNiemYet" class="form-control" type="number" step="0.01" />
                             <span asp-validation-for="GiaNiemYet" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group mb-3">
-                            <label asp-for="KhoiLuong" class="form-label fw-bold"></label>
+                            <label class="form-label fw-bold">Khối lượng (kg)</label>
                             <input asp-for="KhoiLuong" class="form-control" type="number" step="0.01" />
                             <span asp-validation-for="KhoiLuong" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
 
+                <!-- ẢNH -->
                 <div class="form-group mb-3">
-                    <label asp-for="AnhChinh" class="form-label fw-bold"></label>
-                    <input asp-for="AnhChinh" class="form-control" placeholder="Đường dẫn ảnh (ví dụ: Anh/product.jpg)" />
+                    <label class="form-label fw-bold">Ảnh chính</label>
+                    <input asp-for="AnhChinh" class="form-control" placeholder="Ví dụ: product01.jpg" />
                     <span asp-validation-for="AnhChinh" class="text-danger"></span>
+
                     @if (!string.IsNullOrEmpty(Model.AnhChinh))
                     {
                         <div class="mt-2">
-                            <img src="~/Anh/@Model.AnhChinh" alt="@Model.TenSp" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
+                            <img src="~/Anh/@Model.AnhChinh"
+                                 alt="@Model.TenSp"
+                                 class="img-thumbnail"
+                                 style="max-width:200px;" />
                         </div>
                     }
                 </div>
 
+                <!-- TRẠNG THÁI -->
                 <div class="form-group mb-3">
                     <div class="form-check">
                         <input class="form-check-input" asp-for="DangBan" type="checkbox" />
-                        <label class="form-check-label fw-bold" asp-for="DangBan">
-                            @Html.DisplayNameFor(model => model.DangBan)
+                        <label class="form-check-label fw-bold">
+                            Đang bán
                         </label>
                     </div>
                 </div>
 
+                <!-- BUTTON -->
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Lưu thay đổi

@@ -6,12 +6,15 @@
 }
 
 <div class="container-fluid my-4">
+
+    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h2 text-dark">Chi tiết sản phẩm</h1>
         <div>
             <a asp-action="Edit" asp-route-id="@Model.MaSp" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Chỉnh sửa
             </a>
+
             <form asp-action="ToggleVisibilityPost"
                   asp-controller="AdminSanPhams"
                   asp-area="Admin"
@@ -24,52 +27,62 @@
                     @(Model.DangBan ? "Vô hiệu hóa" : "Kích hoạt")
                 </button>
             </form>
+
             <a asp-action="Index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Quay lại danh sách
             </a>
         </div>
     </div>
 
+    <!-- CARD -->
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="row">
+
+                <!-- ẢNH -->
                 <div class="col-md-4">
                     @if (!string.IsNullOrEmpty(Model.AnhChinh))
                     {
-                        <img src="~/Anh/@Model.AnhChinh" alt="@Model.TenSp" class="img-fluid rounded shadow" />
+                        <img src="~/Anh/@Model.AnhChinh"
+                             alt="@Model.TenSp"
+                             class="img-fluid rounded shadow" />
                     }
                     else
                     {
-                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                             style="height:300px;">
                             <span class="text-muted">Chưa có ảnh</span>
                         </div>
                     }
                 </div>
+
+                <!-- THÔNG TIN -->
                 <div class="col-md-8">
                     <dl class="row">
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaSp)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaSp)</dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Sku)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Sku)</dd>
+                        <dt class="col-sm-4">Mã sản phẩm</dt>
+                        <dd class="col-sm-8">@Model.MaSp</dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.TenSp)</dt>
-                        <dd class="col-sm-8"><strong>@Html.DisplayFor(model => model.TenSp)</strong></dd>
+                        <dt class="col-sm-4">SKU</dt>
+                        <dd class="col-sm-8">@Model.Sku</dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaDanhMucNavigation.TenDanhMuc)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaDanhMucNavigation.TenDanhMuc)</dd>
+                        <dt class="col-sm-4">Tên sản phẩm</dt>
+                        <dd class="col-sm-8"><strong>@Model.TenSp</strong></dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MaNccNavigation.TenNcc)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaNccNavigation.TenNcc)</dd>
+                        <dt class="col-sm-4">Danh mục</dt>
+                        <dd class="col-sm-8">@Model.MaDanhMucNavigation?.TenDanhMuc</dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ThuongHieu)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.ThuongHieu)</dd>
+                        <dt class="col-sm-4">Nhà cung cấp</dt>
+                        <dd class="col-sm-8">@Model.MaNccNavigation?.TenNcc</dd>
 
-                        <dt class="col-sm-4">Độ tuổi</dt>
+                        <dt class="col-sm-4">Thương hiệu</dt>
+                        <dd class="col-sm-8">@Model.ThuongHieu</dd>
+
+                        <dt class="col-sm-4">Độ tuổi sử dụng</dt>
                         <dd class="col-sm-8">
                             @if (Model.DoTuoiToiThieu.HasValue && Model.DoTuoiToiDa.HasValue)
                             {
-                                <text>@Model.DoTuoiToiThieu - @Model.DoTuoiToiDa tuổi</text>
+                                <text>@Model.DoTuoiToiThieu – @Model.DoTuoiToiDa tuổi</text>
                             }
                             else if (Model.DoTuoiToiThieu.HasValue)
                             {
@@ -82,17 +95,24 @@
                             else
                             {
                                 <span class="text-muted">Chưa cập nhật</span>
-
                             }
                         </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DonGiaBan)</dt>
-                        <dd class="col-sm-8"><strong class="text-success">@Model.DonGiaBan.ToString("N0") đ</strong></dd>
+                        <dt class="col-sm-4">Giá bán</dt>
+                        <dd class="col-sm-8">
+                            <strong class="text-success">
+                                @Model.DonGiaBan.ToString("N0") đ
+                            </strong>
+                        </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.GiaNiemYet)</dt>
-                        <dd class="col-sm-8"><del class="text-muted">@Model.GiaNiemYet.ToString("N0") đ</del></dd>
+                        <dt class="col-sm-4">Giá niêm yết</dt>
+                        <dd class="col-sm-8">
+                            <del class="text-muted">
+                                @Model.GiaNiemYet.ToString("N0") đ
+                            </del>
+                        </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.KhoiLuong)</dt>
+                        <dt class="col-sm-4">Khối lượng</dt>
                         <dd class="col-sm-8">
                             @if (Model.KhoiLuong.HasValue)
                             {
@@ -101,11 +121,10 @@
                             else
                             {
                                 <span class="text-muted">Chưa cập nhật</span>
-
                             }
                         </dd>
 
-                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DangBan)</dt>
+                        <dt class="col-sm-4">Trạng thái</dt>
                         <dd class="col-sm-8">
                             @{
                                 var badgeClass = Model.DangBan ? "bg-success" : "bg-danger";
@@ -113,25 +132,42 @@
                             }
                             <span class="badge @badgeClass p-2">@badgeText</span>
                         </dd>
+
                     </dl>
                 </div>
             </div>
 
             <hr />
 
+            <!-- MÔ TẢ NGẮN -->
             <div class="row mt-3">
                 <div class="col-12">
-                    <h5>@Html.DisplayNameFor(model => model.MoTaNgan)</h5>
-                    <p class="text-muted">@Html.DisplayFor(model => model.MoTaNgan)</p>
+                    <h5>Mô tả ngắn</h5>
+                    <p class="text-muted">
+                        @(!string.IsNullOrWhiteSpace(Model.MoTaNgan)
+                                                ? Model.MoTaNgan
+                                                : "Chưa có mô tả")
+                    </p>
                 </div>
             </div>
 
+            <!-- MÔ TẢ CHI TIẾT -->
             <div class="row mt-3">
                 <div class="col-12">
-                    <h5>@Html.DisplayNameFor(model => model.MoTaChiTiet)</h5>
-                    <div class="text-muted">@Html.Raw(Model.MoTaChiTiet?.Replace("\n", "<br />"))</div>
+                    <h5>Mô tả chi tiết</h5>
+                    <div class="text-muted">
+                        @if (!string.IsNullOrWhiteSpace(Model.MoTaChiTiet))
+                        {
+                            @Html.Raw(Model.MoTaChiTiet.Replace("\n", "<br />"))
+                        }
+                        else
+                        {
+                            <span>Chưa có mô tả chi tiết</span>
+                        }
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

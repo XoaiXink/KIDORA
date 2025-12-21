@@ -89,6 +89,10 @@ public class AccountController : Controller
             RedirectUri = redirectUrl
         };
 
+        // When using external providers (Google/Facebook), request account chooser so
+        // user can switch accounts instead of automatically reusing a previous session.
+        properties.Items["prompt"] = "select_account";
+
         return Challenge(properties, provider);
     }
     public async Task<IActionResult> ExternalLoginCallback()
@@ -99,8 +103,9 @@ public class AccountController : Controller
         if (!authenticateResult.Succeeded)
             return RedirectToAction("Login");
 
-        var email = User.FindFirstValue(ClaimTypes.Email);
-        var name = User.FindFirstValue(ClaimTypes.Name);
+        // External provider information is available on the authenticate result's principal.
+        var email = authenticateResult.Principal?.FindFirstValue(ClaimTypes.Email);
+        var name = authenticateResult.Principal?.FindFirstValue(ClaimTypes.Name);
 
         if (string.IsNullOrEmpty(email))
             return RedirectToAction("Login");
@@ -387,9 +392,15 @@ public class AccountController : Controller
     }
 
     // ===================== LOGOUT =====================
+    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> Logout()
     {
+        // Sign out the application cookie explicitly to ensure local sign-out.
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        // Also clear any other authentication (if any)
         await HttpContext.SignOutAsync();
+
         // Ensure redirect goes to the root Account/Login (no area)
         return RedirectToAction("Login", "Account", new { area = "" });
     }
