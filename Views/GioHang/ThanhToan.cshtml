@@ -4,8 +4,10 @@
     ViewData["Title"] = "Thanh Toán";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var tongTien = Model.GioHang.Sum(p => p.ThanhTien);
-    var phiVanChuyen = 30000m; // Phí vận chuyển mặc định
+    var phiVanChuyen = 30000m;
     var tongCong = tongTien + phiVanChuyen;
+    var giamGia = Model.SoTienGiam;
+    var tongSauGiam = Math.Max(0, tongCong - giamGia);
 }
 
 <!-- Single Page Header start -->
@@ -21,15 +23,34 @@
 <!-- Checkout Page Start -->
 <div class="container-fluid py-5">
     <div class="container py-5">
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fa fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
         <div asp-validation-summary="All" class="text-danger mb-3"></div>
-        <form asp-action="ThanhToan" asp-controller="GioHang" method="post">
-            <div class="row g-5">
-                <!-- THÔNG TIN GIAO HÀNG -->
-                <div class="col-md-12 col-lg-6 col-xl-7">
+
+        <div class="row g-5">
+            <!-- THÔNG TIN GIAO HÀNG -->
+            <div class="col-md-12 col-lg-6 col-xl-7">
+                <form id="mainForm" asp-action="ThanhToan" asp-controller="GioHang" method="post">
+                    <input type="hidden" asp-for="MaGiamGia" />
+                    <input type="hidden" asp-for="SoTienGiam" />
 
                     <div class="card shadow-sm border-0">
                         <div class="card-body p-4">
-
                             <h4 class="mb-4 border-bottom pb-2">
                                 <i class="fa fa-truck me-2 text-primary"></i>
                                 Thông tin giao hàng
@@ -67,7 +88,6 @@
                                 </div>
                             }
 
-                            <!-- Họ tên -->
                             <div class="mb-3">
                                 <label class="form-label">
                                     Họ tên người nhận <sup class="text-danger">*</sup>
@@ -77,7 +97,6 @@
                                 <span asp-validation-for="HoTen" class="text-danger"></span>
                             </div>
 
-                            <!-- SĐT -->
                             <div class="mb-3">
                                 <label class="form-label">
                                     Số điện thoại <sup class="text-danger">*</sup>
@@ -88,7 +107,6 @@
                                 <span asp-validation-for="DienThoai" class="text-danger"></span>
                             </div>
 
-                            <!-- ĐỊA CHỈ HÀNH CHÍNH -->
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">
@@ -118,103 +136,142 @@
                                 </div>
                             </div>
 
-                            <!-- Địa chỉ chi tiết -->
                             <div class="mb-3">
                                 <label class="form-label">
                                     Địa chỉ cụ thể <sup class="text-danger">*</sup>
                                 </label>
                                 <input asp-for="DiaChi" class="form-control"
-                                       placeholder="Số nhà, tên đường"
-                                       required>
+                                       placeholder="Số nhà, tên đường" required>
                                 <span asp-validation-for="DiaChi" class="text-danger"></span>
                             </div>
-
-                            <!-- Ghi chú -->
                             <div class="mb-0">
-                                <label class="form-label">Ghi chú đơn hàng</label>
+                                <label class="form-label">Ghi chú đơn hàng (Không bắt buộc)</label>
                                 <textarea asp-for="GhiChu" class="form-control" rows="3"
                                           placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao"></textarea>
                             </div>
-
                         </div>
                     </div>
+                </form>
+            </div>
 
+            <!-- Tóm tắt đơn hàng -->
+            <div class="col-md-12 col-lg-6 col-xl-5">
+                <h4 class="mb-4">Đơn hàng của bạn</h4>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sản phẩm</th>
+                                <th scope="col">Tên</th>
+                                <th scope="col">SL</th>
+                                <th scope="col">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.GioHang)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="~/customerassets/img/Anh/@item.AnhChinh" class="img-fluid rounded"
+                                             style="width: 60px; height: 60px; object-fit: cover;" alt="@item.TenSp">
+                                    </td>
+                                    <td class="align-middle">@item.TenSp</td>
+                                    <td class="align-middle">@item.SoLuong</td>
+                                    <td class="align-middle">@item.ThanhTien.ToString("N0")đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
 
-                <!-- Tóm tắt đơn hàng -->
-                <div class="col-md-12 col-lg-6 col-xl-5">
-                    <h4 class="mb-4">Đơn hàng của bạn</h4>
+                <!-- ✅ Form riêng cho mã giảm giá -->
+                <form asp-action="ApDungMaGiamGia" asp-controller="GioHang" method="post" class="card mb-3">
+                    <!-- ✅ Preserve form data -->
+                    <input type="hidden" name="HoTen" value="@Model.HoTen" />
+                    <input type="hidden" name="DienThoai" value="@Model.DienThoai" />
+                    <input type="hidden" name="DiaChi" value="@Model.DiaChi" />
+                    <input type="hidden" name="TinhThanh" value="@Model.TinhThanh" />
+                    <input type="hidden" name="QuanHuyen" value="@Model.QuanHuyen" />
+                    <input type="hidden" name="PhuongXa" value="@Model.PhuongXa" />
+                    <input type="hidden" name="GhiChu" value="@Model.GhiChu" />
 
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Sản phẩm</th>
-                                    <th scope="col">Tên</th>
-                                    <th scope="col">SL</th>
-                                    <th scope="col">Thành tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.GioHang)
-                                {
-                                    <tr>
-                                        <td>
-                                            <img src="~/customerassets/img/Anh/@item.AnhChinh" class="img-fluid rounded"
-                                                 style="width: 60px; height: 60px; object-fit: cover;" alt="@item.TenSp">
-                                        </td>
-                                        <td class="align-middle">@item.TenSp</td>
-                                        <td class="align-middle">@item.SoLuong</td>
-                                        <td class="align-middle">@item.ThanhTien.ToString("N0")đ</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Tổng tiền -->
-                    <div class="bg-light rounded p-4">
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Tạm tính:</span>
-                            <span>@tongTien.ToString("N0")đ</span>
+                    <div class="card-body">
+                        <label asp-for="MaGiamGia" class="form-label fw-semibold">Nhập mã giảm giá</label>
+                        <div class="input-group">
+                            <input asp-for="MaGiamGia" class="form-control" placeholder="Ví dụ: SALE10" />
+                            <button type="submit" class="btn btn-outline-primary">Áp dụng</button>
                         </div>
+                        @if (!string.IsNullOrEmpty(Model.MaGiamGia) && Model.SoTienGiam > 0)
+                        {
+                            <div class="alert alert-success mt-2 mb-0">
+                                <i class="fa fa-check-circle me-1"></i>
+                                Đã áp dụng mã <strong>@Model.MaGiamGia</strong>
+                            </div>
+                        }
+                    </div>
+                </form>
+
+                <!-- Tổng tiền -->
+                <div class="bg-light rounded p-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tạm tính:</span>
+                        <span>@tongTien.ToString("N0")đ</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Phí vận chuyển:</span>
+                        <span>@phiVanChuyen.ToString("N0")đ</span>
+                    </div>
+                    <hr>
+                    @if (giamGia > 0)
+                    {
                         <div class="d-flex justify-content-between mb-3">
-                            <span>Phí vận chuyển:</span>
-                            <span>@phiVanChuyen.ToString("N0")đ</span>
+                            <span>Giảm giá:</span>
+                            <span class="text-success fw-bold">-@giamGia.ToString("N0")đ</span>
                         </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Tổng cộng:</strong>
-                            <strong class="text-primary fs-5">@tongCong.ToString("N0")đ</strong>
-                        </div>
+                    }
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Tổng cộng:</strong>
+                        <strong class="text-primary fs-5">@tongSauGiam.ToString("N0")đ</strong>
                     </div>
+                </div>
 
+                <!-- ✅ Nút đặt hàng -->
+                <div class="mt-3">
+                    <button type="button" onclick="submitMainForm('COD')" class="btn btn-primary w-100 py-3">
+                        <i class="fa fa-shopping-cart me-2"></i>Đặt hàng (COD)
+                    </button>
+                </div>
+                <div class="mt-2">
+                    <button type="button" onclick="submitMainForm('Thanh toán VNPay')" class="btn btn-success w-100 py-3">
+                        <i class="fa fa-credit-card me-2"></i>Thanh toán VNPay
+                    </button>
+                </div>
 
-                    <!-- Nút đặt hàng -->
-                    <div>
-                        <input type="submit" name="payment" class="btn btn-primary w-100 py-3"
-                               value="Đặt hàng (COD)">
-                    </div>
-                    <div>
-                        <input type="submit" name="payment" class="btn btn-primary w-100 py-3 mt-2"
-                               value="Thanh toán VNPay">
-                    </div>
-
-                    <div class="text-center mt-3">
-                        <a asp-controller="GioHang" asp-action="Index" class="text-muted">
-                            <i class="fa fa-arrow-left me-2"></i> Quay lại giỏ hàng
-                        </a>
-                    </div>
+                <div class="text-center mt-3">
+                    <a asp-controller="GioHang" asp-action="Index" class="text-muted">
+                        <i class="fa fa-arrow-left me-2"></i> Quay lại giỏ hàng
+                    </a>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 <!-- Checkout Page End -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
 
-        /* ================= DOM ================= */
+<script>
+    // ✅ Submit form chính với payment method
+    function submitMainForm(paymentMethod) {
+        const form = document.getElementById('mainForm');
+        const paymentInput = document.createElement('input');
+        paymentInput.type = 'hidden';
+        paymentInput.name = 'payment';
+        paymentInput.value = paymentMethod;
+        form.appendChild(paymentInput);
+        form.submit();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
         const tinhSelect = document.getElementById("tinh");
         const quanSelect = document.getElementById("quan");
         const phuongSelect = document.getElementById("phuong");
@@ -225,9 +282,8 @@
 
         const savedAddressCheckboxes = document.querySelectorAll('input[name="savedAddress"]');
 
-        let pendingAddress = null; // 🔑 xử lý async load tỉnh
+        let pendingAddress = null;
 
-        /* ================= RESET ================= */
         function resetQuanHuyen() {
             quanSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
             quanSelect.disabled = true;
@@ -247,7 +303,6 @@
             resetPhuongXa();
         }
 
-        /* ================= LOAD API ================= */
         function loadQuanHuyen(tinhCode, preQuan, prePhuong) {
             resetQuanHuyen();
             resetPhuongXa();
@@ -291,10 +346,9 @@
                 });
         }
 
-        /* ================= APPLY SAVED ADDRESS ================= */
         function tryApplyPendingAddress() {
             if (!pendingAddress) return;
-            if (tinhSelect.options.length <= 1) return; // tỉnh chưa load xong
+            if (tinhSelect.options.length <= 1) return;
 
             const { ten, phone, diachi, tinh, quan, phuong } = pendingAddress;
 
@@ -312,7 +366,6 @@
             }
         }
 
-        /* ================= LOAD TỈNH ================= */
         fetch("https://provinces.open-api.vn/api/p/")
             .then(res => res.json())
             .then(data => {
@@ -323,14 +376,11 @@
                         </option>`;
                 });
 
-                tryApplyPendingAddress(); // 🔑 quan trọng
+                tryApplyPendingAddress();
             });
 
-        /* ================= EVENT ================= */
         savedAddressCheckboxes.forEach(cb => {
             cb.addEventListener("change", function () {
-
-                // chỉ cho chọn 1 địa chỉ
                 savedAddressCheckboxes.forEach(x => {
                     if (x !== this) x.checked = false;
                 });
@@ -354,6 +404,5 @@
             const code = this.selectedOptions[0]?.dataset.code;
             loadPhuong(code);
         });
-
     });
 </script>

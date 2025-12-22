@@ -8,27 +8,26 @@ using System.Security.Claims;
 
 namespace KIDORA.Controllers
 {
-
     public class GioHangController : Controller
     {
         private readonly KidoraDbContext _context;
         private readonly IVnPayServices _vnPayservice;
+
         public GioHangController(KidoraDbContext context, IVnPayServices vnPayservice)
         {
             _context = context;
             _vnPayservice = vnPayservice;
         }
 
-
         public List<SanPhamGioHang> GioHang() =>
-     HttpContext.Session.GetT<List<SanPhamGioHang>>(MySetting.GIOHANG_KEY)
-     ?? new List<SanPhamGioHang>();
+            HttpContext.Session.GetT<List<SanPhamGioHang>>(MySetting.GIOHANG_KEY)
+            ?? new List<SanPhamGioHang>();
+
         public IActionResult Index()
         {
             return View(GioHang());
         }
 
-        // Thêm sản phẩm vào giỏ (yêu cầu đăng nhập)
         public IActionResult AddToCart(string id, int quantity = 1)
         {
             if (!User.Identity?.IsAuthenticated ?? true)
@@ -37,13 +36,10 @@ namespace KIDORA.Controllers
             }
 
             var gioHang = GioHang();
-
-            // Kiểm tra sản phẩm đã có trong giỏ chưa
             var sanPham = gioHang.FirstOrDefault(p => p.MaSp == id);
 
             if (sanPham == null)
             {
-                // Lấy từ DB
                 var sp = _context.SanPhams.FirstOrDefault(p => p.MaSp == id);
                 if (sp == null)
                 {
@@ -51,7 +47,6 @@ namespace KIDORA.Controllers
                     return Redirect("/404");
                 }
 
-                // Thêm mới vào giỏ
                 sanPham = new SanPhamGioHang
                 {
                     MaSp = sp.MaSp,
@@ -60,22 +55,18 @@ namespace KIDORA.Controllers
                     AnhChinh = sp.AnhChinh,
                     SoLuong = quantity
                 };
-
                 gioHang.Add(sanPham);
             }
             else
             {
-                // Nếu đã có → tăng số lượng
                 sanPham.SoLuong += quantity;
             }
 
-            // Lưu vào session
             HttpContext.Session.Set(MySetting.GIOHANG_KEY, gioHang);
-
             TempData["Success"] = "Đã thêm vào giỏ!";
-            // Sau khi thêm, chuyển hướng đến trang giỏ hàng để người dùng có thể tiến hành mua
             return RedirectToAction("Index", "GioHang");
         }
+
         public IActionResult XoaGioHang(string id)
         {
             var gioHang = GioHang();
@@ -87,6 +78,7 @@ namespace KIDORA.Controllers
             }
             return RedirectToAction("Index");
         }
+
         [HttpPost]
         public IActionResult UpdateQuantity(string id, int quantity)
         {
@@ -96,7 +88,6 @@ namespace KIDORA.Controllers
             if (item == null) return Json(new { success = false });
 
             item.SoLuong = quantity;
-
             HttpContext.Session.Set(MySetting.GIOHANG_KEY, gioHang);
 
             return Json(new
@@ -105,8 +96,8 @@ namespace KIDORA.Controllers
                 subtotal = item.ThanhTien,
                 cartTotal = gioHang.Sum(p => p.ThanhTien)
             });
-
         }
+
         [HttpGet]
         public IActionResult ThanhToan()
         {
@@ -114,22 +105,22 @@ namespace KIDORA.Controllers
             {
                 return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("ThanhToan") });
             }
+
             var gioHang = GioHang();
-            if (GioHang().Count == 0)
+            if (gioHang.Count == 0)
             {
                 TempData["ErrorMessage"] = "Giỏ hàng trống!";
                 return RedirectToAction("Index");
             }
+
             var model = new ThanhToanVM
             {
                 GioHang = gioHang,
             };
 
-            // Nếu user đã đăng nhập, load địa chỉ đã lưu và thông tin cá nhân
             var currentUserId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!string.IsNullOrEmpty(currentUserId))
             {
-                // Load saved addresses
                 var diaChis = _context.DiaChiKhachHangs
                     .Where(d => d.MaKh == currentUserId)
                     .OrderByDescending(d => d.MacDinh)
@@ -137,7 +128,6 @@ namespace KIDORA.Controllers
 
                 model.DiaChiDaLuu = diaChis;
 
-                // Prefill with default address or user profile
                 var defaultAddr = diaChis.FirstOrDefault(d => d.MacDinh) ?? diaChis.FirstOrDefault();
                 if (defaultAddr != null)
                 {
@@ -158,7 +148,105 @@ namespace KIDORA.Controllers
                     }
                 }
             }
+
+            // ✅ Lấy mã giảm giá từ Session nếu có
+            var savedDiscount = HttpContext.Session.GetT<DiscountInfo>("AppliedDiscount");
+            if (savedDiscount != null)
+            {
+                model.MaGiamGia = savedDiscount.MaCode;
+                model.SoTienGiam = savedDiscount.SoTienGiam;
+            }
+
             return View(model);
+        }
+
+        // ✅ ACTION MỚI: Áp dụng mã giảm giá
+        [HttpPost]
+        public IActionResult ApDungMaGiamGia(ThanhToanVM model)
+        {
+            var gioHang = GioHang();
+            if (gioHang.Count == 0)
+            {
+                TempData["ErrorMessage"] = "Giỏ hàng trống!";
+                return RedirectToAction("Index");
+            }
+
+            var currentUserId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Xử lý địa chỉ đã lưu nếu có
+            var savedAddressIdStr = Request.Form["savedAddress"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(savedAddressIdStr) && int.TryParse(savedAddressIdStr, out int maDiaChi))
+            {
+                var dc = _context.DiaChiKhachHangs.FirstOrDefault(d => d.MaDiaChi == maDiaChi);
+                if (dc != null)
+                {
+                    model.HoTen = dc.TenNguoiNhan ?? "";
+                    model.DienThoai = dc.DienThoaiNhan ?? "";
+                    model.DiaChi = dc.DiaChiChiTiet ?? "";
+                    model.TinhThanh = dc.TinhThanh;
+                    model.QuanHuyen = dc.QuanHuyen;
+                    model.PhuongXa = dc.PhuongXa;
+                }
+            }
+
+            var tongTienSP = gioHang.Sum(p => p.ThanhTien);
+            decimal soTienGiam = 0;
+
+            if (!string.IsNullOrWhiteSpace(model.MaGiamGia))
+            {
+                var maCode = model.MaGiamGia.Trim();
+                var today = DateOnly.FromDateTime(DateTime.Now);
+
+                var maKhuyenMai = _context.MaKhuyenMais.FirstOrDefault(k =>
+                    k.MaCode.ToLower() == maCode.ToLower());
+
+                var hopLe =
+                    maKhuyenMai != null &&
+                    maKhuyenMai.DangHoatDong &&
+                    today >= maKhuyenMai.NgayBatDau &&
+                    today <= maKhuyenMai.NgayKetThuc &&
+                    maKhuyenMai.SoLanDaDung < maKhuyenMai.GioiHanLuotDung &&
+                    tongTienSP >= maKhuyenMai.DonToiThieu;
+
+                if (!hopLe)
+                {
+                    TempData["ErrorMessage"] = "Mã giảm giá không hợp lệ hoặc không đáp ứng điều kiện.";
+                    HttpContext.Session.Remove("AppliedDiscount");
+                }
+                else
+                {
+                    var kieu = maKhuyenMai.KieuGiam?.ToLower() ?? string.Empty;
+                    if (kieu.Contains("phantram") || kieu.Contains("percent") || kieu.Contains("%"))
+                    {
+                        soTienGiam = Math.Round(tongTienSP * maKhuyenMai.GiaTriGiam / 100m, 0);
+                    }
+                    else
+                    {
+                        soTienGiam = maKhuyenMai.GiaTriGiam;
+                    }
+
+                    if (soTienGiam > tongTienSP)
+                    {
+                        soTienGiam = tongTienSP;
+                    }
+
+                    // ✅ Lưu vào Session
+                    HttpContext.Session.Set("AppliedDiscount", new DiscountInfo
+                    {
+                        MaCode = maCode,
+                        MaKm = maKhuyenMai.MaKm,
+                        SoTienGiam = soTienGiam
+                    });
+
+                    TempData["SuccessMessage"] = $"Áp dụng mã thành công! Giảm {soTienGiam:N0}đ";
+                }
+            }
+            else
+            {
+                HttpContext.Session.Remove("AppliedDiscount");
+            }
+
+            return RedirectToAction("ThanhToan");
         }
 
         [HttpPost]
@@ -171,65 +259,67 @@ namespace KIDORA.Controllers
                 return RedirectToAction("Index");
             }
 
-            // current user id for this request
             var currentUserId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // If user selected a saved address, overwrite model fields with that address
-            var savedAddressId = Request.Form["savedAddress"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(savedAddressId))
+            var savedAddressIdStr = Request.Form["savedAddress"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(savedAddressIdStr) && int.TryParse(savedAddressIdStr, out int maDiaChi))
             {
-                if (int.TryParse(savedAddressId, out int maDiaChi))
+                var dc = _context.DiaChiKhachHangs.FirstOrDefault(d => d.MaDiaChi == maDiaChi);
+                if (dc != null)
                 {
-                    var dc = _context.DiaChiKhachHangs.FirstOrDefault(d => d.MaDiaChi == maDiaChi);
-                    if (dc != null)
-                    {
-                        model.HoTen = dc.TenNguoiNhan;
-                        model.DienThoai = dc.DienThoaiNhan;
-                        model.DiaChi = dc.DiaChiChiTiet;
-                        model.TinhThanh = dc.TinhThanh;
-                        model.QuanHuyen = dc.QuanHuyen;
-                        model.PhuongXa = dc.PhuongXa;
-                    }
+                    model.HoTen = dc.TenNguoiNhan ?? "";
+                    model.DienThoai = dc.DienThoaiNhan ?? "";
+                    model.DiaChi = dc.DiaChiChiTiet ?? "";
+                    model.TinhThanh = dc.TinhThanh;
+                    model.QuanHuyen = dc.QuanHuyen;
+                    model.PhuongXa = dc.PhuongXa;
                 }
             }
 
             if (!ModelState.IsValid)
             {
                 model.GioHang = gioHang;
-                // reload saved addresses for redisplay
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    model.DiaChiDaLuu = _context.DiaChiKhachHangs.Where(d => d.MaKh == currentUserId).OrderByDescending(d => d.MacDinh).ToList();
+                    model.DiaChiDaLuu = _context.DiaChiKhachHangs
+                        .Where(d => d.MaKh == currentUserId)
+                        .OrderByDescending(d => d.MacDinh)
+                        .ToList();
                 }
                 return View(model);
             }
 
-            // Tính tổng tiền
             var tongTienSP = gioHang.Sum(p => p.ThanhTien);
             var phiVanChuyen = 30000m;
-            var tongCong = tongTienSP + phiVanChuyen;
+            var tongCongTruocGiam = tongTienSP + phiVanChuyen;
 
-            // Tạo mã đơn hàng mới
-            // NOTE: Cần lock hoặc dùng sequence DB để tránh trùng lặp khi chạy concurrent
+            // ✅ Lấy mã giảm giá từ Session
+            decimal soTienGiam = 0;
+            MaKhuyenMai? maKhuyenMai = null;
+            var savedDiscount = HttpContext.Session.GetT<DiscountInfo>("AppliedDiscount");
+
+            if (savedDiscount != null)
+            {
+                maKhuyenMai = _context.MaKhuyenMais.FirstOrDefault(k => k.MaKm == savedDiscount.MaKm);
+                if (maKhuyenMai != null)
+                {
+                    soTienGiam = savedDiscount.SoTienGiam;
+                }
+            }
+
+            var tongCongSauGiam = Math.Max(0, tongCongTruocGiam - soTienGiam);
+
+            // Tạo mã đơn hàng
             var lastOrder = _context.DonHangs.OrderByDescending(d => d.MaDonHang).FirstOrDefault();
             var newOrderNumber = 1;
-            if (lastOrder != null)
+            if (lastOrder != null && int.TryParse(lastOrder.MaDonHang.Replace("DH", ""), out int lastNumber))
             {
-                // Giả định mã luôn là DHxxxxxxx (7 số)
-                if (int.TryParse(lastOrder.MaDonHang.Replace("DH", ""), out int lastNumber))
-                {
-                    newOrderNumber = lastNumber + 1;
-                }
+                newOrderNumber = lastNumber + 1;
             }
             var maDonHang = $"DH{newOrderNumber:D7}";
             var soDonHang = $"ORD{newOrderNumber:D4}";
 
-            // Map địa chỉ đầy đủ
             var diaChiDayDu = $"{model.DiaChi}, {model.PhuongXa}, {model.QuanHuyen}, {model.TinhThanh}".Trim(',', ' ');
-
-            // Tạo đơn hàng mới
-            // Lấy MaKh từ user đang đăng nhập nếu có để liên kết đơn hàng với khách.
-            // use currentUserId declared above
 
             var donHang = new DonHang
             {
@@ -241,41 +331,51 @@ namespace KIDORA.Controllers
                 TrangThaiThanhToan = "Chưa thanh toán",
                 MaDvvc = "DVVC01",
                 PhiVanChuyen = phiVanChuyen,
-                GiamGiaKm = 0,
+                GiamGiaKm = soTienGiam,
                 GiamGiaKcoin = 0,
                 TongTienHang = tongTienSP,
-                TongGiamGia = 0,
-                TongThanhToan = tongCong,
+                TongGiamGia = soTienGiam,
+                TongThanhToan = tongCongSauGiam,
                 Vat = 0,
-                TongSauVat = tongCong,
+                TongSauVat = tongCongSauGiam,
                 TenNguoiNhan = model.HoTen,
                 SdtnguoiNhan = model.DienThoai,
                 DiaChiGiao = diaChiDayDu,
-                GhiChu = model.GhiChu
+                GhiChu = model.GhiChu ?? string.Empty
             };
 
             _context.DonHangs.Add(donHang);
-
-            // Use a transaction: save order first, then add details to avoid tracking/key conflicts
             using var transaction = _context.Database.BeginTransaction();
             try
             {
                 _context.SaveChanges();
 
-                // Thêm chi tiết đơn hàng — đảm bảo luôn thêm, tạo biến thể mặc định nếu cần
-                // Prepare starting ID for ChiTietDonHang since DB model uses non-generated PK
+                if (maKhuyenMai != null && soTienGiam > 0)
+                {
+                    var nextKmDonId = (_context.KmDonHangs.Select(k => (int?)k.MaKmDon).Max() ?? 0) + 1;
+                    var kmDonHang = new KmDonHang
+                    {
+                        MaKmDon = nextKmDonId,
+                        MaDonHang = maDonHang,
+                        MaKm = maKhuyenMai.MaKm,
+                        SoTienGiam = soTienGiam,
+                        GhiChu = $"Áp mã {maKhuyenMai.MaCode}"
+                    };
+
+                    maKhuyenMai.SoLanDaDung += 1;
+                    _context.KmDonHangs.Add(kmDonHang);
+                    _context.MaKhuyenMais.Update(maKhuyenMai);
+                }
+
                 var nextCtId = (_context.ChiTietDonHangs.Select(c => (int?)c.MaCtdh).Max() ?? 0) + 1;
 
                 foreach (var item in gioHang)
                 {
-                    // Tìm biến thể theo MaSp
                     var bienThe = _context.BienTheSanPhams.FirstOrDefault(bt => bt.MaSp == item.MaSp);
 
                     if (bienThe == null)
                     {
-                        // Nếu không có, tạo biến thể mặc định tạm thời để tránh bỏ qua chi tiết
                         var sp = _context.SanPhams.FirstOrDefault(s => s.MaSp == item.MaSp);
-
                         var newBienThe = new BienTheSanPham
                         {
                             MaBienThe = GenerateBienTheId(),
@@ -284,7 +384,6 @@ namespace KIDORA.Controllers
                             TenBienThe = "Mặc định",
                             DangBan = true
                         };
-
                         _context.BienTheSanPhams.Add(newBienThe);
                         bienThe = newBienThe;
                     }
@@ -310,52 +409,38 @@ namespace KIDORA.Controllers
             }
             catch (Exception ex)
             {
-                // Rollback and show error
                 try { transaction.Rollback(); } catch { }
                 TempData["ErrorMessage"] = "Lỗi khi lưu đơn hàng: " + ex.Message;
                 return RedirectToAction("Index");
             }
 
-            // Xử lý thanh toán
+            // ✅ Xóa mã giảm giá khỏi Session
+            HttpContext.Session.Remove("AppliedDiscount");
+
             if (payment == "Thanh toán VNPay")
             {
                 var vnPayModel = new VnPaymentRequestModel
                 {
-                    Amount = (decimal)(double)tongCong,
+                    Amount = (decimal)(double)tongCongSauGiam,
                     CreateDate = DateTime.Now,
                     Description = $"Thanh toan don hang {maDonHang}",
                     FullName = model.HoTen,
-                    OrderId = new Random().Next(1000, 100000) // VNPay yêu cầu số int cho TxnRef? Kiểm tra lại service
-                                                              // Trong VnPayService: vnpay.AddRequestData("vnp_TxnRef", tick); // Nó dùng ticks!
-                                                              // Nhưng PaymentCallback lại đọc: var vnp_orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
-                                                              // Logic cũ dùng tick làm TxnRef. Điều này làm mất liên kết với MaDonHang của mình.
-                                                              // Chúng ta nên gửi MaDonHang của mình đi, HOẶC lưu TxnRef vào đơn hàng.
-                                                              // Cách tốt nhất: Lưu MaDonHang vào vnp_TxnRef (nếu là số) hoặc vnp_OrderInfo.
-                                                              // Tuy nhiên VnPayService đang cứng nhắc dùng DateTime.Now.Ticks cho TxnRef.
-                                                              // Để đơn giản, ta sẽ lưu lại MaDonHang vào Session để map lại khi Callback về.
+                    OrderId = new Random().Next(1000, 100000)
                 };
-
-                // HACK: Để map lại Transaction với Order, ta có thể lưu vào NguoiDung session hoặc sửa Service.
-                // Ở đây tôi sẽ lưu vào Description hoặc sửa VnPayService để nhận TxnRef từ ngoài. 
-                // Nhưng VnPayService đang code cứng check Ticks.
-                // Giải pháp tạm thời: Lưu Session MaDonHangVuaTao
                 HttpContext.Session.SetString("PendingOrderId", maDonHang);
-
                 return Redirect(_vnPayservice.CreatePaymentUrl(HttpContext, vnPayModel));
             }
 
-            // Mặc định COD
             HttpContext.Session.Remove(MySetting.GIOHANG_KEY);
             TempData["MaDonHang"] = maDonHang;
             TempData["MaTraCuu"] = soDonHang;
-            TempData["TongCong"] = tongCong.ToString("N0");
+            TempData["TongCong"] = tongCongSauGiam.ToString("N0");
 
             return RedirectToAction("ThanhToanThanhCong");
         }
 
         private string GenerateBienTheId()
         {
-            // Generate BT + 8 hex chars (10 chars total), retry if collision detected.
             for (int attempt = 0; attempt < 5; attempt++)
             {
                 var bytes = new byte[4];
@@ -367,10 +452,9 @@ namespace KIDORA.Controllers
                     return id;
                 }
             }
-
-            // Fallback: GUID-based (still 8 chars) to reduce collision chance further
             return "BT" + Guid.NewGuid().ToString("N").Substring(0, 8).ToUpperInvariant();
         }
+
         public IActionResult ThanhToanThanhCong()
         {
             return View();
@@ -383,14 +467,13 @@ namespace KIDORA.Controllers
 
             if (response == null || response.VnPayResponseCode != "00")
             {
-                // Cập nhật trạng thái đơn hàng là Thất bại / Hủy
                 var pendingOrderId = HttpContext.Session.GetString("PendingOrderId");
                 if (!string.IsNullOrEmpty(pendingOrderId))
                 {
                     var order = _context.DonHangs.FirstOrDefault(d => d.MaDonHang == pendingOrderId);
                     if (order != null)
                     {
-                        order.TrangThaiDon = "Đã hủy"; // Hoặc trạng thái thất bại
+                        order.TrangThaiDon = "Đã hủy";
                         order.TrangThaiThanhToan = "Thanh toán thất bại";
                         _context.SaveChanges();
                     }
@@ -401,7 +484,6 @@ namespace KIDORA.Controllers
                 return RedirectToAction("ThanhToanThatBai");
             }
 
-            // Thanh toán thành công
             var pendingOrderIdSuccess = HttpContext.Session.GetString("PendingOrderId");
             if (!string.IsNullOrEmpty(pendingOrderIdSuccess))
             {
@@ -409,10 +491,9 @@ namespace KIDORA.Controllers
                 if (order != null)
                 {
                     order.TrangThaiThanhToan = "Đã thanh toán";
-                    // Thêm record vào bảng THANH_TOAN
                     var thanhToan = new ThanhToan
                     {
-                        MaTt = new Random().Next(100000, 999999), // Tạm thời random
+                        MaTt = new Random().Next(100000, 999999),
                         MaDonHang = order.MaDonHang,
                         PhuongThuc = "VNPay",
                         TrangThai = "Thành công",
@@ -441,7 +522,13 @@ namespace KIDORA.Controllers
         {
             return View();
         }
+    }
 
+    // ✅ Class helper để lưu thông tin mã giảm giá
+    public class DiscountInfo
+    {
+        public string MaCode { get; set; }
+        public string MaKm { get; set; }
+        public decimal SoTienGiam { get; set; }
     }
 }
-

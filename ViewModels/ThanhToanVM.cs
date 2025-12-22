@@ -1,7 +1,6 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 using KIDORA.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace KIDORA.ViewModels
 {
@@ -25,14 +24,14 @@ namespace KIDORA.ViewModels
         public string DienThoai { get; set; }
 
         [Display(Name = "Ghi chú")]
-        public string GhiChu { get; set; } = string.Empty;
+        public string? GhiChu { get; set; }
 
         public string? TinhThanh { get; set; }
         public string? QuanHuyen { get; set; }
         public string? PhuongXa { get; set; }
         public List<DiaChiKhachHang> DiaChiDaLuu { get; set; } = new();
-
-        // Có thể kèm theo danh sách sản phẩm để hiển thị lại bên trang Checkout (tùy chọn)
-        // public List<GioHangVM>? GioHang { get; set; }
+        [Display(Name = "Mã giảm giá")]
+        public string? MaGiamGia { get; set; }
+        public decimal SoTienGiam { get; set; }
     }
 }
