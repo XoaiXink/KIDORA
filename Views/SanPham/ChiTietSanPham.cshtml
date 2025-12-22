@@ -3,11 +3,24 @@
     ViewData["Title"] = "ChiTietSanPham";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .nav-tabs .nav-link {
+        color: #1e73be; /* xanh dương Kidora */
+        font-weight: 600;
+    }
+        .nav-tabs .nav-link.active,
+        .nav-tabs .nav-link:focus {
+            color: #000000 !important; /* MÀU ĐEN */
+            font-weight: 700;
+            border-bottom: 2px solid #1e73be; /* vẫn giữ gạch xanh dương */
+            background-color: transparent;
+        }
+        .nav-tabs .nav-link:hover {
+            color: #155a9c;
+        }
 
-<!-- spacer to avoid fixed header overlapping content -->
+</style>
 <div style="height:120px;"></div>
-
-<!-- Single Page Header End -->
 <!-- Single Product Start -->
 <div class="container-fluid py-5 mt-5">
     <div class="container py-5">
@@ -252,8 +265,6 @@
                             @foreach (var item in relatedProducts)
                             {
                                 <div class="border border-primary rounded position-relative vesitable-item">
-
-                                    <!-- LINK ĐI CHI TIẾT SẢN PHẨM -->
                                     <a asp-controller="SanPham"
                                        asp-action="ChiTietSanPham"
                                        asp-route-id="@item.MaSp"
@@ -277,8 +288,6 @@
                                             </p>
                                         </div>
                                     </a>
-
-                                    <!-- NÚT ADD TO CART (KHÔNG BỌC TRONG LINK TRÊN) -->
                                     <div class="px-4 pb-4">
                                         <a asp-controller="GioHang"
                                            asp-action="AddToCart"
