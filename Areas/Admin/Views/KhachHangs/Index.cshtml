@@ -32,17 +32,18 @@
                 <div class="col-md-3">
                     <label class="form-label fw-bold">Hạng thành viên</label>
                     <select name="hang" class="form-select">
-                        <option value="all">Tất cả hạng</option>
-                        @if (ViewBag.HangList != null)
+                        <option value="all" selected="@(hang == null || hang == "all" ? "selected" : null)">
+                            Tất cả hạng
+                        </option>
+
+                        @foreach (SelectListItem item in ViewBag.HangList)
                         {
-                            @foreach (SelectListItem item in ViewBag.HangList)
-                            {
-                                var selected = (item.Value == hang) ? "selected" : "";
-                                <option value="@item.Value" selected="@selected">
-                                    @item.Text (@item.Value)
-                                </option>
-                            }
+                            <option value="@item.Value"
+                                    selected="@(item.Value == hang ? "selected" : null)">
+                                @item.Text (@item.Value)
+                            </option>
                         }
+
                     </select>
                 </div>
 
@@ -54,10 +55,17 @@
                         var selUnconfirmed = (emailStatus == "unconfirmed") ? "selected" : "";
                     }
                     <select name="emailStatus" class="form-select">
-                        <option value="all" selected="@selAll">Tất cả</option>
-                        <option value="confirmed" selected="@selConfirmed">Đã xác thực</option>
-                        <option value="unconfirmed" selected="@selUnconfirmed">Chưa xác thực</option>
+                        <option value="all" selected="@(emailStatus == null || emailStatus == "all" ? "selected" : null)">
+                            Tất cả
+                        </option>
+                        <option value="confirmed" selected="@(emailStatus == "confirmed" ? "selected" : null)">
+                            Đã xác thực
+                        </option>
+                        <option value="unconfirmed" selected="@(emailStatus == "unconfirmed" ? "selected" : null)">
+                            Chưa xác thực
+                        </option>
                     </select>
+
                 </div>
 
                 <div class="col-md-2 d-flex gap-2">

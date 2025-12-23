@@ -20,31 +20,26 @@
     <!-- Form tìm kiếm -->
     <div class="card shadow-sm mb-3">
         <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-3 align-items-end">
-                <div class="col-md-8">
-                    <label for="keyword" class="form-label fw-bold">Tìm kiếm sản phẩm</label>
-                    <input type="text"
-                           id="keyword"
-                           name="keyword"
-                           class="form-control"
-                           placeholder="Tìm theo tên, SKU, mã sản phẩm, danh mục, nhà cung cấp..."
-                           value="@keyword" />
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search"></i> Tìm kiếm
-                    </button>
+            <!-- Thay thế phần form tìm kiếm hiện tại -->
+            <form asp-action="Index" method="get" class="mb-4">
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" name="keyword" class="form-control"
+                                   placeholder="Tìm kiếm sản phẩm..." value="@ViewBag.Keyword">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(keyword))
+                    {
+                        <div class="col-md-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Xóa bộ lọc</a>
+                        </div>
+                    }
                 </div>
             </form>
-            @if (!string.IsNullOrEmpty(keyword))
-            {
-                <div class="mt-2">
-                    <span class="text-muted">Kết quả tìm kiếm cho: <strong>"@keyword"</strong></span>
-                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary ms-2">
-                        <i class="fas fa-times"></i> Xóa bộ lọc
-                    </a>
-                </div>
-            }
         </div>
     </div>
 

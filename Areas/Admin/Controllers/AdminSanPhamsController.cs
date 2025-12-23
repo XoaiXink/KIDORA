@@ -27,12 +27,15 @@ namespace KIDORA.Areas.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 keyword = keyword.Trim();
+                // Use case-insensitive LIKE and null checks to make search more reliable across collations
+                var keywordLower = keyword.ToLower();
+
                 query = query.Where(s =>
-                    s.TenSp.Contains(keyword) ||
-                    s.Sku.Contains(keyword) ||
-                    s.MaSp.Contains(keyword) ||
-                    (s.MaDanhMucNavigation != null && s.MaDanhMucNavigation.TenDanhMuc.Contains(keyword)) ||
-                    (s.MaNccNavigation != null && s.MaNccNavigation.TenNcc.Contains(keyword))
+                    (s.TenSp != null && EF.Functions.Like(s.TenSp.ToLower(), $"%{keywordLower}%")) ||
+                    (s.Sku != null && EF.Functions.Like(s.Sku.ToLower(), $"%{keywordLower}%")) ||
+                    (s.MaSp != null && EF.Functions.Like(s.MaSp.ToLower(), $"%{keywordLower}%")) ||
+                    (s.MaDanhMucNavigation != null && s.MaDanhMucNavigation.TenDanhMuc != null && EF.Functions.Like(s.MaDanhMucNavigation.TenDanhMuc.ToLower(), $"%{keywordLower}%")) ||
+                    (s.MaNccNavigation != null && s.MaNccNavigation.TenNcc != null && EF.Functions.Like(s.MaNccNavigation.TenNcc.ToLower(), $"%{keywordLower}%"))
                 );
             }
 
