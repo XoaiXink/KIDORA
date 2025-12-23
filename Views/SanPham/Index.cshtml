@@ -9,11 +9,15 @@
     string danhmuc = ViewBag.DanhMuc as string ?? "";
     string sort = ViewBag.Sort as string ?? "default";
     bool hasPriceRange = maxPrice > 0;
+
+    int minPriceInt = (int)Math.Floor(minPrice);
+    int maxPriceInt = (int)Math.Ceiling(maxPrice);
+    int rangeValue = hasPriceRange && selectedPrice > 0 ? selectedPrice : maxPriceInt;
 }
 <!-- spacer to avoid fixed header overlapping content -->
 <div style="height:140px;"></div>
 <!-- Fruits Shop Start-->
-div class="container-fluid vesitable py-5 page-home"
+<div class="container-fluid vesitable py-5 page-home"
     <div class="container py-5">
         <h1 class="mb-4">KIDORA</h1>
         <div class="row g-4">
@@ -86,14 +90,14 @@ div class="container-fluid vesitable py-5 page-home"
                                     <h4 class="mb-2">Price</h4>
                                     <input type="range" class="form-range w-100"
                                            id="rangeInput"
-                                           min="@minPrice"
-                                           max="@maxPrice"
-                                           value="@(hasPriceRange && selectedPrice > 0 ? selectedPrice : maxPrice)"
+                                           min="@minPriceInt"
+                                           max="@maxPriceInt"
+                                           value="@rangeValue"
                                            @(hasPriceRange ? "" : "disabled")
                                            oninput="document.getElementById('amount').value=this.value"
                                            onchange="filterPrice()" />
 
-                                    <output id="amount">@(hasPriceRange ? (selectedPrice > 0 ? selectedPrice : maxPrice) : 0)</output>
+                                    <output id="amount">@rangeValue</output>
                                     @if (!hasPriceRange)
                                     {
                                         <div class="text-muted small">Chưa có dữ liệu giá để lọc.</div>
@@ -120,11 +124,13 @@ div class="container-fluid vesitable py-5 page-home"
     function filterPrice() {
         let price = document.getElementById("rangeInput").value;
 
-        // Tạo URL redirect với query ?price=x
+        // Preserve other query params and reset page to 1
         let url = new URL(window.location.href);
         url.searchParams.set("price", price);
+        url.searchParams.set("page", "1");
 
-        window.location.href = url.toString();
+        // Navigate to the updated URL
+        window.location.href = url.pathname + '?' + url.searchParams.toString();
     }
 </script>
 <!-- Fruits Shop End-->
