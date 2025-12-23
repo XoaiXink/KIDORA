@@ -79,7 +79,7 @@ public partial class KidoraDbContext : DbContext
     {
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.MaAdmin).HasName("PK__ADMIN__49341E382F1B29E6");
+            entity.HasKey(e => e.MaAdmin).HasName("PK__ADMIN__49341E38095253F3");
 
             entity.ToTable("ADMIN");
 
@@ -93,12 +93,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaAdminNavigation).WithOne(p => p.Admin)
                 .HasForeignKey<Admin>(d => d.MaAdmin)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ADMIN__MaAdmin__56E8E7AB");
+                .HasConstraintName("FK__ADMIN__MaAdmin__12FDD1B2");
         });
 
         modelBuilder.Entity<AnhSanPham>(entity =>
         {
-            entity.HasKey(e => e.MaAnh).HasName("PK__ANH_SAN___356240DF29137B3B");
+            entity.HasKey(e => e.MaAnh).HasName("PK__ANH_SAN___356240DFD2CFA203");
 
             entity.ToTable("ANH_SAN_PHAM");
 
@@ -115,12 +115,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaSpNavigation).WithMany(p => p.AnhSanPhams)
                 .HasForeignKey(d => d.MaSp)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ANH_SAN_PH__MaSP__6442E2C9");
+                .HasConstraintName("FK__ANH_SAN_PH__MaSP__2057CCD0");
         });
 
         modelBuilder.Entity<BienTheGium>(entity =>
         {
-            entity.HasKey(e => e.MaBienThe).HasName("PK__BIEN_THE__3987CEF57EAC3E31");
+            entity.HasKey(e => e.MaBienThe).HasName("PK__BIEN_THE__3987CEF5C1C2DCD1");
 
             entity.ToTable("BIEN_THE_GIA");
 
@@ -135,12 +135,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaBienTheNavigation).WithOne(p => p.BienTheGium)
                 .HasForeignKey<BienTheGium>(d => d.MaBienThe)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BIEN_THE___MaBie__0880433F");
+                .HasConstraintName("FK__BIEN_THE___MaBie__44952D46");
         });
 
         modelBuilder.Entity<BienTheHinh>(entity =>
         {
-            entity.HasKey(e => e.MaAnhBienThe).HasName("PK__BIEN_THE__9F2C1B8DA37CA814");
+            entity.HasKey(e => e.MaAnhBienThe).HasName("PK__BIEN_THE__9F2C1B8DFE3B6947");
 
             entity.ToTable("BIEN_THE_HINH");
 
@@ -156,12 +156,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaBienTheNavigation).WithMany(p => p.BienTheHinhs)
                 .HasForeignKey(d => d.MaBienThe)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BIEN_THE___MaBie__0B5CAFEA");
+                .HasConstraintName("FK__BIEN_THE___MaBie__477199F1");
         });
 
         modelBuilder.Entity<BienTheSanPham>(entity =>
         {
-            entity.HasKey(e => e.MaBienThe).HasName("PK__BIEN_THE__3987CEF57FD26D83");
+            entity.HasKey(e => e.MaBienThe).HasName("PK__BIEN_THE__3987CEF543E3C525");
 
             entity.ToTable("BIEN_THE_SAN_PHAM");
 
@@ -183,7 +183,7 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaSpNavigation).WithMany(p => p.BienTheSanPhams)
                 .HasForeignKey(d => d.MaSp)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BIEN_THE_S__MaSP__7C1A6C5A");
+                .HasConstraintName("FK__BIEN_THE_S__MaSP__382F5661");
 
             entity.HasMany(d => d.MaGiaTris).WithMany(p => p.MaBienThes)
                 .UsingEntity<Dictionary<string, object>>(
@@ -191,14 +191,14 @@ public partial class KidoraDbContext : DbContext
                     r => r.HasOne<GiaTriThuocTinh>().WithMany()
                         .HasForeignKey("MaGiaTri")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__SP_THUOC___MaGia__7FEAFD3E"),
+                        .HasConstraintName("FK__SP_THUOC___MaGia__3BFFE745"),
                     l => l.HasOne<BienTheSanPham>().WithMany()
                         .HasForeignKey("MaBienThe")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__SP_THUOC___MaBie__7EF6D905"),
+                        .HasConstraintName("FK__SP_THUOC___MaBie__3B0BC30C"),
                     j =>
                     {
-                        j.HasKey("MaBienThe", "MaGiaTri").HasName("PK__SP_THUOC__9412175AB7B5F262");
+                        j.HasKey("MaBienThe", "MaGiaTri").HasName("PK__SP_THUOC__9412175AAD08E98D");
                         j.ToTable("SP_THUOC_TINH_GIA_TRI");
                         j.IndexerProperty<string>("MaBienThe")
                             .HasMaxLength(10)
@@ -209,7 +209,7 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<BienTheTonKho>(entity =>
         {
-            entity.HasKey(e => e.MaBienThe).HasName("PK__BIEN_THE__3987CEF5FDEB8E56");
+            entity.HasKey(e => e.MaBienThe).HasName("PK__BIEN_THE__3987CEF5ED136BCB");
 
             entity.ToTable("BIEN_THE_TON_KHO");
 
@@ -222,12 +222,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaBienTheNavigation).WithOne(p => p.BienTheTonKho)
                 .HasForeignKey<BienTheTonKho>(d => d.MaBienThe)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BIEN_THE___MaBie__05A3D694");
+                .HasConstraintName("FK__BIEN_THE___MaBie__41B8C09B");
         });
 
         modelBuilder.Entity<CamNang>(entity =>
         {
-            entity.HasKey(e => e.MaBai).HasName("PK__CAM_NANG__3520ED77F50AF1A5");
+            entity.HasKey(e => e.MaBai).HasName("PK__CAM_NANG__3520ED77ADB036FC");
 
             entity.ToTable("CAM_NANG");
 
@@ -242,7 +242,7 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<ChiTietDonHang>(entity =>
         {
-            entity.HasKey(e => e.MaCtdh).HasName("PK__CHI_TIET__1E4E40F086373CE3");
+            entity.HasKey(e => e.MaCtdh).HasName("PK__CHI_TIET__1E4E40F0CFF89D17");
 
             entity.ToTable("CHI_TIET_DON_HANG");
 
@@ -271,17 +271,17 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaBienTheNavigation).WithMany(p => p.ChiTietDonHangs)
                 .HasForeignKey(d => d.MaBienThe)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CHI_TIET___MaBie__10216507");
+                .HasConstraintName("FK__CHI_TIET___MaBie__4C364F0E");
 
             entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.ChiTietDonHangs)
                 .HasForeignKey(d => d.MaDonHang)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CHI_TIET___MaDon__0F2D40CE");
+                .HasConstraintName("FK__CHI_TIET___MaDon__4B422AD5");
         });
 
         modelBuilder.Entity<ChiTietGioHang>(entity =>
         {
-            entity.HasKey(e => e.MaCtgh).HasName("PK__CHI_TIET__1E4FAF54E9DD73BF");
+            entity.HasKey(e => e.MaCtgh).HasName("PK__CHI_TIET__1E4FAF541E411A5C");
 
             entity.ToTable("CHI_TIET_GIO_HANG");
 
@@ -302,26 +302,25 @@ public partial class KidoraDbContext : DbContext
 
             entity.HasOne(d => d.MaBienTheNavigation).WithMany(p => p.ChiTietGioHangs)
                 .HasForeignKey(d => d.MaBienThe)
-                .HasConstraintName("FK__CHI_TIET___MaBie__2610A626");
+                .HasConstraintName("FK__CHI_TIET___MaBie__6225902D");
 
             entity.HasOne(d => d.MaGioHangNavigation).WithMany(p => p.ChiTietGioHangs)
                 .HasForeignKey(d => d.MaGioHang)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CHI_TIET___MaGio__24285DB4");
+                .HasConstraintName("FK__CHI_TIET___MaGio__603D47BB");
 
             entity.HasOne(d => d.MaSpNavigation).WithMany(p => p.ChiTietGioHangs)
                 .HasForeignKey(d => d.MaSp)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CHI_TIET_G__MaSP__251C81ED");
+                .HasConstraintName("FK__CHI_TIET_G__MaSP__61316BF4");
         });
 
         modelBuilder.Entity<DanhGiaSanPham>(entity =>
         {
-            entity.HasKey(e => e.MaDanhGia).HasName("PK__DANH_GIA__AA9515BF370E03EC");
+            entity.HasKey(e => e.MaDanhGia).HasName("PK__DANH_GIA__AA9515BF80EF26A1");
 
             entity.ToTable("DANH_GIA_SAN_PHAM");
 
-            entity.Property(e => e.MaDanhGia).ValueGeneratedNever();
             entity.Property(e => e.MaKh)
                 .HasMaxLength(8)
                 .IsUnicode(false)
@@ -338,17 +337,17 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.DanhGiaSanPhams)
                 .HasForeignKey(d => d.MaKh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DANH_GIA_S__MaKH__1A9EF37A");
+                .HasConstraintName("FK_DGSP_KHACHHANG");
 
             entity.HasOne(d => d.MaSpNavigation).WithMany(p => p.DanhGiaSanPhams)
                 .HasForeignKey(d => d.MaSp)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DANH_GIA_S__MaSP__19AACF41");
+                .HasConstraintName("FK_DGSP_SANPHAM");
         });
 
         modelBuilder.Entity<DanhMuc>(entity =>
         {
-            entity.HasKey(e => e.MaDanhMuc).HasName("PK__DANH_MUC__B375088754D075BB");
+            entity.HasKey(e => e.MaDanhMuc).HasName("PK__DANH_MUC__B3750887EF9580B3");
 
             entity.ToTable("DANH_MUC");
 
@@ -368,12 +367,12 @@ public partial class KidoraDbContext : DbContext
 
             entity.HasOne(d => d.MaDanhMucChaNavigation).WithMany(p => p.InverseMaDanhMucChaNavigation)
                 .HasForeignKey(d => d.MaDanhMucCha)
-                .HasConstraintName("FK__DANH_MUC__MaDanh__498EEC8D");
+                .HasConstraintName("FK__DANH_MUC__MaDanh__05A3D694");
         });
 
         modelBuilder.Entity<DiaChiKhachHang>(entity =>
         {
-            entity.HasKey(e => e.MaDiaChi).HasName("PK__DIA_CHI___EB61213E1E5751FE");
+            entity.HasKey(e => e.MaDiaChi).HasName("PK__DIA_CHI___EB61213E2324E432");
 
             entity.ToTable("DIA_CHI_KHACH_HANG");
 
@@ -394,12 +393,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.DiaChiKhachHangs)
                 .HasForeignKey(d => d.MaKh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DIA_CHI_KH__MaKH__59C55456");
+                .HasConstraintName("FK__DIA_CHI_KH__MaKH__15DA3E5D");
         });
 
         modelBuilder.Entity<DonHang>(entity =>
         {
-            entity.HasKey(e => e.MaDonHang).HasName("PK__DON_HANG__129584AD326AC6DA");
+            entity.HasKey(e => e.MaDonHang).HasName("PK__DON_HANG__129584AD72031DE4");
 
             entity.ToTable("DON_HANG");
 
@@ -450,17 +449,17 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaDvvcNavigation).WithMany(p => p.DonHangs)
                 .HasForeignKey(d => d.MaDvvc)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DON_HANG__MaDVVC__74794A92");
+                .HasConstraintName("FK__DON_HANG__MaDVVC__308E3499");
 
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.DonHangs)
                 .HasForeignKey(d => d.MaKh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DON_HANG__MaKH__73852659");
+                .HasConstraintName("FK__DON_HANG__MaKH__2F9A1060");
         });
 
         modelBuilder.Entity<DonViVanChuyen>(entity =>
         {
-            entity.HasKey(e => e.MaDvvc).HasName("PK__DON_VI_V__36ECC45E3407AE5A");
+            entity.HasKey(e => e.MaDvvc).HasName("PK__DON_VI_V__36ECC45E59184876");
 
             entity.ToTable("DON_VI_VAN_CHUYEN");
 
@@ -483,7 +482,7 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<GdKcoin>(entity =>
         {
-            entity.HasKey(e => e.MaGdKcoin).HasName("PK__GD_KCOIN__41B15EDCCFD8061A");
+            entity.HasKey(e => e.MaGdKcoin).HasName("PK__GD_KCOIN__41B15EDCC7770B22");
 
             entity.ToTable("GD_KCOIN");
 
@@ -511,17 +510,17 @@ public partial class KidoraDbContext : DbContext
 
             entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.GdKcoins)
                 .HasForeignKey(d => d.MaDonHang)
-                .HasConstraintName("FK__GD_KCOIN__MaDonH__16CE6296");
+                .HasConstraintName("FK__GD_KCOIN__MaDonH__52E34C9D");
 
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.GdKcoins)
                 .HasForeignKey(d => d.MaKh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__GD_KCOIN__MaKH__15DA3E5D");
+                .HasConstraintName("FK__GD_KCOIN__MaKH__51EF2864");
         });
 
         modelBuilder.Entity<GiaTriThuocTinh>(entity =>
         {
-            entity.HasKey(e => e.MaGiaTri).HasName("PK__GIA_TRI___D95D9AFB43FE3C40");
+            entity.HasKey(e => e.MaGiaTri).HasName("PK__GIA_TRI___D95D9AFBEE87E27B");
 
             entity.ToTable("GIA_TRI_THUOC_TINH");
 
@@ -532,12 +531,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaThuocTinhNavigation).WithMany(p => p.GiaTriThuocTinhs)
                 .HasForeignKey(d => d.MaThuocTinh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__GIA_TRI_T__MaThu__793DFFAF");
+                .HasConstraintName("FK__GIA_TRI_T__MaThu__3552E9B6");
         });
 
         modelBuilder.Entity<GioHang>(entity =>
         {
-            entity.HasKey(e => e.MaGioHang).HasName("PK__GIO_HANG__F5001DA3B298B998");
+            entity.HasKey(e => e.MaGioHang).HasName("PK__GIO_HANG__F5001DA354D8069E");
 
             entity.ToTable("GIO_HANG");
 
@@ -555,12 +554,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.GioHangs)
                 .HasForeignKey(d => d.MaKh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__GIO_HANG__MaKH__214BF109");
+                .HasConstraintName("FK__GIO_HANG__MaKH__5D60DB10");
         });
 
         modelBuilder.Entity<HangThanhVien>(entity =>
         {
-            entity.HasKey(e => e.MaHang).HasName("PK__HANG_THA__19C0DB1D891F197D");
+            entity.HasKey(e => e.MaHang).HasName("PK__HANG_THA__19C0DB1D76248574");
 
             entity.ToTable("HANG_THANH_VIEN");
 
@@ -578,7 +577,7 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<KhachHang>(entity =>
         {
-            entity.HasKey(e => e.MaKh).HasName("PK__KHACH_HA__2725CF1E88EDF78A");
+            entity.HasKey(e => e.MaKh).HasName("PK__KHACH_HA__2725CF1E8CF6217B");
 
             entity.ToTable("KHACH_HANG");
 
@@ -597,17 +596,17 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaHangNavigation).WithMany(p => p.KhachHangs)
                 .HasForeignKey(d => d.MaHang)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KHACH_HAN__MaHan__540C7B00");
+                .HasConstraintName("FK__KHACH_HAN__MaHan__10216507");
 
             entity.HasOne(d => d.MaKhNavigation).WithOne(p => p.KhachHang)
                 .HasForeignKey<KhachHang>(d => d.MaKh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KHACH_HANG__MaKH__531856C7");
+                .HasConstraintName("FK__KHACH_HANG__MaKH__0F2D40CE");
         });
 
         modelBuilder.Entity<KmDonHang>(entity =>
         {
-            entity.HasKey(e => e.MaKmDon).HasName("PK__KM_DON_H__C4EB1C5736BD2306");
+            entity.HasKey(e => e.MaKmDon).HasName("PK__KM_DON_H__C4EB1C5789094334");
 
             entity.ToTable("KM_DON_HANG");
 
@@ -629,17 +628,17 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.KmDonHangs)
                 .HasForeignKey(d => d.MaDonHang)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KM_DON_HA__MaDon__1D7B6025");
+                .HasConstraintName("FK__KM_DON_HA__MaDon__59904A2C");
 
             entity.HasOne(d => d.MaKmNavigation).WithMany(p => p.KmDonHangs)
                 .HasForeignKey(d => d.MaKm)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KM_DON_HAN__MaKM__1E6F845E");
+                .HasConstraintName("FK__KM_DON_HAN__MaKM__5A846E65");
         });
 
         modelBuilder.Entity<MaKhuyenMai>(entity =>
         {
-            entity.HasKey(e => e.MaKm).HasName("PK__MA_KHUYE__2725CF15D0DAAA57");
+            entity.HasKey(e => e.MaKm).HasName("PK__MA_KHUYE__2725CF15D4775447");
 
             entity.ToTable("MA_KHUYEN_MAI");
 
@@ -662,11 +661,11 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<NguoiDung>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__NGUOI_DU__3214EC07B3E94990");
+            entity.HasKey(e => e.Id).HasName("PK__NGUOI_DU__3214EC07A4F51B6B");
 
             entity.ToTable("NGUOI_DUNG");
 
-            entity.HasIndex(e => e.Email, "UQ__NGUOI_DU__A9D10534B1D9F609").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__NGUOI_DU__A9D10534613CB062").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasMaxLength(8)
@@ -697,7 +696,7 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<NhaCungCap>(entity =>
         {
-            entity.HasKey(e => e.MaNcc).HasName("PK__NHA_CUNG__3A185DEB7A3BD3BB");
+            entity.HasKey(e => e.MaNcc).HasName("PK__NHA_CUNG__3A185DEB0D0CD12F");
 
             entity.ToTable("NHA_CUNG_CAP");
 
@@ -724,7 +723,7 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<SanPham>(entity =>
         {
-            entity.HasKey(e => e.MaSp).HasName("PK__SAN_PHAM__2725081C7F51BF54");
+            entity.HasKey(e => e.MaSp).HasName("PK__SAN_PHAM__2725081C41110C17");
 
             entity.ToTable("SAN_PHAM");
 
@@ -762,17 +761,17 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaDanhMucNavigation).WithMany(p => p.SanPhams)
                 .HasForeignKey(d => d.MaDanhMuc)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__SAN_PHAM__MaDanh__607251E5");
+                .HasConstraintName("FK__SAN_PHAM__MaDanh__1C873BEC");
 
             entity.HasOne(d => d.MaNccNavigation).WithMany(p => p.SanPhams)
                 .HasForeignKey(d => d.MaNcc)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__SAN_PHAM__MaNCC__6166761E");
+                .HasConstraintName("FK__SAN_PHAM__MaNCC__1D7B6025");
         });
 
         modelBuilder.Entity<ThanhToan>(entity =>
         {
-            entity.HasKey(e => e.MaTt).HasName("PK__THANH_TO__2725007963204950");
+            entity.HasKey(e => e.MaTt).HasName("PK__THANH_TO__27250079D2DD52C2");
 
             entity.ToTable("THANH_TOAN");
 
@@ -794,12 +793,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.ThanhToans)
                 .HasForeignKey(d => d.MaDonHang)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__THANH_TOA__MaDon__12FDD1B2");
+                .HasConstraintName("FK__THANH_TOA__MaDon__4F12BBB9");
         });
 
         modelBuilder.Entity<ThuocTinh>(entity =>
         {
-            entity.HasKey(e => e.MaThuocTinh).HasName("PK__THUOC_TI__9EA5FC478FB0B8B8");
+            entity.HasKey(e => e.MaThuocTinh).HasName("PK__THUOC_TI__9EA5FC4798FB98DE");
 
             entity.ToTable("THUOC_TINH");
 
@@ -811,7 +810,7 @@ public partial class KidoraDbContext : DbContext
 
         modelBuilder.Entity<Wishlist>(entity =>
         {
-            entity.HasKey(e => e.MaWishlist).HasName("PK__WISHLIST__B290E878E8E2D9D5");
+            entity.HasKey(e => e.MaWishlist).HasName("PK__WISHLIST__B290E878BFD70C74");
 
             entity.ToTable("WISHLIST");
 
@@ -828,12 +827,12 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.Wishlists)
                 .HasForeignKey(d => d.MaKh)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__WISHLIST__MaKH__28ED12D1");
+                .HasConstraintName("FK__WISHLIST__MaKH__6501FCD8");
         });
 
         modelBuilder.Entity<WishlistChiTiet>(entity =>
         {
-            entity.HasKey(e => new { e.MaWishlist, e.MaBienThe }).HasName("PK__WISHLIST__F1089497D87B2003");
+            entity.HasKey(e => new { e.MaWishlist, e.MaBienThe }).HasName("PK__WISHLIST__F108949778ACE419");
 
             entity.ToTable("WISHLIST_CHI_TIET");
 
@@ -854,17 +853,17 @@ public partial class KidoraDbContext : DbContext
             entity.HasOne(d => d.MaBienTheNavigation).WithMany(p => p.WishlistChiTiets)
                 .HasForeignKey(d => d.MaBienThe)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__WISHLIST___MaBie__2DB1C7EE");
+                .HasConstraintName("FK__WISHLIST___MaBie__69C6B1F5");
 
             entity.HasOne(d => d.MaSpNavigation).WithMany(p => p.WishlistChiTiets)
                 .HasForeignKey(d => d.MaSp)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__WISHLIST_C__MaSP__2CBDA3B5");
+                .HasConstraintName("FK__WISHLIST_C__MaSP__68D28DBC");
 
             entity.HasOne(d => d.MaWishlistNavigation).WithMany(p => p.WishlistChiTiets)
                 .HasForeignKey(d => d.MaWishlist)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__WISHLIST___MaWis__2BC97F7C");
+                .HasConstraintName("FK__WISHLIST___MaWis__67DE6983");
         });
 
         OnModelCreatingPartial(modelBuilder);
